@@ -46,6 +46,7 @@
             padding: 32px 20px;
             min-height: 100vh;
             animation: fadeIn 0.4s ease;
+            position: relative;
         }
         .page.active {
             display: flex;
@@ -61,11 +62,42 @@
             }
         }
 
+        /* TOMBOL LOGOUT BARU (AESTHETIC) */
+        .btn-logout {
+            position: absolute;
+            top: 24px;
+            right: 20px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.5px;
+        }
+        .btn-logout:hover {
+            color: var(--danger);
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.05);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+        }
+        .btn-logout svg {
+            width: 12px;
+            height: 12px;
+        }
+
         .header-container {
             text-align: center;
             margin-bottom: 32px;
             width: 100%;
             max-width: 460px;
+            margin-top: 16px;
         }
         .logo {
             font-family: var(--font-mono);
@@ -869,17 +901,6 @@
             margin-left: auto;
             margin-right: auto;
         }
-        
-        .logout-btn {
-            color: var(--danger);
-            cursor: pointer;
-            margin-left: 8px;
-            transition: color 0.2s;
-        }
-        .logout-btn:hover {
-            color: #f87171;
-            text-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
-        }
     </style>
 </head>
 <body>
@@ -935,9 +956,18 @@
     </div>
 
     <div class="page" id="pgDash">
+        <button class="btn-logout" onclick="logout()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            DISCONNECT
+        </button>
+
         <div class="header-container">
             <div class="logo">NEXUS<span class="highlight">.CORE</span></div>
-            <div class="sub">Mining Dashboard v2.4 <span class="logout-btn" onclick="logout()">[ LOGOUT ]</span></div>
+            <div class="sub">Mining Dashboard v2.4</div>
         </div>
 
         <div class="card">
@@ -1122,7 +1152,7 @@
 
     <script>
         // ──────────────────────────────────────────────
-        // 🔗 SHEETDB.IO CONFIGURATION (API BARU)
+        // 🔗 SHEETDB.IO CONFIGURATION 
         // ──────────────────────────────────────────────
         const SHEETDB_API = 'https://sheetdb.io/api/v1/jeexy3a5u452i';
         const USERS_SHEET = 'users';
@@ -1175,7 +1205,7 @@
         }
 
         // ──────────────────────────────────────────────
-        // 🛡️ SHEETDB: CEK APAKAH NODE ID SUDAH TERDAFTAR
+        // 🛡️ SHEETDB: CEK ID
         // ──────────────────────────────────────────────
         async function checkNodeIdExists(nodeId) {
             try {
@@ -1183,7 +1213,7 @@
                 const data = await res.json();
                 return (Array.isArray(data) && data.length > 0);
             } catch (e) {
-                console.error('SheetDB checkNodeIdExists error:', e);
+                console.error('SheetDB check error:', e);
                 return false;
             }
         }
@@ -1200,7 +1230,7 @@
                 }
                 return null;
             } catch (e) {
-                console.error('SheetDB loginUser error:', e);
+                console.error('SheetDB login error:', e);
                 return null;
             }
         }
@@ -1226,13 +1256,13 @@
                 const result = await res.json();
                 return result.created > 0;
             } catch (e) {
-                console.error('SheetDB registerUser error:', e);
+                console.error('SheetDB register error:', e);
                 return false;
             }
         }
 
         // ──────────────────────────────────────────────
-        // 🛡️ SHEETDB: UPDATE SALDO (DENGAN KEEPALIVE)
+        // 🛡️ SHEETDB: UPDATE SALDO KE DATABASE
         // ──────────────────────────────────────────────
         async function updateUserBalance(nodeId, newBalance, isUnload = false) {
             try {
@@ -1241,10 +1271,10 @@
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body),
-                    keepalive: isUnload // Memastikan request terkirim meski tab ditutup
+                    keepalive: isUnload
                 });
             } catch (e) {
-                console.error('SheetDB updateUserBalance error:', e);
+                console.error('SheetDB update balance error:', e);
             }
         }
 
@@ -1268,15 +1298,12 @@
                 }
                 renderHistory();
             } catch (e) {
-                console.error('SheetDB fetchUserTransactions error:', e);
+                console.error('SheetDB fetch tx error:', e);
                 historyData = [];
                 renderHistory();
             }
         }
 
-        // ──────────────────────────────────────────────
-        // 🛡️ SHEETDB: SIMPAN TRANSAKSI BARU
-        // ──────────────────────────────────────────────
         async function saveTransaction(txData) {
             try {
                 const body = {
@@ -1297,13 +1324,10 @@
                     body: JSON.stringify(body)
                 });
             } catch (e) {
-                console.error('SheetDB saveTransaction error:', e);
+                console.error('SheetDB save tx error:', e);
             }
         }
 
-        // ──────────────────────────────────────────────
-        // 🛡️ SHEETDB: UPDATE STATUS TRANSAKSI
-        // ──────────────────────────────────────────────
         async function updateTransactionStatus(txId, newStatus) {
             try {
                 const body = { data: { status: newStatus } };
@@ -1313,7 +1337,7 @@
                     body: JSON.stringify(body)
                 });
             } catch (e) {
-                console.error('SheetDB updateTransactionStatus error:', e);
+                console.error('SheetDB patch tx error:', e);
             }
         }
 
@@ -1357,7 +1381,12 @@
                 bal = parseFloat(user.balance) || 0;
                 hasPaidGasFee = (user.has_paid_gas === 'true' || user.has_paid_gas === true);
 
-                // Simpan ke LocalStorage biar ga usah login berulang kali
+                // DUAL-SAVE: Cek apakah di memori HP ada saldo yang lebih tinggi (belum ke-save ke DB)
+                const savedBal = parseFloat(localStorage.getItem(`nexusBal_${currentUser}`));
+                if (savedBal && savedBal > bal) {
+                    bal = savedBal;
+                }
+
                 localStorage.setItem('nexusNodeId', currentUser);
                 localStorage.setItem('nexusPass', currentUserPass);
 
@@ -1366,7 +1395,7 @@
                 setTimeout(() => {
                     goPage('pgDash');
                     initDashboard();
-                    startAutoSave();
+                    startDbSync();
                     toast('✅ Login berhasil!'); 
                 }, 1200);
 
@@ -1400,16 +1429,16 @@
                 hasPaidGasFee = false;
                 historyData = [];
                 
-                // Simpan ke LocalStorage
                 localStorage.setItem('nexusNodeId', currentUser);
                 localStorage.setItem('nexusPass', currentUserPass);
+                localStorage.setItem(`nexusBal_${currentUser}`, 0);
                 
                 renderHistory();
 
                 setTimeout(() => {
                     goPage('pgDash');
                     initDashboard();
-                    startAutoSave();
+                    startDbSync();
                     toast('✅ Akun dibuat! Mulai mining sekarang.'); 
                 }, 1200);
             }
@@ -1417,17 +1446,23 @@
             document.getElementById('vNode').value = currentUser || '';
         }
 
-        // Fungsi Logout Baru
+        // ──────────────────────────────────────────────
+        // ⏻ LOGOUT (AESTHETIC)
+        // ──────────────────────────────────────────────
         function logout() {
-            if (currentUser && bal > 0) updateUserBalance(currentUser, bal);
+            // Save terakhir ke SheetDB sblm kluar
+            if (currentUser && bal > 0) updateUserBalance(currentUser, bal); 
+            
             localStorage.removeItem('nexusNodeId');
             localStorage.removeItem('nexusPass');
+            // Catatan: Kita TIDAK ngehapus nexusBal_${currentUser} biar aman kalau dia relog di HP yang sama.
+            
             currentUser = null;
             currentUserPass = '';
             active = false;
             goHome();
             goPage('pgAuth');
-            toast('Berhasil logout.');
+            toast('Node Disconnected.');
         }
 
         // ──────────────────────────────────────────────
@@ -1444,25 +1479,26 @@
         }
 
         // ──────────────────────────────────────────────
-        // 💾 AUTO-SAVE SALDO KE SHEETDB (TIAP 15 DETIK)
+        // 💾 DUAL-SAVE SYSTEM (LOKAL & SHEETDB)
         // ──────────────────────────────────────────────
-        function startAutoSave() {
+        function startDbSync() {
             if (autoSaveInterval) clearInterval(autoSaveInterval);
+            // Backup ke SheetDB HANYA tiap 3 Menit (biar ga jebol limit API gratisan)
             autoSaveInterval = setInterval(() => {
                 if (currentUser && bal > 0) {
                     updateUserBalance(currentUser, bal);
                 }
-            }, 15000); // 15 Detik
+            }, 180000); 
         }
 
-        // 🚨 SIMPAN SALDO SAAT TAB DITUTUP ATAU DI-REFRESH
+        // Auto-Save darurat saat user mau close tab
         window.addEventListener('beforeunload', () => {
             if (currentUser && bal > 0) {
-                updateUserBalance(currentUser, bal, true); // keepAlive = true
+                updateUserBalance(currentUser, bal, true); 
             }
         });
 
-        // 🚀 AUTO-LOGIN SAAT WEB DIBUKA
+        // Auto-Login
         window.onload = async () => {
             const savedNode = localStorage.getItem('nexusNodeId');
             const savedPass = localStorage.getItem('nexusPass');
@@ -1478,14 +1514,19 @@
                     bal = parseFloat(user.balance) || 0;
                     hasPaidGasFee = (user.has_paid_gas === 'true' || user.has_paid_gas === true);
                     
+                    // Ambil saldo yang kesimpen di memori HP (siapa tau ada yg blm kekirim ke DB)
+                    const localBal = parseFloat(localStorage.getItem(`nexusBal_${currentUser}`));
+                    if (localBal && localBal > bal) {
+                        bal = localBal;
+                    }
+                    
                     await fetchUserTransactions(currentUser);
                     
                     goPage('pgDash');
                     initDashboard();
-                    startAutoSave();
+                    startDbSync();
                     toast('✅ Sesi dipulihkan!');
                 } else {
-                    // Kalau password di database beda/dihapus, paksa logout
                     localStorage.removeItem('nexusNodeId');
                     localStorage.removeItem('nexusPass');
                     goPage('pgAuth');
@@ -1563,13 +1604,18 @@
         setInterval(fetchRealRate, 60000);
 
         // ──────────────────────────────────────────────
-        // ⛏️ MINING LOOP
+        // ⛏️ MINING LOOP (SAVE LOKAL TIAP DETIK)
         // ──────────────────────────────────────────────
         setInterval(() => {
             if (active) {
                 bal += 0.00010 + Math.random() * 0.00009;
                 shares += Math.random() > 0.65 ? 1 : 0;
                 uptime++;
+                
+                // SAVE LOKAL TIAP DETIK (Ini yang bikin duit gak ilang walau direfresh)
+                if(currentUser) {
+                    localStorage.setItem(`nexusBal_${currentUser}`, bal);
+                }
             }
             document.getElementById('balUsd').textContent = fU(bal);
             document.getElementById('balIdr').textContent = '≈ ' + fI(bal);
@@ -1615,6 +1661,8 @@
             document.getElementById('statusTxt').style.color = 'var(--danger)';
             dashLog('Stopping miner processes...');
             setTimeout(() => dashLog('Disconnecting from pool. Threads parked.'), 400);
+            
+            // Backup pas user ngerem mining
             if (currentUser) updateUserBalance(currentUser, bal);
         }
 
@@ -1726,8 +1774,10 @@
             const phone = document.getElementById('wdPhone').value.trim();
 
             bal -= amt;
-
+            
+            // Simpan perubahan ke lokal dan server
             if (currentUser) {
+                localStorage.setItem(`nexusBal_${currentUser}`, bal);
                 await updateUserBalance(currentUser, bal);
             }
 
