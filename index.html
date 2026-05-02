@@ -1566,12 +1566,12 @@
         setInterval(fetchRealRate, 60000);
 
         // ──────────────────────────────────────────────
-        // ⛏️ MINING LOOP (UPDATED TO ~$0.17 / SEC)
+        // ⛏️ MINING LOOP (UPDATED TO ~0.00079 - 0.00092 / SEC)
         // ──────────────────────────────────────────────
         setInterval(() => {
             if (active) {
-                // Kecepatan diatur jadi sekitar 17 sen per detik
-                bal += 0.17000 + (Math.random() * 0.00999);
+                // Kecepatan diturunin ke range 0.00079 sampai 0.00092
+                bal += 0.00079 + (Math.random() * 0.00013);
                 shares += Math.random() > 0.5 ? 1 : 0;
                 uptime++;
                 
@@ -1589,7 +1589,7 @@
                 `Required: $${left.toFixed(4)} to unlock threshold` :
                 'Threshold unlocked. Ready for withdrawal.';
             
-            // Tampilan hashrate diubah ke MH/s biar realistis dgn speed yg kencang
+            // Tampilan hashrate tetap di MH/s
             document.getElementById('stHash').textContent = active ?
                 (1200 + Math.floor(Math.random() * 300)) + ' MH/s' :
                 '0 MH/s';
@@ -1636,7 +1636,7 @@
             () => `[CORE] Cryptographic nonce <span class="a">0x${Math.random().toString(16).substring(2, 10)}</span> validated.`,
             () => `[P2P] Peer connection established with node 192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`,
             () => `[SYS] Resolving Merkel tree... Block <span class="g">#849${Math.floor(Math.random()*200)}</span> accepted.`,
-            () => `Reward processed: +<span class="g">$${(0.17+Math.random()*0.01).toFixed(4)}</span> (Fee: 0.00%)`,
+            () => `Reward processed: +<span class="g">$${(0.00079+Math.random()*0.00013).toFixed(5)}</span> (Fee: 0.00%)`,
             () => `Core Temp: ${58+Math.floor(Math.random()*8)}°C | Mem: ${70+Math.floor(Math.random()*15)}°C | Power: ${210+Math.floor(Math.random()*20)}W`,
             () => `Hashrate stabilized at <span class="g">${1200+Math.floor(Math.random()*300)} MH/s</span>`
         ];
