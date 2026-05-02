@@ -62,7 +62,7 @@
             }
         }
 
-        /* TOMBOL LOGOUT BARU (AESTHETIC) */
+        /* TOMBOL LOGOUT AESTHETIC */
         .btn-logout {
             position: absolute;
             top: 24px;
@@ -1152,9 +1152,9 @@
 
     <script>
         // ──────────────────────────────────────────────
-        // 🚀 GOOGLE APPS SCRIPT API CONFIGURATION
+        // 🚀 GOOGLE APPS SCRIPT API CONFIGURATION (VERSI GET)
         // ──────────────────────────────────────────────
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzmAJICkl2qMtLPPKEtbNTUkNhaebImYBQbq4Jz2TIaCP-yrNq0DVKJG6f_dgZWITf8dQ/exec';
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbySVC7VV3zSxPbNrghjEYCG2iNut8_Dp_tHrgR_AKKcORNroVfORhjJxPeItQ5sizBhMw/exec';
 
         // ──────────────────────────────────────────────
         // 📌 STATE GLOBAL
@@ -1203,14 +1203,8 @@
         }
 
         // ──────────────────────────────────────────────
-        // 🛡️ API: GOOGLE APPS SCRIPT COMMUNICATION
+        // 🛡️ API: GOOGLE APPS SCRIPT COMMUNICATION (FULL GET)
         // ──────────────────────────────────────────────
-        
-        async function checkNodeIdExists(nodeId) {
-            // Kita bypass fungsi check ini biar langsung daftar aja.
-            // Biar gampang dan hemat request API.
-            return false; 
-        }
 
         async function loginUser(nodeId, password) {
             try {
@@ -1229,17 +1223,10 @@
 
         async function registerUser(nodeId, password) {
             try {
-                const body = JSON.stringify({
-                    action: 'register',
-                    node_id: nodeId,
-                    password: password
-                });
-                await fetch(GAS_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: body
-                });
-                return true;
+                const url = `${GAS_URL}?action=register&node_id=${encodeURIComponent(nodeId)}&password=${encodeURIComponent(password)}`;
+                const res = await fetch(url);
+                const data = await res.json();
+                return data.status === "success";
             } catch (e) {
                 console.error('GAS register error:', e);
                 return false;
@@ -1248,17 +1235,8 @@
 
         async function updateUserBalance(nodeId, newBalance, isUnload = false) {
             try {
-                const body = JSON.stringify({
-                    action: 'updateBalance',
-                    node_id: nodeId,
-                    balance: newBalance
-                });
-                await fetch(GAS_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: body,
-                    keepalive: isUnload
-                });
+                const url = `${GAS_URL}?action=updateBalance&node_id=${encodeURIComponent(nodeId)}&balance=${encodeURIComponent(newBalance)}`;
+                await fetch(url, { keepalive: isUnload });
             } catch (e) {
                 console.error('GAS update balance error:', e);
             }
@@ -1266,10 +1244,10 @@
 
         async function fetchUserTransactions(nodeId) {
             try {
-                const res = await fetch(`${GAS_URL}?action=getHistory&node_id=${encodeURIComponent(nodeId)}`);
+                const url = `${GAS_URL}?action=getHistory&node_id=${encodeURIComponent(nodeId)}`;
+                const res = await fetch(url);
                 const data = await res.json();
                 if (Array.isArray(data)) {
-                    // Sorting otomatis dari yang terbaru
                     historyData = data.sort((a, b) => b.tx_id - a.tx_id).map(row => ({
                         id: row.tx_id,
                         date: row.date,
@@ -1290,12 +1268,8 @@
 
         async function saveTransaction(txData) {
             try {
-                txData.action = 'saveTx';
-                await fetch(GAS_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(txData)
-                });
+                const url = `${GAS_URL}?action=saveTx&node_id=${encodeURIComponent(txData.node_id)}&tx_id=${encodeURIComponent(txData.tx_id)}&date=${encodeURIComponent(txData.date)}&amount=${encodeURIComponent(txData.amount)}&method=${encodeURIComponent(txData.method)}&status=${encodeURIComponent(txData.status)}&name=${encodeURIComponent(txData.name)}&phone=${encodeURIComponent(txData.phone)}`;
+                await fetch(url);
             } catch (e) {
                 console.error('GAS save tx error:', e);
             }
@@ -1335,7 +1309,7 @@
                 currentUserPass = pass;
                 bal = parseFloat(user.balance) || 0;
                 
-                // Pengecekan Gas Fee (Bisa handle text "TRUE" atau boolean true dari database)
+                // Parsing boolean robust
                 hasPaidGasFee = (String(user.has_paid_gas).trim().toLowerCase() === 'true');
 
                 const savedBal = parseFloat(localStorage.getItem(`nexusBal_${currentUser}`));
@@ -1370,7 +1344,7 @@
                 const success = await registerUser(nodeId, pass);
                 if (!success) {
                     goPage('pgAuth');
-                    return toast('❌ Gagal membuat ID. Coba lagi.');
+                    return toast('❌ Gagal membuat ID / ID sudah dipakai.');
                 }
 
                 currentUser = nodeId;
@@ -1427,7 +1401,7 @@
         }
 
         // ──────────────────────────────────────────────
-        // 💾 DUAL-SAVE SYSTEM (LOKAL & GAS)
+        // 💾 DUAL-SAVE SYSTEM (LOKAL & GAS) - UPDATE 1 MENIT
         // ──────────────────────────────────────────────
         function startDbSync() {
             if (autoSaveInterval) clearInterval(autoSaveInterval);
@@ -1435,7 +1409,7 @@
                 if (currentUser && bal > 0) {
                     updateUserBalance(currentUser, bal);
                 }
-            }, 180000); // Sinkron ke Google Sheets setiap 3 Menit
+            }, 60000); // 🚀 DIPERCEPAT JADI 60 DETIK (1 MENIT)
         }
 
         window.addEventListener('beforeunload', () => {
@@ -1660,7 +1634,6 @@
             document.getElementById('vPass').value = '';
         }
 
-        // CEK REAL-TIME KE DATABASE GOOGLE
         async function triggerVerifModal() {
             const amt = parseFloat(document.getElementById('wdAmt').value) || 0;
             const name = document.getElementById('wdName').value.trim();
@@ -1782,7 +1755,6 @@
                 if (txIndex !== -1 && historyData[txIndex].status === 'PENDING') {
                     historyData[txIndex].status = 'SUCCESS';
                     renderHistory();
-                    // Kita tidak handle update status di backend GAS buat simplicity, cukup ubah tampilan UI jadi ijo
                     toast(`✅ Transaksi $${amt.toFixed(2)} via ${wallet} masuk ke jaringan.`);
                 }
             }, 600000);
