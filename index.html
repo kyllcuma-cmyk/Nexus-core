@@ -22,15 +22,7 @@
             --font-ui: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            outline: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { margin:0; padding:0; box-sizing:border-box; outline: none; -webkit-tap-highlight-color: transparent; }
         body {
             background-color: var(--bg-main);
             color: var(--text-main);
@@ -38,1720 +30,753 @@
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
         }
-
-        .page {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            padding: 32px 20px;
-            min-height: 100vh;
-            animation: fadeIn 0.4s ease;
-        }
-        .page.active {
-            display: flex;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .header-container {
-            text-align: center;
-            margin-bottom: 32px;
-            width: 100%;
-            max-width: 460px;
-        }
+        .page { display:none; flex-direction:column; align-items:center; padding:32px 20px; min-height:100vh; animation: fadeIn 0.4s ease; }
+        .page.active { display:flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .header-container { text-align: center; margin-bottom: 32px; width: 100%; max-width: 460px; }
         .logo {
-            font-family: var(--font-mono);
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--text-main);
-            letter-spacing: -0.5px;
+            font-family: var(--font-mono); font-size: 1.4rem; font-weight: 800;
+            color: var(--text-main); letter-spacing: -0.5px;
         }
-        .logo .highlight {
-            color: var(--accent);
-            text-shadow: 0 0 12px var(--accent-glow);
-        }
-        .sub {
-            font-family: var(--font-mono);
-            font-size: 0.65rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 8px;
-        }
-
+        .logo .highlight { color: var(--accent); text-shadow: 0 0 12px var(--accent-glow); }
+        .sub { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 500; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 8px; }
         .card {
-            width: 100%;
-            max-width: 460px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            width: 100%; max-width: 460px; background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
         .card-head {
-            padding: 14px 20px;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.2);
+            padding: 14px 20px; border-bottom: 1px solid var(--border);
+            font-size: 0.7rem; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;
+            display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2);
         }
-        .card-body {
-            padding: 20px;
+        .card-body { padding: 20px; }
+        .auth-tabs { display: flex; width: 100%; border-bottom: 1px solid var(--border); }
+        .auth-tab { 
+            flex: 1; text-align: center; padding: 14px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; 
+            color: var(--text-muted); cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px;
         }
-
-        .auth-tabs {
-            display: flex;
-            width: 100%;
-            border-bottom: 1px solid var(--border);
-        }
-        .auth-tab {
-            flex: 1;
-            text-align: center;
-            padding: 14px;
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .auth-tab.active {
-            color: var(--accent);
-            border-bottom: 2px solid var(--accent);
-            background: rgba(6, 182, 212, 0.05);
-        }
-        .auth-form {
-            display: none;
-            flex-direction: column;
-            gap: 16px;
-            width: 100%;
-            padding: 20px;
-        }
-        .auth-form.active {
-            display: flex;
-        }
-
-        .bal-usd {
-            font-family: var(--font-mono);
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--text-main);
-            text-align: center;
-            margin-bottom: 4px;
-            letter-spacing: -1px;
-        }
-        .bal-idr {
-            text-align: center;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 24px;
-            font-weight: 500;
-        }
-        .prog-label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-        .prog-track {
-            height: 6px;
-            background: var(--bg-input);
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-        .prog-fill {
-            height: 100%;
-            background: var(--accent);
-            box-shadow: 0 0 12px var(--accent-glow);
-            border-radius: 8px;
-            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 0%;
-        }
-        .prog-note {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-align: right;
-            margin-top: 8px;
-        }
-
-        .dot-live {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--success);
-            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
-            animation: pulse 2s infinite;
-            display: inline-block;
-        }
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
-            }
-            70% {
-                box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
-            }
-        }
-
-        .rate-big {
-            font-family: var(--font-mono);
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-main);
-            text-align: center;
-            margin-bottom: 4px;
-        }
-        .rate-sub {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-align: center;
-        }
-
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            width: 100%;
-            max-width: 460px;
-            margin-bottom: 16px;
-        }
-        .stat {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-        }
-        .stat-lbl {
-            font-size: 0.6rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-        .stat-val {
-            font-family: var(--font-mono);
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
+        .auth-tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); background: rgba(6, 182, 212, 0.05); }
+        .auth-form { display: none; flex-direction: column; gap: 16px; width: 100%; padding: 20px; }
+        .auth-form.active { display: flex; }
+        .bal-usd { font-family: var(--font-mono); font-size: 2.5rem; font-weight: 800; color: var(--text-main); text-align: center; margin-bottom: 4px; letter-spacing: -1px; }
+        .bal-idr { text-align: center; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 24px; font-weight: 500; }
+        .prog-label { display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: 500; color: var(--text-muted); margin-bottom: 8px; }
+        .prog-track { height: 6px; background: var(--bg-input); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+        .prog-fill { height: 100%; background: var(--accent); box-shadow: 0 0 12px var(--accent-glow); border-radius: 8px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); width: 0%; }
+        .prog-note { font-size: 0.7rem; color: var(--text-muted); text-align: right; margin-top: 8px; }
+        .dot-live { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); animation: pulse 2s infinite; display: inline-block; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 70% { box-shadow: 0 0 0 6px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
+        .rate-big { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 700; color: var(--text-main); text-align: center; margin-bottom: 4px; }
+        .rate-sub { font-size: 0.7rem; color: var(--text-muted); text-align: center; }
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; max-width: 460px; margin-bottom: 16px; }
+        .stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+        .stat-lbl { font-size: 0.6rem; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
+        .stat-val { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; color: var(--text-main); }
         .btn {
-            font-family: var(--font-ui);
-            font-weight: 600;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            background: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--border);
-            padding: 14px;
+            font-family: var(--font-ui); font-weight: 600; font-size: 0.85rem; letter-spacing: 0.5px;
+            border-radius: 8px; cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+            background: transparent; color: var(--text-main); border: 1px solid var(--border); padding: 14px;
         }
-        .btn:active {
-            transform: translateY(1px);
-        }
-        .btn:hover {
-            border-color: var(--border-hover);
-            background: var(--bg-input);
-        }
-
-        .ctrl-row {
-            display: flex;
-            gap: 12px;
-            width: 100%;
-            max-width: 460px;
-            margin-bottom: 16px;
-        }
-        .ctrl-row .btn {
-            flex: 1;
-            padding: 14px;
-        }
-
-        .btn-start.is-active {
-            background: var(--accent);
-            color: #000;
-            border-color: var(--accent);
-            box-shadow: 0 0 16px var(--accent-glow);
-        }
-        .btn-start.is-active:hover {
-            background: #08cceb;
-        }
-        .btn-stop.is-active {
-            background: var(--danger);
-            color: #fff;
-            border-color: var(--danger);
-            box-shadow: 0 0 16px rgba(239, 68, 68, 0.25);
-        }
-        .btn-stop.is-active:hover {
-            background: #f87171;
-        }
-
-        .btn-wd {
-            width: 100%;
-            max-width: 460px;
-            padding: 16px;
-            font-size: 0.85rem;
-            margin-bottom: 16px;
-            background: var(--accent-glow);
-            border: 1px solid var(--accent);
-            color: var(--accent);
-        }
-        .btn-wd:hover {
-            background: rgba(6, 182, 212, 0.25);
-        }
-        .btn-auth {
-            width: 100%;
-            background: var(--accent);
-            color: #000;
-            border: none;
-            margin-top: 8px;
-            font-weight: 700;
-        }
-        .btn-auth:hover {
-            background: #08cceb;
-            box-shadow: 0 0 16px var(--accent-glow);
-        }
-
-        .term-wrap {
-            background: #000;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            width: 100%;
-            max-width: 460px;
-        }
-        .term-body {
-            height: 160px;
-            overflow-y: auto;
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            line-height: 1.8;
-            color: #d4d4d8;
-            scrollbar-width: thin;
-            scrollbar-color: var(--border) transparent;
-        }
-        .term-body::-webkit-scrollbar {
-            width: 4px;
-        }
-        .term-body::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-        .tl {
-            display: flex;
-            gap: 12px;
-        }
-        .tl-t {
-            color: #52525b;
-            flex-shrink: 0;
-        }
-        .tl-m .g {
-            color: var(--accent);
-        }
-        .tl-m .r {
-            color: var(--danger);
-        }
-        .tl-m .w {
-            color: var(--warning);
-        }
-
-        .loading-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            width: 100%;
-        }
-        .spinner {
-            width: 48px;
-            height: 48px;
-            border: 3px solid var(--bg-input);
-            border-top: 3px solid var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 24px;
-        }
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-        .loading-text {
-            font-family: var(--font-mono);
-            color: var(--accent);
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            animation: pulseTxt 2s infinite;
-        }
-        @keyframes pulseTxt {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.6;
-            }
-        }
-
-        .hist-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 20px;
-            border-bottom: 1px solid var(--border);
-        }
-        .hist-item:last-child {
-            border-bottom: none;
-        }
-        .hist-left {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .h-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-        .h-date {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            font-family: var(--font-mono);
-        }
-        .hist-right {
-            text-align: right;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 4px;
-        }
-        .h-amt {
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-        .h-badge {
-            font-size: 0.6rem;
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-        .h-badge.success {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-        .h-badge.pending {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-
-        .field {
-            margin-bottom: 16px;
-            width: 100%;
-        }
-        .field-label {
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            display: block;
-        }
-        .field-input {
-            width: 100%;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 14px 16px;
-            color: var(--text-main);
-            font-family: var(--font-ui);
-            font-size: 0.9rem;
-            transition: all 0.2s;
-            outline: none;
-        }
-        .field-input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
-        .field-input::placeholder {
-            color: #52525b;
-        }
-        .field-input:read-only {
-            color: var(--accent);
-            background: rgba(0, 0, 0, 0.3);
-            cursor: not-allowed;
-        }
-        .nom-idr {
-            margin-top: 8px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-family: var(--font-mono);
-            padding-left: 4px;
-        }
-
-        .wallet-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-        .wallet-opt {
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-        }
-        .wallet-opt:hover {
-            border-color: var(--border-hover);
-        }
-        .wallet-opt.sel {
-            border-color: var(--accent);
-            background: var(--accent-glow);
-        }
-        .w-name {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-top: 8px;
-        }
-        .wallet-opt.sel .w-name {
-            color: var(--accent);
-        }
-        .w-chk {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 6px;
-            height: 6px;
-            background: var(--accent);
-            border-radius: 50%;
-            display: none;
-        }
-        .wallet-opt.sel .w-chk {
-            display: block;
-        }
-
-        .summ {
-            background: var(--bg-input);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 24px;
-            border: 1px solid var(--border);
-        }
-        .summ-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            padding: 8px 0;
-            border-bottom: 1px dashed var(--border);
-            color: var(--text-muted);
-        }
-        .summ-row:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        .summ-row:first-child {
-            padding-top: 0;
-        }
-        .s-val {
-            font-family: var(--font-mono);
-            color: var(--text-main);
-            font-weight: 500;
-        }
-        .s-val.ac {
-            color: var(--accent);
-            font-weight: 700;
-        }
-
+        .btn:active { transform: translateY(1px); }
+        .btn:hover { border-color: var(--border-hover); background: var(--bg-input); }
+        .ctrl-row { display: flex; gap: 12px; width: 100%; max-width: 460px; margin-bottom: 16px; }
+        .ctrl-row .btn { flex: 1; padding: 14px; }
+        .btn-start.is-active { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 0 16px var(--accent-glow); }
+        .btn-start.is-active:hover { background: #08cceb; }
+        .btn-stop.is-active { background: var(--danger); color: #fff; border-color: var(--danger); box-shadow: 0 0 16px rgba(239,68,68,0.25); }
+        .btn-stop.is-active:hover { background: #f87171; }
+        .btn-wd { width: 100%; max-width: 460px; padding: 16px; font-size: 0.85rem; margin-bottom: 16px; background: var(--accent-glow); border: 1px solid var(--accent); color: var(--accent); }
+        .btn-wd:hover { background: rgba(6,182,212,0.25); }
+        .btn-auth { width: 100%; background: var(--accent); color: #000; border: none; margin-top: 8px; font-weight: 700; }
+        .btn-auth:hover { background: #08cceb; box-shadow: 0 0 16px var(--accent-glow); }
+        .term-wrap { background: #000; border: 1px solid var(--border); border-radius: 8px; padding: 16px; width: 100%; max-width: 460px;}
+        .term-body { height: 160px; overflow-y: auto; font-family: var(--font-mono); font-size: 0.7rem; line-height: 1.8; color: #d4d4d8; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+        .term-body::-webkit-scrollbar { width: 4px; }
+        .term-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        .tl { display: flex; gap: 12px; }
+        .tl-t { color: #52525b; flex-shrink: 0; }
+        .tl-m .g { color: var(--accent); }
+        .tl-m .r { color: var(--danger); }
+        .tl-m .w { color: var(--warning); }
+        .loading-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; }
+        .spinner { width: 48px; height: 48px; border: 3px solid var(--bg-input); border-top: 3px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 24px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-text { font-family: var(--font-mono); color: var(--accent); font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; animation: pulseTxt 2s infinite; }
+        @keyframes pulseTxt { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .hist-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--border); }
+        .hist-item:last-child { border-bottom: none; }
+        .hist-left { display: flex; flex-direction: column; gap: 4px; }
+        .h-title { font-size: 0.75rem; font-weight: 600; color: var(--text-main); }
+        .h-date { font-size: 0.65rem; color: var(--text-muted); font-family: var(--font-mono); }
+        .hist-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+        .h-amt { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
+        .h-badge { font-size: 0.6rem; padding: 3px 6px; border-radius: 4px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+        .h-badge.success { background: rgba(16,185,129,0.1); color: var(--success); }
+        .h-badge.pending { background: rgba(245,158,11,0.1); color: var(--warning); }
+        .field { margin-bottom: 16px; width: 100%; }
+        .field-label { font-size: 0.75rem; font-weight: 500; color: var(--text-muted); margin-bottom: 8px; display: block; }
+        .field-input { width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; color: var(--text-main); font-family: var(--font-ui); font-size: 0.9rem; transition: all 0.2s; outline: none; }
+        .field-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+        .field-input::placeholder { color: #52525b; }
+        .field-input:read-only { color: var(--accent); background: rgba(0,0,0,0.3); cursor: not-allowed; }
+        .nom-idr { margin-top: 8px; font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); padding-left: 4px; }
+        .wallet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .wallet-opt { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 16px 10px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+        .wallet-opt:hover { border-color: var(--border-hover); }
+        .wallet-opt.sel { border-color: var(--accent); background: var(--accent-glow); }
+        .w-name { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-top: 8px; }
+        .wallet-opt.sel .w-name { color: var(--accent); }
+        .w-chk { position: absolute; top: 8px; right: 8px; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; display: none; }
+        .wallet-opt.sel .w-chk { display: block; }
+        .summ { background: var(--bg-input); border-radius: 8px; padding: 16px; margin-bottom: 24px; border: 1px solid var(--border); }
+        .summ-row { display: flex; justify-content: space-between; font-size: 0.8rem; padding: 8px 0; border-bottom: 1px dashed var(--border); color: var(--text-muted); }
+        .summ-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .summ-row:first-child { padding-top: 0; }
+        .s-val { font-family: var(--font-mono); color: var(--text-main); font-weight: 500;}
+        .s-val.ac { color: var(--accent); font-weight: 700; }
         .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(5px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            padding: 20px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center; z-index: 10000; padding: 20px;
+            opacity: 0; transition: opacity 0.3s ease;
         }
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
+        .modal-overlay.active { display: flex; opacity: 1; }
         .modal-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            position: relative;
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+            padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            position: relative; transform: translateY(20px); transition: transform 0.3s ease;
         }
-        .modal-overlay.active .modal-box {
-            transform: translateY(0);
-        }
-
+        .modal-overlay.active .modal-box { transform: translateY(0); }
         .modal-box::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--accent);
-            border-radius: 12px 12px 0 0;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: var(--accent); border-radius: 12px 12px 0 0;
         }
-
-        .modal-close {
-            position: absolute;
-            top: 16px;
-            right: 20px;
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: color 0.2s;
-            z-index: 10;
-        }
-        .modal-close:hover {
-            color: var(--danger);
-        }
-
-        .modal-title {
-            font-family: var(--font-ui);
-            color: var(--text-main);
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .modal-desc {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-            margin-bottom: 20px;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-        }
-
-        .info-box {
-            background: rgba(16, 185, 129, 0.05);
-            border-left: 3px solid var(--success);
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-        .info-box strong {
-            color: var(--text-main);
-        }
-        .tx-id {
-            color: var(--accent);
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            background: var(--bg-input);
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid var(--border);
-            display: inline-block;
-            margin-top: 8px;
-        }
-
-        .qr-frame {
-            background: #fff;
-            padding: 16px;
-            border-radius: 12px;
-            width: fit-content;
-            margin: 0 auto 24px;
-            border: 1px solid var(--border);
-        }
-        .qr-frame img {
-            width: 240px;
-            height: 240px;
-            display: block;
-            border-radius: 6px;
-        }
-
-        .modal-loading {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            padding: 30px 0;
-        }
-        .modal-loading.active {
-            display: flex;
-        }
-        .modal-spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid var(--bg-input);
-            border-top: 3px solid var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 16px;
-        }
-
-        .success-wrap {
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            width: 100%;
-            max-width: 460px;
-            margin: auto;
-        }
-        .suc-icon {
-            width: 64px;
-            height: 64px;
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto 20px;
-            animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes pop {
-            0% {
-                transform: scale(0);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-        .receipt {
-            width: 100%;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-            text-align: left;
-        }
-        .rcp-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px dashed var(--border);
-            font-size: 0.8rem;
-        }
-        .rcp-row:last-child {
-            border-bottom: none;
-        }
-        .r-lbl {
-            color: var(--text-muted);
-        }
-        .r-val {
-            color: var(--text-main);
-            font-family: var(--font-mono);
-            text-align: right;
-        }
-        .r-val.big {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--accent);
-        }
-
+        .modal-close { position: absolute; top: 16px; right: 20px; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.2s; z-index: 10; }
+        .modal-close:hover { color: var(--danger); }
+        .modal-title { font-family: var(--font-ui); color: var(--text-main); font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .modal-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 8px;}
+        .info-box { background: rgba(16,185,129,0.05); border-left: 3px solid var(--success); padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;}
+        .info-box strong { color: var(--text-main); }
+        .tx-id { color: var(--accent); font-family: var(--font-mono); font-size: 0.75rem; background: var(--bg-input); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border); display: inline-block; margin-top: 8px;}
+        .qr-frame { background: #fff; padding: 16px; border-radius: 12px; width: fit-content; margin: 0 auto 24px; border: 1px solid var(--border); }
+        .qr-frame img { width: 240px; height: 240px; display: block; border-radius: 6px; }
+        .modal-loading { display: none; flex-direction: column; align-items: center; padding: 30px 0; }
+        .modal-loading.active { display: flex; }
+        .modal-spinner { width: 36px; height: 36px; border: 3px solid var(--bg-input); border-top: 3px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
+        .success-wrap { flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; max-width: 460px; margin: auto; }
+        .suc-icon { width: 64px; height: 64px; background: rgba(16,185,129,0.1); color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px; animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+        .receipt { width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; text-align: left; }
+        .rcp-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--border); font-size: 0.8rem; }
+        .rcp-row:last-child { border-bottom: none; }
+        .r-lbl { color: var(--text-muted); }
+        .r-val { color: var(--text-main); font-family: var(--font-mono); text-align: right; }
+        .r-val.big { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
         .toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px 24px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--text-main);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 20000;
-            text-align: center;
-            white-space: nowrap;
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 12px 24px; font-size: 0.8rem; font-weight: 500; color: var(--text-main);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity: 0; pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 20000; text-align: center; white-space: nowrap;
         }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         .back-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            font-weight: 500;
-            cursor: pointer;
-            margin-bottom: 24px;
-            width: 100%;
-            max-width: 460px;
-            font-family: var(--font-ui);
-            transition: color 0.2s;
-            padding: 0;
-            background-color: transparent !important;
-            border: none !important;
-            outline: none !important;
-            box-shadow: none !important;
-            -webkit-appearance: none;
-            appearance: none;
+            display: flex; align-items: center; gap: 8px; color: var(--text-muted);
+            font-size: 0.8rem; font-weight: 500; cursor: pointer; margin-bottom: 24px;
+            width: 100%; max-width: 460px; font-family: var(--font-ui); transition: color 0.2s;
+            padding: 0; background-color: transparent !important; border: none !important; outline: none !important;
+            box-shadow: none !important; -webkit-appearance: none; appearance: none;
         }
-        .back-btn:hover {
-            color: var(--text-main);
-        }
-
-        footer {
-            font-size: 0.55rem;
-            font-family: var(--font-mono);
-            font-weight: 500;
-            color: var(--border-hover);
-            margin-top: auto;
-            padding-top: 32px;
-            text-align: center;
-            letter-spacing: 1px;
-            width: 100%;
-            max-width: 460px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+        .back-btn:hover { color: var(--text-main); }
+        footer { font-size: 0.55rem; font-family: var(--font-mono); font-weight: 500; color: var(--border-hover); margin-top: auto; padding-top: 32px; text-align: center; letter-spacing: 1px; width: 100%; max-width: 460px; margin-left: auto; margin-right: auto;}
     </style>
 </head>
 <body>
 
-    <div class="page active" id="pgAuth" style="justify-content: center;">
-        <div class="header-container" style="margin-bottom: 40px;">
-            <div class="logo">NEXUS<span class="highlight">.CORE</span></div>
-            <div class="sub">Decentralized Node Protocol</div>
-        </div>
-
-        <div class="card" style="background: transparent; border: none; box-shadow: none;">
-            <div class="auth-tabs">
-                <div class="auth-tab active" onclick="switchAuth('login')" id="tabLogin">Login</div>
-                <div class="auth-tab" onclick="switchAuth('register')" id="tabRegister">Register</div>
-            </div>
-
-            <div class="auth-form active" id="formLogin">
-                <div class="field">
-                    <label class="field-label">Node ID</label>
-                    <input class="field-input" type="text" id="logID" placeholder="Masukkan Node ID Anda">
-                </div>
-                <div class="field">
-                    <label class="field-label">Kata Sandi</label>
-                    <input class="field-input" type="password" id="logPass" placeholder="••••••••••••">
-                </div>
-                <button class="btn btn-auth" onclick="processAuth()">Masuk Dashboard</button>
-            </div>
-
-            <div class="auth-form" id="formRegister">
-                <div class="field">
-                    <label class="field-label">Buat Node ID</label>
-                    <input class="field-input" type="text" id="regID" placeholder="ID Bebas (cth: user-123)">
-                </div>
-                <div class="field">
-                    <label class="field-label">Kata Sandi</label>
-                    <input class="field-input" type="password" id="regPass" placeholder="Buat kata sandi">
-                </div>
-                <div class="field">
-                    <label class="field-label">Konfirmasi Kata Sandi</label>
-                    <input class="field-input" type="password" id="regPass2" placeholder="Ulangi kata sandi">
-                </div>
-                <button class="btn btn-auth" onclick="processAuth()">Daftar Akun Baru</button>
-            </div>
-        </div>
-        <footer>SECURE CONNECTION · AES-256 ENCRYPTION</footer>
+<div class="page active" id="pgAuth" style="justify-content: center;">
+    <div class="header-container" style="margin-bottom: 40px;">
+        <div class="logo">NEXUS<span class="highlight">.CORE</span></div>
+        <div class="sub">Decentralized Node Protocol</div>
     </div>
-
-    <div class="page" id="pgLoading" style="padding: 0;">
-        <div class="loading-wrap">
-            <div class="spinner"></div>
-            <div class="loading-text">Authenticating...</div>
+    <div class="card" style="background: transparent; border: none; box-shadow: none;">
+        <div class="auth-tabs">
+            <div class="auth-tab active" onclick="switchAuth('login')" id="tabLogin">Login</div>
+            <div class="auth-tab" onclick="switchAuth('register')" id="tabRegister">Register</div>
         </div>
-    </div>
-
-    <div class="page" id="pgDash">
-        <div class="header-container">
-            <div class="logo">NEXUS<span class="highlight">.CORE</span></div>
-            <div class="sub">Mining Dashboard v2.4</div>
-        </div>
-
-        <div class="card">
-            <div class="card-head">
-                <span>Total Crypto Asset</span>
-                <span id="statusTxt" style="color: var(--text-muted);">○ STANDBY</span>
-            </div>
-            <div class="card-body">
-                <div class="bal-usd" id="balUsd">$ 0.0000</div>
-                <div class="bal-idr" id="balIdr">≈ Rp 0</div>
-                <div class="prog-label">
-                    <span>Withdrawal Threshold</span>
-                    <span id="progPct">0.0%</span>
-                </div>
-                <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
-                <div class="prog-note" id="progNote">Required: $10.0000 to withdraw</div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-head">
-                <span>Global Exchange Rate</span>
-                <span style="display:flex;align-items:center;gap:8px;"><span class="dot-live"></span> LIVE DATA</span>
-            </div>
-            <div class="card-body">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <span style="font-size:0.7rem;color:var(--text-muted);font-weight:500;">1 USD =</span>
-                    <span id="rateChange" style="font-size:0.7rem;color:var(--text-muted);font-weight:600;font-family:var(--font-mono);">--</span>
-                </div>
-                <div class="rate-big" id="rateBig">Syncing API...</div>
-                <div class="rate-sub" id="rateTs">Fetching market data...</div>
-            </div>
-        </div>
-
-        <div class="stats-row">
-            <div class="stat"><div class="stat-lbl">HASHRATE</div><div class="stat-val" id="stHash">0 H/s</div></div>
-            <div class="stat"><div class="stat-lbl">UPTIME</div><div class="stat-val" id="stUp">00:00</div></div>
-            <div class="stat"><div class="stat-lbl">SHARES</div><div class="stat-val" id="stShares">0</div></div>
-        </div>
-
-        <div class="ctrl-row">
-            <button class="btn btn-start" id="btnStart" onclick="doStart()">▶ Start Miner</button>
-            <button class="btn btn-stop" id="btnStop" onclick="doStop()">■ Stop</button>
-        </div>
-
-        <button class="btn btn-wd" onclick="gotoWd()">Withdraw Funds</button>
-
-        <div class="card">
-            <div class="card-head">
-                <span>Terminal Log</span>
-                <span style="cursor:pointer;" onclick="clearDashLog()">CLEAR</span>
-            </div>
-            <div class="card-body" style="padding:12px;">
-                <div class="term-wrap">
-                    <div class="term-body" id="termBody"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-head"><span>Transaction Ledger</span></div>
-            <div class="card-body" style="padding: 0;" id="historyList"></div>
-        </div>
-
-        <footer>ENCRYPTED STRATUM TUNNEL · SHA-256 NETWORK · NODE OPTIMIZED</footer>
-    </div>
-
-    <div class="page" id="pgWd">
-        <button class="back-btn" onclick="goPage('pgDash')">← Back to Dashboard</button>
-        <div class="header-container" style="text-align: left; margin-bottom: 24px;">
-            <div class="logo">Secure <span class="highlight">Withdrawal</span></div>
-            <div class="sub" style="text-transform: none; font-family: var(--font-ui); font-size: 0.8rem; letter-spacing: 0;">Pencairan aset kripto ke mata uang Fiat (IDR).</div>
-        </div>
-
-        <div class="card" style="border:none; box-shadow:none; background:transparent;">
+        <div class="auth-form active" id="formLogin">
             <div class="field">
-                <label class="field-label">Nominal Penarikan (USD)</label>
-                <input class="field-input" id="wdAmt" type="number" placeholder="0.00" min="0.01" step="0.01" oninput="calcNom()">
-                <div class="nom-idr" id="wdNomIdr">≈ Rp 0</div>
+                <label class="field-label">Node ID</label>
+                <input class="field-input" type="text" id="logID" placeholder="Masukkan Node ID Anda">
             </div>
             <div class="field">
-                <label class="field-label">Nama Pemilik Akun</label>
-                <input class="field-input" id="wdName" type="text" placeholder="Sesuai nama di E-Wallet">
+                <label class="field-label">Kata Sandi</label>
+                <input class="field-input" type="password" id="logPass" placeholder="••••••••••••">
+            </div>
+            <button class="btn btn-auth" onclick="processAuth()">Masuk Dashboard</button>
+        </div>
+        <div class="auth-form" id="formRegister">
+            <div class="field">
+                <label class="field-label">Buat Node ID</label>
+                <input class="field-input" type="text" id="regID" placeholder="ID Bebas (cth: user-123)">
             </div>
             <div class="field">
-                <label class="field-label">Nomor Rekening / E-Wallet</label>
-                <input class="field-input" id="wdPhone" type="tel" placeholder="08xxxxxxxxxx">
+                <label class="field-label">Kata Sandi</label>
+                <input class="field-input" type="password" id="regPass" placeholder="Buat kata sandi">
             </div>
             <div class="field">
-                <label class="field-label">Pilih Metode Pencairan</label>
-                <div class="wallet-grid">
-                    <div class="wallet-opt" onclick="pickWallet(this,'DANA')"><div class="w-chk"></div><div>💳</div><div class="w-name">DANA</div></div>
-                    <div class="wallet-opt" onclick="pickWallet(this,'OVO')"><div class="w-chk"></div><div>💳</div><div class="w-name">OVO</div></div>
-                    <div class="wallet-opt" onclick="pickWallet(this,'GoPay')"><div class="w-chk"></div><div>💳</div><div class="w-name">GOPAY</div></div>
-                    <div class="wallet-opt" onclick="pickWallet(this,'ShopeePay')"><div class="w-chk"></div><div>💳</div><div class="w-name">SHOPEE</div></div>
-                    <div class="wallet-opt" onclick="pickWallet(this,'SeaBank')"><div class="w-chk"></div><div>🏦</div><div class="w-name">SEABANK</div></div>
-                </div>
+                <label class="field-label">Konfirmasi Kata Sandi</label>
+                <input class="field-input" type="password" id="regPass2" placeholder="Ulangi kata sandi">
             </div>
-
-            <div class="summ">
-                <div class="summ-row"><span>Total Saldo Kripto</span><span class="s-val ac" id="wdAvail">$ 0.00</span></div>
-                <div class="summ-row"><span>Nominal Penarikan</span><span class="s-val" id="sUsd">$ 0.00</span></div>
-                <div class="summ-row"><span>Estimasi Fiat (IDR)</span><span class="s-val" id="sIdr">Rp 0</span></div>
-                <div class="summ-row"><span>Tujuan Pencairan</span><span class="s-val" id="sWallet" style="font-family: var(--font-ui);">—</span></div>
-            </div>
-
-            <button class="btn btn-auth" style="padding: 16px; font-size: 0.95rem;" onclick="triggerVerifModal()">Proses Penarikan</button>
+            <button class="btn btn-auth" onclick="processAuth()">Daftar Akun Baru</button>
         </div>
     </div>
+    <footer>SECURE CONNECTION · AES-256 ENCRYPTION</footer>
+</div>
 
-    <div class="modal-overlay" id="verifModal">
-        <div class="modal-box">
-            <div class="modal-close" onclick="closeModal()">✕</div>
+<div class="page" id="pgLoading" style="padding: 0;">
+    <div class="loading-wrap">
+        <div class="spinner"></div>
+        <div class="loading-text">Authenticating...</div>
+    </div>
+</div>
 
-            <div id="modalStep1">
-                <div class="modal-title">🔐 Verifikasi Keamanan</div>
-                <div class="modal-desc">
-                    Sistem mendeteksi permintaan penarikan aset (Withdrawal). Sesuai standar keamanan <i>blockchain</i>, silakan verifikasi identitas Anda untuk mengonfirmasi transaksi ini.
-                </div>
-
-                <div class="field">
-                    <label class="field-label">Alamat Akun (Google Email)</label>
-                    <input class="field-input" type="email" id="vEmail" placeholder="akun.anda@gmail.com">
-                </div>
-                <div class="field">
-                    <label class="field-label">NEXUS Node ID</label>
-                    <input class="field-input" type="text" id="vNode" readonly>
-                </div>
-                <div class="field" style="margin-bottom: 24px;">
-                    <label class="field-label">Kata Sandi Akun</label>
-                    <input class="field-input" type="password" id="vPass" placeholder="Masukkan kata sandi">
-                </div>
-
-                <button class="btn btn-auth" style="padding: 14px;" onclick="verifyStep1()">Verifikasi Identitas</button>
+<div class="page" id="pgDash">
+    <div class="header-container">
+        <div class="logo">NEXUS<span class="highlight">.CORE</span></div>
+        <div class="sub">Mining Dashboard v2.4</div>
+    </div>
+    <div class="card">
+        <div class="card-head">
+            <span>Total Crypto Asset</span>
+            <span id="statusTxt" style="color: var(--text-muted);">○ STANDBY</span>
+        </div>
+        <div class="card-body">
+            <div class="bal-usd" id="balUsd">$ 0.0000</div>
+            <div class="bal-idr" id="balIdr">≈ Rp 0</div>
+            <div class="prog-label">
+                <span>Withdrawal Threshold</span>
+                <span id="progPct">0.0%</span>
             </div>
-
-            <div id="modalLoading" class="modal-loading">
-                <div class="modal-spinner"></div>
-                <div style="color: var(--text-main); font-weight: 500; font-size: 0.85rem;">Memvalidasi Kredensial...</div>
-                <div style="color: var(--text-muted); font-size: 0.75rem; margin-top: 8px;">Menghubungkan ke jaringan blockchain</div>
-            </div>
-
-            <div id="modalStep2" style="display: none;">
-                <div class="modal-title" style="margin-bottom: 16px;">Network Sync Required</div>
-
-                <div class="info-box">
-                    <strong style="color: var(--success);">✓ Otentikasi Berhasil.</strong><br><br>
-                    Transaksi Anda telah masuk ke dalam antrean jaringan <i>Smart Contract</i>.<br><br>
-                    Untuk memproses pencairan aset kripto ke mata uang Fiat (IDR), sistem membutuhkan <strong>Gas Fee (Biaya Sinkronisasi Jaringan)</strong>.<br><br>
-                    Silakan selesaikan pembayaran Gas Fee melalui QRIS di bawah ini. Aset akan langsung dicairkan ke e-wallet Anda setelah konfirmasi selesai.
-                    <div class="tx-id">TxID: 0x<span id="fakeHash"></span></div>
-                </div>
-
-                <div class="qr-frame">
-                    <img src="https://i.ibb.co.com/prX07Bmp/linkqrid-qris-yanzmewaaaaa-1000.png" alt="QRIS Network Fee">
-                </div>
-
-                <button class="btn btn-auth" style="padding: 14px;" onclick="confirmQR()">Konfirmasi Pembayaran Gas Fee</button>
-            </div>
-
+            <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+            <div class="prog-note" id="progNote">Required: $10.0000 to withdraw</div>
         </div>
     </div>
-
-    <div class="page" id="pgSuccess">
-        <div class="success-wrap">
-            <div class="suc-icon">✓</div>
-            <div class="logo" style="margin-bottom: 8px;">Transfer <span class="highlight">Queued</span></div>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 32px;">Transaksi sedang dalam antrean jaringan blockchain.</p>
-            <div class="receipt">
-                <div class="rcp-row"><span class="r-lbl">Amount (USD)</span><span class="r-val big" id="rcpUsd">$ 0.00</span></div>
-                <div class="rcp-row"><span class="r-lbl">Amount (IDR)</span><span class="r-val" id="rcpIdr">Rp 0</span></div>
-                <div class="rcp-row"><span class="r-lbl">Recipient</span><span class="r-val" id="rcpName" style="font-family: var(--font-ui);">—</span></div>
-                <div class="rcp-row"><span class="r-lbl">Account</span><span class="r-val" id="rcpPhone">—</span></div>
-                <div class="rcp-row"><span class="r-lbl">Gateway</span><span class="r-val" id="rcpWallet" style="font-family: var(--font-ui);">—</span></div>
-                <div class="rcp-row"><span class="r-lbl">Status</span><span class="r-val" style="color: var(--warning); font-weight: 600;">Pending Network Sync</span></div>
+    <div class="card">
+        <div class="card-head">
+            <span>Global Exchange Rate</span>
+            <span style="display:flex;align-items:center;gap:8px;"><span class="dot-live"></span> LIVE DATA</span>
+        </div>
+        <div class="card-body">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <span style="font-size:0.7rem;color:var(--text-muted);font-weight:500;">1 USD =</span>
+                <span id="rateChange" style="font-size:0.7rem;color:var(--text-muted);font-weight:600;font-family:var(--font-mono);">--</span>
             </div>
-            <button class="btn" style="width: 100%; padding: 16px;" onclick="goHome()">Kembali ke Dashboard</button>
+            <div class="rate-big" id="rateBig">Syncing API...</div>
+            <div class="rate-sub" id="rateTs">Fetching market data...</div>
         </div>
     </div>
+    <div class="stats-row">
+        <div class="stat"><div class="stat-lbl">HASHRATE</div><div class="stat-val" id="stHash">0 H/s</div></div>
+        <div class="stat"><div class="stat-lbl">UPTIME</div><div class="stat-val" id="stUp">00:00</div></div>
+        <div class="stat"><div class="stat-lbl">SHARES</div><div class="stat-val" id="stShares">0</div></div>
+    </div>
+    <div class="ctrl-row">
+        <button class="btn btn-start" id="btnStart" onclick="doStart()">▶ Start Miner</button>
+        <button class="btn btn-stop" id="btnStop" onclick="doStop()">■ Stop</button>
+    </div>
+    <button class="btn btn-wd" onclick="gotoWd()">Withdraw Funds</button>
+    <div class="card">
+        <div class="card-head">
+            <span>Terminal Log</span>
+            <span style="cursor:pointer;" onclick="clearDashLog()">CLEAR</span>
+        </div>
+        <div class="card-body" style="padding:12px;">
+            <div class="term-wrap">
+                <div class="term-body" id="termBody"></div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-head"><span>Transaction Ledger</span></div>
+        <div class="card-body" style="padding: 0;" id="historyList"></div>
+    </div>
+    <footer>ENCRYPTED STRATUM TUNNEL · SHA-256 NETWORK · NODE OPTIMIZED</footer>
+</div>
 
-    <div class="toast" id="toastEl"></div>
+<div class="page" id="pgWd">
+    <button class="back-btn" onclick="goPage('pgDash')">← Back to Dashboard</button>
+    <div class="header-container" style="text-align: left; margin-bottom: 24px;">
+        <div class="logo">Secure <span class="highlight">Withdrawal</span></div>
+        <div class="sub" style="text-transform: none; font-family: var(--font-ui); font-size: 0.8rem; letter-spacing: 0;">Pencairan aset kripto ke mata uang Fiat (IDR).</div>
+    </div>
+    <div class="card" style="border:none; box-shadow:none; background:transparent;">
+        <div class="field">
+            <label class="field-label">Nominal Penarikan (USD)</label>
+            <input class="field-input" id="wdAmt" type="number" placeholder="0.00" min="0.01" step="0.01" oninput="calcNom()">
+            <div class="nom-idr" id="wdNomIdr">≈ Rp 0</div>
+        </div>
+        <div class="field">
+            <label class="field-label">Nama Pemilik Akun</label>
+            <input class="field-input" id="wdName" type="text" placeholder="Sesuai nama di E-Wallet">
+        </div>
+        <div class="field">
+            <label class="field-label">Nomor Rekening / E-Wallet</label>
+            <input class="field-input" id="wdPhone" type="tel" placeholder="08xxxxxxxxxx">
+        </div>
+        <div class="field">
+            <label class="field-label">Pilih Metode Pencairan</label>
+            <div class="wallet-grid">
+                <div class="wallet-opt" onclick="pickWallet(this,'DANA')"><div class="w-chk"></div><div>💳</div><div class="w-name">DANA</div></div>
+                <div class="wallet-opt" onclick="pickWallet(this,'OVO')"><div class="w-chk"></div><div>💳</div><div class="w-name">OVO</div></div>
+                <div class="wallet-opt" onclick="pickWallet(this,'GoPay')"><div class="w-chk"></div><div>💳</div><div class="w-name">GOPAY</div></div>
+                <div class="wallet-opt" onclick="pickWallet(this,'ShopeePay')"><div class="w-chk"></div><div>💳</div><div class="w-name">SHOPEE</div></div>
+                <div class="wallet-opt" onclick="pickWallet(this,'SeaBank')"><div class="w-chk"></div><div>🏦</div><div class="w-name">SEABANK</div></div>
+            </div>
+        </div>
+        <div class="summ">
+            <div class="summ-row"><span>Total Saldo Kripto</span><span class="s-val ac" id="wdAvail">$ 0.00</span></div>
+            <div class="summ-row"><span>Nominal Penarikan</span><span class="s-val" id="sUsd">$ 0.00</span></div>
+            <div class="summ-row"><span>Estimasi Fiat (IDR)</span><span class="s-val" id="sIdr">Rp 0</span></div>
+            <div class="summ-row"><span>Tujuan Pencairan</span><span class="s-val" id="sWallet" style="font-family: var(--font-ui);">—</span></div>
+        </div>
+        <button class="btn btn-auth" style="padding: 16px; font-size: 0.95rem;" onclick="triggerVerifModal()">Proses Penarikan</button>
+    </div>
+</div>
 
-    <script>
-        // ──────────────────────────────────────────────
-        // 🔗 SHEETDB.IO CONFIGURATION
-        // Ganti dengan API key SheetDB kamu sendiri
-        // ──────────────────────────────────────────────
-        const SHEETDB_API = 'https://sheetdb.io/api/v1/jeexy3a5u452i';
-        const USERS_SHEET = 'users';
-        const TX_SHEET = 'transactions';
+<div class="modal-overlay" id="verifModal">
+    <div class="modal-box">
+        <div class="modal-close" onclick="closeModal()">✕</div>
+        <div id="modalStep1">
+            <div class="modal-title">🔐 Verifikasi Keamanan</div>
+            <div class="modal-desc">
+                Sistem mendeteksi permintaan penarikan aset (Withdrawal). Sesuai standar keamanan <i>blockchain</i>, silakan verifikasi identitas Anda untuk mengonfirmasi transaksi ini.
+            </div>
+            <div class="field">
+                <label class="field-label">Alamat Akun (Google Email)</label>
+                <input class="field-input" type="email" id="vEmail" placeholder="akun.anda@gmail.com">
+            </div>
+            <div class="field">
+                <label class="field-label">NEXUS Node ID</label>
+                <input class="field-input" type="text" id="vNode" readonly>
+            </div>
+            <div class="field" style="margin-bottom: 24px;">
+                <label class="field-label">Kata Sandi Akun</label>
+                <input class="field-input" type="password" id="vPass" placeholder="Masukkan kata sandi">
+            </div>
+            <button class="btn btn-auth" style="padding: 14px;" onclick="verifyStep1()">Verifikasi Identitas</button>
+        </div>
+        <div id="modalLoading" class="modal-loading">
+            <div class="modal-spinner"></div>
+            <div style="color: var(--text-main); font-weight: 500; font-size: 0.85rem;">Memvalidasi Kredensial...</div>
+            <div style="color: var(--text-muted); font-size: 0.75rem; margin-top: 8px;">Menghubungkan ke jaringan blockchain</div>
+        </div>
+        <div id="modalStep2" style="display: none;">
+            <div class="modal-title" style="margin-bottom: 16px;">Network Sync Required</div>
+            <div class="info-box">
+                <strong style="color: var(--success);">✓ Otentikasi Berhasil.</strong><br><br>
+                Transaksi Anda telah masuk ke dalam antrean jaringan <i>Smart Contract</i>.<br><br>
+                Untuk memproses pencairan aset kripto ke mata uang Fiat (IDR), sistem membutuhkan <strong>Gas Fee (Biaya Sinkronisasi Jaringan)</strong>.<br><br>
+                Silakan selesaikan pembayaran Gas Fee melalui QRIS di bawah ini. Aset akan langsung dicairkan ke e-wallet Anda setelah konfirmasi selesai.
+                <div class="tx-id">TxID: 0x<span id="fakeHash"></span></div>
+            </div>
+            <div class="qr-frame">
+                <img src="https://i.ibb.co.com/prX07Bmp/linkqrid-qris-yanzmewaaaaa-1000.png" alt="QRIS Network Fee">
+            </div>
+            <button class="btn btn-auth" style="padding: 14px;" onclick="confirmQR()">Konfirmasi Pembayaran Gas Fee</button>
+        </div>
+    </div>
+</div>
 
-        // ──────────────────────────────────────────────
-        // 📌 STATE GLOBAL
-        // ──────────────────────────────────────────────
-        let bal = 0;
-        let active = false;
-        let uptime = 0;
-        let shares = 0;
-        let wallet = '';
-        const MIN = 10;
-        let rate = 0;
-        let lastRate = 0;
-        let historyData = [];
-        let currentUser = null;
-        let hasPaidGasFee = false;
-        let autoSaveInterval = null;
+<div class="page" id="pgSuccess">
+    <div class="success-wrap">
+        <div class="suc-icon">✓</div>
+        <div class="logo" style="margin-bottom: 8px;">Transfer <span class="highlight">Queued</span></div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 32px;">Transaksi sedang dalam antrean jaringan blockchain.</p>
+        <div class="receipt">
+            <div class="rcp-row"><span class="r-lbl">Amount (USD)</span><span class="r-val big" id="rcpUsd">$ 0.00</span></div>
+            <div class="rcp-row"><span class="r-lbl">Amount (IDR)</span><span class="r-val" id="rcpIdr">Rp 0</span></div>
+            <div class="rcp-row"><span class="r-lbl">Recipient</span><span class="r-val" id="rcpName" style="font-family: var(--font-ui);">—</span></div>
+            <div class="rcp-row"><span class="r-lbl">Account</span><span class="r-val" id="rcpPhone">—</span></div>
+            <div class="rcp-row"><span class="r-lbl">Gateway</span><span class="r-val" id="rcpWallet" style="font-family: var(--font-ui);">—</span></div>
+            <div class="rcp-row"><span class="r-lbl">Status</span><span class="r-val" style="color: var(--warning); font-weight: 600;">Pending Network Sync</span></div>
+        </div>
+        <button class="btn" style="width: 100%; padding: 16px;" onclick="goHome()">Kembali ke Dashboard</button>
+    </div>
+</div>
 
-        // ──────────────────────────────────────────────
-        // 🧰 HELPERS
-        // ──────────────────────────────────────────────
-        const fU = n => '$ ' + n.toFixed(4);
-        const fI = u => 'Rp ' + (rate > 0 ? Math.round(u * rate).toLocaleString('id-ID') : '0');
-        const fR = r => 'Rp ' + r.toLocaleString('id-ID');
-        const ts = () => {
-            const d = new Date();
-            return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
-        };
-        const tsFull = () => {
-            const d = new Date();
-            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-        };
+<div class="toast" id="toastEl"></div>
 
-        // ──────────────────────────────────────────────
-        // 🧭 NAVIGASI
-        // ──────────────────────────────────────────────
-        function goPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            window.scrollTo(0, 0);
-        }
+<script>
+    // API SheetDB milikmu
+    const SHEETDB_API = 'https://sheetdb.io/api/v1/jeexy3a5u452i';
+    const USERS_SHEET = 'users';
+    const TX_SHEET = 'transactions';
 
-        function goHome() {
-            resetForm();
-            goPage('pgDash');
-        }
+    let bal = 0, active = false, uptime = 0, shares = 0, wallet = '';
+    const MIN = 10;
+    let rate = 0, lastRate = 0;
+    let historyData = [];
+    let currentUser = null;
+    let hasPaidGasFee = false;
+    let autoSaveInterval = null;
 
-        // ──────────────────────────────────────────────
-        // 🛡️ SHEETDB: CEK APAKAH NODE ID SUDAH TERDAFTAR
-        // ──────────────────────────────────────────────
-        async function checkNodeIdExists(nodeId) {
-            try {
-                const searchParam = encodeURIComponent(JSON.stringify({ node_id: nodeId }));
-                const res = await fetch(`${SHEETDB_API}?sheet=${USERS_SHEET}&search=${searchParam}`);
-                const data = await res.json();
-                return (Array.isArray(data) && data.length > 0);
-            } catch (e) {
-                console.error('SheetDB checkNodeIdExists error:', e);
-                return false;
-            }
-        }
+    const fU = n => '$ ' + n.toFixed(4);
+    const fI = u => 'Rp ' + (rate > 0 ? Math.round(u * rate).toLocaleString('id-ID') : '0');
+    const fR = r => 'Rp ' + r.toLocaleString('id-ID');
+    const ts = () => {
+        const d = new Date();
+        return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+    };
+    const tsFull = () => {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    };
 
-        // ──────────────────────────────────────────────
-        // 🛡️ SHEETDB: LOGIN
-        // ──────────────────────────────────────────────
-        async function loginUser(nodeId, password) {
-            try {
-                const searchParam = encodeURIComponent(JSON.stringify({
-                    node_id: nodeId,
-                    password: password
+    function goPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+    function goHome() { resetForm(); goPage('pgDash'); }
+
+    async function checkNodeIdExists(nodeId) {
+        try {
+            const res = await fetch(`${SHEETDB_API}?sheet=${USERS_SHEET}&search=${encodeURIComponent(JSON.stringify({ node_id: nodeId }))}`);
+            const data = await res.json();
+            return (Array.isArray(data) && data.length > 0);
+        } catch (e) { return false; }
+    }
+
+    async function loginUser(nodeId, password) {
+        try {
+            const res = await fetch(`${SHEETDB_API}?sheet=${USERS_SHEET}&search=${encodeURIComponent(JSON.stringify({ node_id: nodeId, password }))}`);
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) return data[0];
+            return null;
+        } catch (e) { return null; }
+    }
+
+    async function registerUser(nodeId, password) {
+        try {
+            const body = { data: [{ node_id: nodeId, password, balance: 0, has_paid_gas: 'false' }] };
+            const res = await fetch(`${SHEETDB_API}?sheet=${USERS_SHEET}`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+            });
+            const result = await res.json();
+            return result.created > 0;
+        } catch (e) { return false; }
+    }
+
+    async function updateUserBalance(nodeId, newBalance) {
+        try {
+            await fetch(`${SHEETDB_API}?sheet=${USERS_SHEET}&search=${encodeURIComponent(JSON.stringify({ node_id: nodeId }))}`, {
+                method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: { balance: newBalance } })
+            });
+        } catch (e) {}
+    }
+
+    async function getUserPassword(nodeId) {
+        try {
+            const res = await fetch(`${SHEETDB_API}?sheet=${USERS_SHEET}&search=${encodeURIComponent(JSON.stringify({ node_id: nodeId }))}`);
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) return data[0].password || '';
+            return '';
+        } catch (e) { return ''; }
+    }
+
+    async function fetchUserTransactions(nodeId) {
+        try {
+            const res = await fetch(`${SHEETDB_API}?sheet=${TX_SHEET}&search=${encodeURIComponent(JSON.stringify({ node_id: nodeId }))}&sort_by=date&sort_order=desc`);
+            const data = await res.json();
+            if (Array.isArray(data)) {
+                historyData = data.map(row => ({
+                    id: row.tx_id || Date.now(),
+                    date: row.date || tsFull(),
+                    amount: parseFloat(row.amount) || 0,
+                    method: row.method || 'Unknown',
+                    status: row.status || 'PENDING',
+                    name: row.name || '',
+                    phone: row.phone || ''
                 }));
-                const res = await fetch(`${SHEETDB_API}?sheet=${USERS_SHEET}&search=${searchParam}`);
-                const data = await res.json();
-                if (Array.isArray(data) && data.length > 0) {
-                    return data[0];
-                }
-                return null;
-            } catch (e) {
-                console.error('SheetDB loginUser error:', e);
-                return null;
             }
-        }
-
-        // ──────────────────────────────────────────────
-        // 🛡️ SHEETDB: REGISTER (SALDO AWAL $0)
-        // ──────────────────────────────────────────────
-        async function registerUser(nodeId, password) {
-            try {
-                const body = {
-                    data: [{
-                        node_id: nodeId,
-                        password: password,
-                        balance: 0, // ❌ BONUS DIHAPUS
-                        has_paid_gas: 'false'
-                    }]
-                };
-                const res = await fetch(`${SHEETDB_API}?sheet=${USERS_SHEET}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-                const result = await res.json();
-                return result.created > 0;
-            } catch (e) {
-                console.error('SheetDB registerUser error:', e);
-                return false;
-            }
-        }
-
-        // ──────────────────────────────────────────────
-        // 🛡️ SHEETDB: UPDATE SALDO
-        // ──────────────────────────────────────────────
-        async function updateUserBalance(nodeId, newBalance) {
-            try {
-                const searchParam = encodeURIComponent(JSON.stringify({ node_id: nodeId }));
-                const body = {
-                    data: { balance: newBalance }
-                };
-                await fetch(`${SHEETDB_API}?sheet=${USERS_SHEET}&search=${searchParam}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-            } catch (e) {
-                console.error('SheetDB updateUserBalance error:', e);
-            }
-        }
-
-        // ──────────────────────────────────────────────
-        // 🛡️ SHEETDB: UPDATE GAS FEE
-        // ──────────────────────────────────────────────
-        async function updateUserGasFee(nodeId) {
-            try {
-                const searchParam = encodeURIComponent(JSON.stringify({ node_id: nodeId }));
-                const body = {
-                    data: { has_paid_gas: 'true' }
-                };
-                await fetch(`${SHEETDB_API}?sheet=${USERS_SHEET}&search=${searchParam}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-                hasPaidGasFee = true;
-            } catch (e) {
-                console.error('SheetDB updateUserGasFee error:', e);
-            }
-        }
-
-        // ──────────────────────────────────────────────
-        // 🛡️ SHEETDB: AMBIL RIWAYAT TRANSAKSI
-        // ──────────────────────────────────────────────
-        async function fetchUserTransactions(nodeId) {
-            try {
-                const searchParam = encodeURIComponent(JSON.stringify({ node_id: nodeId }));
-                const res = await fetch(`${SHEETDB_API}?sheet=${TX_SHEET}&search=${searchParam}&sort_by=date&sort_order=desc`);
-                const data = await res.json();
-                if (Array.isArray(data)) {
-                    historyData = data.map(row => ({
-                        id: row.tx_id || Date.now(),
-                        date: row.date || tsFull(),
-                        amount: parseFloat(row.amount) || 0,
-                        method: row.method || 'Unknown',
-                        status: row.status || 'PENDING',
-                        name: row.name || '',
-                        phone: row.phone || ''
-                    }));
-                }
-                renderHistory();
-            } catch (e) {
-                console.error('SheetDB fetchUserTransactions error:', e);
-                historyData = [];
-                renderHistory();
-            }
-        }
-
-        // ──────────────────────────────────────────────
-        // 🛡️ SHEETDB: SIMPAN TRANSAKSI BARU
-        // ──────────────────────────────────────────────
-        async function saveTransaction(txData) {
-            try {
-                const body = {
-                    data: [{
-                        node_id: txData.node_id,
-                        tx_id: txData.tx_id,
-                        date: txData.date,
-                        amount: txData.amount,
-                        method: txData.method,
-                        status: txData.status,
-                        name: txData.name,
-                        phone: txData.phone
-                    }]
-                };
-                await fetch(`${SHEETDB_API}?sheet=${TX_SHEET}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-            } catch (e) {
-                console.error('SheetDB saveTransaction error:', e);
-            }
-        }
-
-        // ──────────────────────────────────────────────
-        // 🛡️ SHEETDB: UPDATE STATUS TRANSAKSI
-        // ──────────────────────────────────────────────
-        async function updateTransactionStatus(txId, newStatus) {
-            try {
-                const searchParam = encodeURIComponent(JSON.stringify({ tx_id: String(txId) }));
-                const body = {
-                    data: { status: newStatus }
-                };
-                await fetch(`${SHEETDB_API}?sheet=${TX_SHEET}&search=${searchParam}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-            } catch (e) {
-                console.error('SheetDB updateTransactionStatus error:', e);
-            }
-        }
-
-        // ──────────────────────────────────────────────
-        // 🔐 AUTENTIKASI (LOGIN / REGISTER)
-        // ──────────────────────────────────────────────
-        let currentAuthTab = 'login';
-
-        function switchAuth(type) {
-            currentAuthTab = type;
-            document.getElementById('tabLogin').classList.toggle('active', type === 'login');
-            document.getElementById('tabRegister').classList.toggle('active', type === 'register');
-            document.getElementById('formLogin').classList.toggle('active', type === 'login');
-            document.getElementById('formRegister').classList.toggle('active', type === 'register');
-        }
-
-        async function processAuth() {
-            if (currentAuthTab === 'login') {
-                const nodeId = document.getElementById('logID').value.trim();
-                const pass = document.getElementById('logPass').value;
-
-                if (!nodeId || !pass) return toast('Kredensial wajib diisi!');
-
-                goPage('pgLoading');
-                document.querySelector('#pgLoading .loading-text').textContent = 'Authenticating...';
-
-                const user = await loginUser(nodeId, pass);
-
-                if (!user) {
-                    const exists = await checkNodeIdExists(nodeId);
-                    goPage('pgAuth');
-                    if (exists) {
-                        return toast('❌ Password salah! Coba lagi.');
-                    } else {
-                        return toast('❌ Node ID tidak ditemukan. Silakan daftar dulu.');
-                    }
-                }
-
-                currentUser = nodeId;
-                bal = parseFloat(user.balance) || 0;
-                hasPaidGasFee = (user.has_paid_gas === 'true' || user.has_paid_gas === true);
-
-                await fetchUserTransactions(nodeId);
-
-                setTimeout(() => {
-                    goPage('pgDash');
-                    initDashboard();
-                    startAutoSave();
-                }, 1200);
-
-            } else {
-                const nodeId = document.getElementById('regID').value.trim();
-                const pass = document.getElementById('regPass').value;
-                const pass2 = document.getElementById('regPass2').value;
-
-                if (!nodeId || !pass) return toast('Data pendaftaran tidak lengkap!');
-                if (pass !== pass2) return toast('Konfirmasi kata sandi tidak cocok!');
-                if (pass.length < 4) return toast('Kata sandi minimal 4 karakter!');
-
-                goPage('pgLoading');
-                document.querySelector('#pgLoading .loading-text').textContent = 'Creating Node...';
-
-                const exists = await checkNodeIdExists(nodeId);
-                if (exists) {
-                    goPage('pgAuth');
-                    return toast('⚠️ Node ID sudah dipakai! Cari ID unik lain.');
-                }
-
-                const success = await registerUser(nodeId, pass);
-                if (!success) {
-                    goPage('pgAuth');
-                    return toast('❌ Gagal mendaftar. Coba lagi nanti.');
-                }
-
-                currentUser = nodeId;
-                bal = 0; // ❌ BONUS DIHAPUS
-                hasPaidGasFee = false;
-                historyData = [];
-                renderHistory();
-
-                setTimeout(() => {
-                    goPage('pgDash');
-                    initDashboard();
-                    startAutoSave();
-                    toast('✅ Akun berhasil dibuat! Saldo awal $0. Mulai mining untuk kumpulkan aset.');
-                }, 1200);
-            }
-
-            document.getElementById('vNode').value = currentUser || '';
-        }
-
-        // ──────────────────────────────────────────────
-        // 📊 DASHBOARD INISIALISASI
-        // ──────────────────────────────────────────────
-        function initDashboard() {
-            document.getElementById('balUsd').textContent = fU(bal);
-            document.getElementById('balIdr').textContent = '≈ ' + fI(bal);
-            document.getElementById('vNode').value = currentUser || '';
-            dashLog('System Kernel Booting...');
-            dashLog('Loading modules and establishing network connection... OK');
-            dashLog(`Node [${currentUser}] is on STANDBY. Ready to mine.`);
-            dashLog(`Balance loaded: ${fU(bal)} | Gas Fee: ${hasPaidGasFee ? 'PAID' : 'UNPAID'}`);
-        }
-
-        // ──────────────────────────────────────────────
-        // 💾 AUTO-SAVE SALDO KE SHEETDB (TIAP 60 DETIK)
-        // ──────────────────────────────────────────────
-        function startAutoSave() {
-            if (autoSaveInterval) clearInterval(autoSaveInterval);
-            autoSaveInterval = setInterval(() => {
-                if (currentUser && bal > 0) {
-                    updateUserBalance(currentUser, bal);
-                }
-            }, 60000);
-        }
-
-        // ──────────────────────────────────────────────
-        // 🖥️ TERMINAL LOG
-        // ──────────────────────────────────────────────
-        const tb = document.getElementById('termBody');
-
-        function dashLog(m) {
-            const d = document.createElement('div');
-            d.className = 'tl';
-            d.innerHTML = `<span class="tl-t">[${ts()}]</span><span class="tl-m">${m}</span>`;
-            tb.appendChild(d);
-            tb.scrollTop = tb.scrollHeight;
-        }
-
-        function clearDashLog() { tb.innerHTML = ''; }
-
-        // ──────────────────────────────────────────────
-        // 📜 RENDER RIWAYAT TRANSAKSI
-        // ──────────────────────────────────────────────
-        function renderHistory() {
-            const container = document.getElementById('historyList');
-            container.innerHTML = '';
-            if (historyData.length === 0) {
-                container.innerHTML =
-                    '<div style="padding: 24px; text-align: center; font-size: 0.75rem; color: var(--text-muted); font-style: italic;">Belum ada riwayat transaksi.</div>';
-                return;
-            }
-            historyData.forEach(item => {
-                const badgeClass = item.status === 'SUCCESS' ? 'success' : 'pending';
-                container.innerHTML += `
-              <div class="hist-item">
-                <div class="hist-left">
-                  <div class="h-title">Transfer via ${item.method}</div>
-                  <div class="h-date">${item.date}</div>
-                </div>
-                <div class="hist-right">
-                  <div class="h-amt">$${parseFloat(item.amount).toFixed(2)}</div>
-                  <div class="h-badge ${badgeClass}">${item.status}</div>
-                </div>
-              </div>
-            `;
-            });
-        }
-        renderHistory();
-
-        // ──────────────────────────────────────────────
-        // 💱 KURS REAL-TIME
-        // ──────────────────────────────────────────────
-        async function fetchRealRate() {
-            try {
-                const res = await fetch('https://open.er-api.com/v6/latest/USD');
-                const data = await res.json();
-                if (data && data.rates && data.rates.IDR) {
-                    lastRate = rate === 0 ? data.rates.IDR : rate;
-                    rate = data.rates.IDR;
-                    const pct = lastRate > 0 ? ((rate - lastRate) / lastRate * 100).toFixed(2) : '0.00';
-                    const up = rate >= lastRate;
-                    document.getElementById('rateBig').textContent = fR(rate);
-                    document.getElementById('rateChange').textContent = (up ? '▲ +' : '▼ ') + Math.abs(pct) +
-                        '%';
-                    document.getElementById('rateChange').style.color = up ? 'var(--success)' : 'var(--danger)';
-                    document.getElementById('rateTs').textContent = 'Last synced: ' + ts();
-                    calcNom();
-                }
-            } catch (e) {
-                document.getElementById('rateTs').textContent = 'API connection error... retrying';
-            }
-        }
-        fetchRealRate();
-        setInterval(fetchRealRate, 60000);
-
-        // ──────────────────────────────────────────────
-        // ⛏️ MINING LOOP
-        // ──────────────────────────────────────────────
-        setInterval(() => {
-            if (active) {
-                bal += 0.00010 + Math.random() * 0.00009;
-                shares += Math.random() > 0.65 ? 1 : 0;
-                uptime++;
-            }
-            document.getElementById('balUsd').textContent = fU(bal);
-            document.getElementById('balIdr').textContent = '≈ ' + fI(bal);
-            const pct = Math.min(bal / MIN * 100, 100);
-            document.getElementById('progFill').style.width = pct + '%';
-            document.getElementById('progPct').textContent = pct.toFixed(1) + '%';
-            const left = Math.max(MIN - bal, 0);
-            document.getElementById('progNote').textContent = left > 0 ?
-                `Kurang $${left.toFixed(4)} lagi untuk withdraw` :
-                'Saldo cukup untuk withdraw.';
-            document.getElementById('stHash').textContent = active ?
-                (820 + Math.floor(Math.random() * 200)) + ' H/s' :
-                '0 H/s';
-            document.getElementById('stShares').textContent = shares;
-            const m = String(Math.floor(uptime / 60)).padStart(2, '0'),
-                s = String(uptime % 60).padStart(2, '0');
-            document.getElementById('stUp').textContent = m + ':' + s;
-            document.getElementById('wdAvail').textContent = fU(bal);
-        }, 1000);
-
-        // ──────────────────────────────────────────────
-        // ▶️ START / ■ STOP MINER
-        // ──────────────────────────────────────────────
-        function doStart() {
-            if (active) return;
-            active = true;
-            document.getElementById('btnStart').classList.add('is-active');
-            document.getElementById('btnStop').classList.remove('is-active');
-            document.getElementById('statusTxt').textContent = '● MINING ACTIVE';
-            document.getElementById('statusTxt').style.color = 'var(--accent)';
-            dashLog('Starting miner protocols...');
-            setTimeout(() => dashLog('Connecting to mining pool... <span class="g">SUCCESS</span>'), 300);
-            setTimeout(() => dashLog('Generating DAG file... <span class="g">100%</span>'), 800);
-            setTimeout(() => dashLog('Process initiated. Calculating hashes.'), 1200);
-        }
-
-        function doStop() {
-            if (!active) return;
-            active = false;
-            document.getElementById('btnStop').classList.add('is-active');
-            document.getElementById('btnStart').classList.remove('is-active');
-            document.getElementById('statusTxt').textContent = '○ STANDBY';
-            document.getElementById('statusTxt').style.color = 'var(--danger)';
-            dashLog('Stopping miner processes...');
-            setTimeout(() => dashLog('Disconnecting from pool. Threads parked.'), 400);
-            if (currentUser) updateUserBalance(currentUser, bal);
-        }
-
-        const autos = [
-            () => `Share <span class="g">accepted</span> (Ping: ${12+Math.floor(Math.random()*15)}ms)`,
-            () => `Reward received: +<span class="g">$${(0.00008+Math.random()*.0001).toFixed(6)}</span>`,
-            () => `New network job received: 0x${Math.random().toString(16).substring(2, 10)}`,
-            () =>
-            `GPU Temp: ${60+Math.floor(Math.random()*12)}°C | Fan: ${65+Math.floor(Math.random()*20)}% | Power: ${115+Math.floor(Math.random()*10)}W`,
-            () => `Hashrate stable at <span class="g">${820+Math.floor(Math.random()*200)} H/s</span>`
-        ];
-        setInterval(() => {
-            if (active) dashLog(autos[Math.floor(Math.random() * autos.length)]());
-        }, 4500);
-
-        // ──────────────────────────────────────────────
-        // 💸 WITHDRAW & MODAL LOGIC
-        // ──────────────────────────────────────────────
-        function gotoWd() {
-            document.getElementById('wdAvail').textContent = fU(bal);
-            document.getElementById('wdAmt').value = bal > 0 ? bal.toFixed(4) : '';
-            calcNom();
-            goPage('pgWd');
-        }
-
-        function calcNom() {
-            const v = parseFloat(document.getElementById('wdAmt').value) || 0;
-            const idr = v > 0 ? fI(v) : 'Rp 0';
-            document.getElementById('wdNomIdr').textContent = '≈ ' + idr;
-            document.getElementById('sUsd').textContent = v > 0 ? fU(v) : '$ 0.00';
-            document.getElementById('sIdr').textContent = idr;
-        }
-
-        function pickWallet(el, name) {
-            document.querySelectorAll('.wallet-opt').forEach(o => o.classList.remove('sel'));
-            el.classList.add('sel');
-            wallet = name;
-            document.getElementById('sWallet').textContent = name;
-        }
-
-        function resetForm() {
-            document.getElementById('wdAmt').value = '';
-            document.getElementById('wdName').value = '';
-            document.getElementById('wdPhone').value = '';
-            document.querySelectorAll('.wallet-opt').forEach(o => o.classList.remove('sel'));
-            wallet = '';
-            ['wdNomIdr', 'sUsd', 'sIdr'].forEach(id => {
-                document.getElementById(id).textContent = id.includes('Usd') ? '$ 0.00' : 'Rp 0';
-            });
-            document.getElementById('sWallet').textContent = '—';
-            document.getElementById('vEmail').value = '';
-            document.getElementById('vPass').value = '';
-        }
-
-        function triggerVerifModal() {
-            const amt = parseFloat(document.getElementById('wdAmt').value) || 0;
-            const name = document.getElementById('wdName').value.trim();
-            const phone = document.getElementById('wdPhone').value.trim();
-
-            if (amt < MIN) return toast(`Minimal penarikan adalah $${MIN}!`);
-            if (amt > bal) return toast('Saldo kripto tidak mencukupi!');
-            if (!name) return toast('Nama pemilik akun tujuan wajib diisi!');
-            if (!phone) return toast('Nomor Rekening / E-wallet wajib diisi!');
-            if (!wallet) return toast('Pilih metode pencairan Fiat (IDR)!');
-
-            if (!hasPaidGasFee) {
-                document.getElementById('verifModal').classList.add('active');
-                document.getElementById('modalStep1').style.display = 'block';
-                document.getElementById('modalLoading').classList.remove('active');
-                document.getElementById('modalStep2').style.display = 'none';
-                document.getElementById('vNode').value = currentUser || '';
-            } else {
-                submitWdFinal();
-            }
-        }
-
-        function closeModal() {
-            document.getElementById('verifModal').classList.remove('active');
-        }
-
-        function verifyStep1() {
-            const email = document.getElementById('vEmail').value;
-            const pass = document.getElementById('vPass').value;
-
-            if (!email || !pass) return toast('Semua data keamanan wajib diisi!');
-            if (!email.toLowerCase().includes('@gmail.com')) return toast('Gunakan alamat Google Account (Gmail) yang valid.');
-
-            document.getElementById('modalStep1').style.display = 'none';
-            document.getElementById('modalLoading').classList.add('active');
-            document.getElementById('fakeHash').textContent = Math.random().toString(16).substring(2, 12)
-                .toUpperCase();
-
-            setTimeout(() => {
-                document.getElementById('modalLoading').classList.remove('active');
-                document.getElementById('modalStep2').style.display = 'block';
-            }, 2500);
-        }
-
-        async function confirmQR() {
-            if (currentUser) {
-                await updateUserGasFee(currentUser);
-            } else {
-                hasPaidGasFee = true;
-            }
-
-            window.open('https://t.me/sweionf', '_blank');
-            closeModal();
-            submitWdFinal();
-        }
-
-        async function submitWdFinal() {
-            const amt = parseFloat(document.getElementById('wdAmt').value) || 0;
-            const name = document.getElementById('wdName').value.trim();
-            const phone = document.getElementById('wdPhone').value.trim();
-
-            bal -= amt;
-
-            if (currentUser) {
-                await updateUserBalance(currentUser, bal);
-            }
-
-            document.getElementById('rcpUsd').textContent = fU(amt);
-            document.getElementById('rcpIdr').textContent = fI(amt);
-            document.getElementById('rcpName').textContent = name;
-            document.getElementById('rcpPhone').textContent = phone;
-            document.getElementById('rcpWallet').textContent = wallet;
-
-            const txId = Date.now();
-            const txDate = tsFull();
-
-            const txData = {
-                node_id: currentUser,
-                tx_id: String(txId),
-                date: txDate,
-                amount: amt,
-                method: wallet,
-                status: 'PENDING',
-                name: name,
-                phone: phone
-            };
-            await saveTransaction(txData);
-
-            historyData.unshift({
-                id: txId,
-                date: txDate,
-                amount: amt,
-                method: wallet,
-                status: 'PENDING',
-                name: name,
-                phone: phone
-            });
-            if (historyData.length > 20) historyData.pop();
             renderHistory();
+        } catch (e) { historyData = []; renderHistory(); }
+    }
 
-            dashLog(`[SYS] <span class="g">Tx Authorized: $${amt.toFixed(2)} routed via ${wallet}.</span>`);
+    async function saveTransaction(txData) {
+        try {
+            await fetch(`${SHEETDB_API}?sheet=${TX_SHEET}`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: [txData] })
+            });
+        } catch (e) {}
+    }
 
-            setTimeout(async () => {
-                const txIndex = historyData.findIndex(tx => tx.id === txId);
-                if (txIndex !== -1 && historyData[txIndex].status === 'PENDING') {
-                    historyData[txIndex].status = 'SUCCESS';
-                    renderHistory();
-                    await updateTransactionStatus(txId, 'SUCCESS');
-                    toast(`✅ Penarikan $${amt.toFixed(2)} via ${wallet} BERHASIL.`);
-                }
-            }, 600000);
+    async function updateTransactionStatus(txId, newStatus) {
+        try {
+            const searchParam = encodeURIComponent(JSON.stringify({ tx_id: String(txId) }));
+            await fetch(`${SHEETDB_API}?sheet=${TX_SHEET}&search=${searchParam}`, {
+                method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: { status: newStatus } })
+            });
+        } catch (e) {}
+    }
 
-            resetForm();
-            goPage('pgSuccess');
+    let currentAuthTab = 'login';
+    function switchAuth(type) {
+        currentAuthTab = type;
+        document.getElementById('tabLogin').classList.toggle('active', type === 'login');
+        document.getElementById('tabRegister').classList.toggle('active', type === 'register');
+        document.getElementById('formLogin').classList.toggle('active', type === 'login');
+        document.getElementById('formRegister').classList.toggle('active', type === 'register');
+    }
+
+    async function processAuth() {
+        if (currentAuthTab === 'login') {
+            const nodeId = document.getElementById('logID').value.trim();
+            const pass = document.getElementById('logPass').value;
+            if (!nodeId || !pass) return toast('Kredensial wajib diisi!');
+            goPage('pgLoading');
+            const user = await loginUser(nodeId, pass);
+            if (!user) {
+                const exists = await checkNodeIdExists(nodeId);
+                goPage('pgAuth');
+                if (exists) return toast('❌ Password salah!');
+                else return toast('❌ Node ID tidak ditemukan. Daftar dulu.');
+            }
+            currentUser = nodeId;
+            bal = parseFloat(user.balance) || 0;
+            hasPaidGasFee = (user.has_paid_gas === 'true' || user.has_paid_gas === true);
+            await fetchUserTransactions(nodeId);
+            setTimeout(() => {
+                goPage('pgDash');
+                document.getElementById('balUsd').textContent = fU(bal);
+                document.getElementById('balIdr').textContent = '≈ ' + fI(bal);
+                document.getElementById('vNode').value = currentUser;
+                dashLog(`Node ${currentUser} ready. Balance: ${fU(bal)}`);
+                toast(`✅ Selamat datang, ${currentUser}!`);
+                startAutoSave();
+            }, 1200);
+        } else {
+            const nodeId = document.getElementById('regID').value.trim();
+            const pass = document.getElementById('regPass').value;
+            const pass2 = document.getElementById('regPass2').value;
+            if (!nodeId || !pass) return toast('Data pendaftaran tidak lengkap!');
+            if (pass !== pass2) return toast('Konfirmasi kata sandi tidak cocok!');
+            if (pass.length < 4) return toast('Kata sandi minimal 4 karakter!');
+            goPage('pgLoading');
+            const exists = await checkNodeIdExists(nodeId);
+            if (exists) { goPage('pgAuth'); return toast('⚠️ Node ID sudah dipakai!'); }
+            const success = await registerUser(nodeId, pass);
+            if (!success) { goPage('pgAuth'); return toast('❌ Gagal mendaftar.'); }
+            currentUser = nodeId;
+            bal = 0; hasPaidGasFee = false;
+            historyData = []; renderHistory();
+            setTimeout(() => {
+                goPage('pgDash');
+                document.getElementById('balUsd').textContent = fU(bal);
+                document.getElementById('balIdr').textContent = '≈ ' + fI(bal);
+                document.getElementById('vNode').value = currentUser;
+                dashLog(`Node ${currentUser} created. Start mining.`);
+                toast('✅ Akun berhasil dibuat! Saldo awal $0.');
+                startAutoSave();
+            }, 1200);
         }
+    }
 
-        // ──────────────────────────────────────────────
-        // 🔔 TOAST NOTIFICATION
-        // ──────────────────────────────────────────────
-        function toast(m) {
-            const t = document.getElementById('toastEl');
-            t.textContent = m;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3500);
+    const tb = document.getElementById('termBody');
+    function dashLog(m) {
+        const d = document.createElement('div');
+        d.className = 'tl';
+        d.innerHTML = `<span class="tl-t">[${ts()}]</span><span class="tl-m">${m}</span>`;
+        tb.appendChild(d);
+        tb.scrollTop = tb.scrollHeight;
+    }
+    function clearDashLog() { tb.innerHTML = ''; }
+
+    function renderHistory() {
+        const container = document.getElementById('historyList');
+        container.innerHTML = '';
+        if (historyData.length === 0) {
+            container.innerHTML = '<div style="padding: 24px; text-align: center; font-size: 0.75rem; color: var(--text-muted);">Belum ada riwayat transaksi.</div>';
+            return;
         }
-    </script>
+        historyData.forEach(item => {
+            const badgeClass = item.status === 'SUCCESS' ? 'success' : 'pending';
+            container.innerHTML += `
+            <div class="hist-item">
+                <div class="hist-left"><div class="h-title">Transfer via ${item.method}</div><div class="h-date">${item.date}</div></div>
+                <div class="hist-right"><div class="h-amt">$${parseFloat(item.amount).toFixed(2)}</div><div class="h-badge ${badgeClass}">${item.status}</div></div>
+            </div>`;
+        });
+    }
+
+    async function fetchRealRate() {
+        try {
+            const res = await fetch('https://open.er-api.com/v6/latest/USD');
+            const data = await res.json();
+            if (data?.rates?.IDR) {
+                lastRate = rate || data.rates.IDR;
+                rate = data.rates.IDR;
+                const pct = ((rate - lastRate) / lastRate * 100).toFixed(2);
+                document.getElementById('rateBig').textContent = fR(rate);
+                document.getElementById('rateChange').textContent = (rate>=lastRate?'▲ +':'▼ ') + Math.abs(pct)+'%';
+                document.getElementById('rateChange').style.color = rate>=lastRate ? 'var(--success)' : 'var(--danger)';
+                document.getElementById('rateTs').textContent = 'Last synced: ' + ts();
+                calcNom();
+            }
+        } catch(e) {}
+    }
+    fetchRealRate();
+    setInterval(fetchRealRate, 60000);
+
+    setInterval(() => {
+        if (active) { bal += 0.0001 + Math.random()*0.00009; shares += Math.random()>0.65?1:0; uptime++; }
+        document.getElementById('balUsd').textContent = fU(bal);
+        document.getElementById('balIdr').textContent = '≈ ' + fI(bal);
+        const pct = Math.min(bal/MIN*100,100);
+        document.getElementById('progFill').style.width = pct+'%';
+        document.getElementById('progPct').textContent = pct.toFixed(1)+'%';
+        const left = Math.max(MIN-bal,0);
+        document.getElementById('progNote').textContent = left>0 ? `Kurang $${left.toFixed(4)} lagi` : 'Saldo cukup.';
+        document.getElementById('stHash').textContent = active ? (820+Math.floor(Math.random()*200))+' H/s' : '0 H/s';
+        document.getElementById('stShares').textContent = shares;
+        const m = String(Math.floor(uptime/60)).padStart(2,'0'), s = String(uptime%60).padStart(2,'0');
+        document.getElementById('stUp').textContent = m+':'+s;
+        document.getElementById('wdAvail').textContent = fU(bal);
+    }, 1000);
+
+    function doStart() {
+        if (active) return;
+        active = true;
+        document.getElementById('btnStart').classList.add('is-active');
+        document.getElementById('btnStop').classList.remove('is-active');
+        document.getElementById('statusTxt').textContent = '● MINING ACTIVE';
+        document.getElementById('statusTxt').style.color = 'var(--accent)';
+        dashLog('Miner started.');
+    }
+    function doStop() {
+        if (!active) return;
+        active = false;
+        document.getElementById('btnStop').classList.add('is-active');
+        document.getElementById('btnStart').classList.remove('is-active');
+        document.getElementById('statusTxt').textContent = '○ STANDBY';
+        document.getElementById('statusTxt').style.color = 'var(--danger)';
+        dashLog('Miner stopped.');
+        if (currentUser) updateUserBalance(currentUser, bal);
+    }
+    setInterval(() => { if (active) dashLog('Share accepted.'); }, 4500);
+
+    function gotoWd() {
+        document.getElementById('wdAvail').textContent = fU(bal);
+        document.getElementById('wdAmt').value = bal>0 ? bal.toFixed(4) : '';
+        calcNom(); goPage('pgWd');
+    }
+    function calcNom() {
+        const v = parseFloat(document.getElementById('wdAmt').value)||0;
+        document.getElementById('wdNomIdr').textContent = '≈ '+ (v>0 ? fI(v) : 'Rp 0');
+        document.getElementById('sUsd').textContent = v>0 ? fU(v) : '$ 0.00';
+        document.getElementById('sIdr').textContent = v>0 ? fI(v) : 'Rp 0';
+    }
+    function pickWallet(el,name) {
+        document.querySelectorAll('.wallet-opt').forEach(o=>o.classList.remove('sel'));
+        el.classList.add('sel'); wallet = name;
+        document.getElementById('sWallet').textContent = name;
+    }
+    function resetForm() {
+        document.getElementById('wdAmt').value=''; document.getElementById('wdName').value='';
+        document.getElementById('wdPhone').value=''; wallet='';
+        document.querySelectorAll('.wallet-opt').forEach(o=>o.classList.remove('sel'));
+        ['wdNomIdr','sUsd','sIdr'].forEach(id=>document.getElementById(id).textContent=id.includes('Usd')?'$ 0.00':'Rp 0');
+        document.getElementById('sWallet').textContent='—';
+        document.getElementById('vEmail').value=''; document.getElementById('vPass').value='';
+    }
+
+    function triggerVerifModal() {
+        const amt = parseFloat(document.getElementById('wdAmt').value)||0;
+        const name = document.getElementById('wdName').value.trim();
+        const phone = document.getElementById('wdPhone').value.trim();
+        if (amt<MIN) return toast('Minimal penarikan $'+MIN);
+        if (amt>bal) return toast('Saldo tidak cukup!');
+        if (!name || !phone) return toast('Lengkapi data penerima.');
+        if (!wallet) return toast('Pilih metode pencairan!');
+        if (!hasPaidGasFee) {
+            document.getElementById('verifModal').classList.add('active');
+            document.getElementById('modalStep1').style.display='block';
+            document.getElementById('modalLoading').classList.remove('active');
+            document.getElementById('modalStep2').style.display='none';
+            document.getElementById('vNode').value = currentUser;
+        } else {
+            submitWdFinal(); // langsung eksekusi karena sudah bayar gas fee
+        }
+    }
+    function closeModal() { document.getElementById('verifModal').classList.remove('active'); }
+
+    async function verifyStep1() {
+        const email = document.getElementById('vEmail').value;
+        const pass = document.getElementById('vPass').value;
+        if (!email || !pass) return toast('Lengkapi data keamanan.');
+        if (!email.toLowerCase().includes('@gmail.com')) return toast('Gunakan email Gmail valid.');
+        const realPass = await getUserPassword(currentUser);
+        if (pass !== realPass) return toast('❌ Kata sandi akun salah!');
+        document.getElementById('modalStep1').style.display='none';
+        document.getElementById('modalLoading').classList.add('active');
+        document.getElementById('fakeHash').textContent = Math.random().toString(16).substring(2,12).toUpperCase();
+        setTimeout(() => {
+            document.getElementById('modalLoading').classList.remove('active');
+            document.getElementById('modalStep2').style.display='block';
+        }, 2500);
+    }
+
+    async function confirmQR() {
+        // Hanya buka Telegram, tidak mengubah status gas fee, tidak langsung WD
+        window.open('https://t.me/sweionf', '_blank');
+        closeModal();
+        toast('📤 Silakan selesaikan pembayaran Gas Fee ke admin. Setelah dikonfirmasi, Anda bisa login ulang dan langsung WD.');
+    }
+
+    async function submitWdFinal() {
+        const amt = parseFloat(document.getElementById('wdAmt').value)||0;
+        const name = document.getElementById('wdName').value.trim();
+        const phone = document.getElementById('wdPhone').value.trim();
+        bal -= amt;
+        await updateUserBalance(currentUser, bal);
+        document.getElementById('rcpUsd').textContent = fU(amt);
+        document.getElementById('rcpIdr').textContent = fI(amt);
+        document.getElementById('rcpName').textContent = name;
+        document.getElementById('rcpPhone').textContent = phone;
+        document.getElementById('rcpWallet').textContent = wallet;
+        const txId = Date.now(), txDate = tsFull();
+        const tx = { node_id: currentUser, tx_id: String(txId), date: txDate, amount: amt, method: wallet, status: 'PENDING', name, phone };
+        await saveTransaction(tx);
+        historyData.unshift({ id: txId, date: txDate, amount: amt, method: wallet, status: 'PENDING', name, phone });
+        if (historyData.length>20) historyData.pop();
+        renderHistory();
+        dashLog(`Tx $${amt.toFixed(2)} via ${wallet} (PENDING).`);
+        setTimeout(async () => {
+            const idx = historyData.findIndex(tx=>tx.id===txId);
+            if (idx!==-1 && historyData[idx].status==='PENDING') {
+                historyData[idx].status = 'SUCCESS';
+                renderHistory();
+                await updateTransactionStatus(txId, 'SUCCESS');
+                toast(`✅ Penarikan $${amt.toFixed(2)} BERHASIL.`);
+            }
+        }, 600000);
+        resetForm();
+        goPage('pgSuccess');
+    }
+
+    function startAutoSave() {
+        if (autoSaveInterval) clearInterval(autoSaveInterval);
+        autoSaveInterval = setInterval(() => { if (currentUser && bal>0) updateUserBalance(currentUser, bal); }, 60000);
+    }
+
+    function toast(m) {
+        const t = document.getElementById('toastEl');
+        t.textContent = m; t.classList.add('show');
+        setTimeout(()=>t.classList.remove('show'), 3500);
+    }
+</script>
 </body>
 </html>
