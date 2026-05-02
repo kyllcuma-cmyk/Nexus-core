@@ -43,7 +43,7 @@
             display: none;
             flex-direction: column;
             align-items: center;
-            padding: 32px 20px;
+            padding: 40px 20px 32px 20px;
             min-height: 100vh;
             animation: fadeIn 0.4s ease;
             position: relative;
@@ -52,17 +52,11 @@
             display: flex;
         }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* TOMBOL LOGOUT AESTHETIC */
+        /* TOMBOL DISCONNECT */
         .btn-logout {
             position: absolute;
             top: 24px;
@@ -80,6 +74,7 @@
             align-items: center;
             gap: 6px;
             letter-spacing: 0.5px;
+            z-index: 10;
         }
         .btn-logout:hover {
             color: var(--danger);
@@ -87,9 +82,46 @@
             background: rgba(239, 68, 68, 0.05);
             box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
         }
-        .btn-logout svg {
-            width: 12px;
-            height: 12px;
+        .btn-logout svg { width: 12px; height: 12px; }
+
+        /* TOMBOL PROFIL */
+        .btn-profile {
+            position: absolute;
+            top: 24px;
+            left: 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+            padding: 0;
+        }
+        .btn-profile .avatar-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+        .btn-profile:hover .avatar-circle {
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+        .btn-profile span {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .header-container {
@@ -97,7 +129,7 @@
             margin-bottom: 32px;
             width: 100%;
             max-width: 460px;
-            margin-top: 16px;
+            margin-top: 32px;
         }
         .logo {
             font-family: var(--font-mono);
@@ -142,9 +174,7 @@
             align-items: center;
             background: rgba(0, 0, 0, 0.2);
         }
-        .card-body {
-            padding: 20px;
-        }
+        .card-body { padding: 20px; }
 
         .auth-tabs {
             display: flex;
@@ -176,9 +206,7 @@
             width: 100%;
             padding: 20px;
         }
-        .auth-form.active {
-            display: flex;
-        }
+        .auth-form.active { display: flex; }
 
         .bal-usd {
             font-family: var(--font-mono);
@@ -236,15 +264,9 @@
             display: inline-block;
         }
         @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
-            }
-            70% {
-                box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
         .rate-big {
@@ -309,9 +331,7 @@
             border: 1px solid var(--border);
             padding: 14px;
         }
-        .btn:active {
-            transform: translateY(1px);
-        }
+        .btn:active { transform: translateY(1px); }
         .btn:hover {
             border-color: var(--border-hover);
             background: var(--bg-input);
@@ -335,18 +355,14 @@
             border-color: var(--accent);
             box-shadow: 0 0 16px var(--accent-glow);
         }
-        .btn-start.is-active:hover {
-            background: #08cceb;
-        }
+        .btn-start.is-active:hover { background: #08cceb; }
         .btn-stop.is-active {
             background: var(--danger);
             color: #fff;
             border-color: var(--danger);
             box-shadow: 0 0 16px rgba(239, 68, 68, 0.25);
         }
-        .btn-stop.is-active:hover {
-            background: #f87171;
-        }
+        .btn-stop.is-active:hover { background: #f87171; }
 
         .btn-wd {
             width: 100%;
@@ -358,9 +374,7 @@
             border: 1px solid var(--accent);
             color: var(--accent);
         }
-        .btn-wd:hover {
-            background: rgba(6, 182, 212, 0.25);
-        }
+        .btn-wd:hover { background: rgba(6, 182, 212, 0.25); }
         .btn-auth {
             width: 100%;
             background: var(--accent);
@@ -392,30 +406,17 @@
             scrollbar-width: thin;
             scrollbar-color: var(--border) transparent;
         }
-        .term-body::-webkit-scrollbar {
-            width: 4px;
-        }
+        .term-body::-webkit-scrollbar { width: 4px; }
         .term-body::-webkit-scrollbar-thumb {
             background: var(--border);
             border-radius: 4px;
         }
-        .tl {
-            display: flex;
-            gap: 12px;
-        }
-        .tl-t {
-            color: #52525b;
-            flex-shrink: 0;
-        }
-        .tl-m .g {
-            color: var(--accent);
-        }
-        .tl-m .r {
-            color: var(--danger);
-        }
-        .tl-m .w {
-            color: var(--warning);
-        }
+        .tl { display: flex; gap: 12px; }
+        .tl-t { color: #52525b; flex-shrink: 0; }
+        .tl-m .g { color: var(--success); }
+        .tl-m .a { color: var(--accent); }
+        .tl-m .r { color: var(--danger); }
+        .tl-m .w { color: var(--warning); }
 
         .loading-wrap {
             display: flex;
@@ -435,12 +436,8 @@
             margin-bottom: 24px;
         }
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         .loading-text {
             font-family: var(--font-mono);
@@ -451,13 +448,8 @@
             animation: pulseTxt 2s infinite;
         }
         @keyframes pulseTxt {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.6;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
         }
 
         .hist-item {
@@ -467,19 +459,9 @@
             padding: 14px 20px;
             border-bottom: 1px solid var(--border);
         }
-        .hist-item:last-child {
-            border-bottom: none;
-        }
-        .hist-left {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .h-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-main);
-        }
+        .hist-item:last-child { border-bottom: none; }
+        .hist-left { display: flex; flex-direction: column; gap: 4px; }
+        .h-title { font-size: 0.75rem; font-weight: 600; color: var(--text-main); }
         .h-date {
             font-size: 0.65rem;
             color: var(--text-muted);
@@ -542,13 +524,11 @@
             border-color: var(--accent);
             box-shadow: 0 0 0 3px var(--accent-glow);
         }
-        .field-input::placeholder {
-            color: #52525b;
-        }
+        .field-input::placeholder { color: #52525b; }
         .field-input:read-only {
             color: var(--accent);
             background: rgba(0, 0, 0, 0.3);
-            cursor: not-allowed;
+            cursor: default;
         }
         .nom-idr {
             margin-top: 8px;
@@ -573,9 +553,7 @@
             transition: all 0.2s;
             position: relative;
         }
-        .wallet-opt:hover {
-            border-color: var(--border-hover);
-        }
+        .wallet-opt:hover { border-color: var(--border-hover); }
         .wallet-opt.sel {
             border-color: var(--accent);
             background: var(--accent-glow);
@@ -586,9 +564,7 @@
             color: var(--text-muted);
             margin-top: 8px;
         }
-        .wallet-opt.sel .w-name {
-            color: var(--accent);
-        }
+        .wallet-opt.sel .w-name { color: var(--accent); }
         .w-chk {
             position: absolute;
             top: 8px;
@@ -599,9 +575,7 @@
             border-radius: 50%;
             display: none;
         }
-        .wallet-opt.sel .w-chk {
-            display: block;
-        }
+        .wallet-opt.sel .w-chk { display: block; }
 
         .summ {
             background: var(--bg-input);
@@ -618,13 +592,8 @@
             border-bottom: 1px dashed var(--border);
             color: var(--text-muted);
         }
-        .summ-row:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        .summ-row:first-child {
-            padding-top: 0;
-        }
+        .summ-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .summ-row:first-child { padding-top: 0; }
         .s-val {
             font-family: var(--font-mono);
             color: var(--text-main);
@@ -665,16 +634,12 @@
             transform: translateY(20px);
             transition: transform 0.3s ease;
         }
-        .modal-overlay.active .modal-box {
-            transform: translateY(0);
-        }
+        .modal-overlay.active .modal-box { transform: translateY(0); }
 
         .modal-box::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 3px;
             background: var(--accent);
             border-radius: 12px 12px 0 0;
@@ -690,9 +655,7 @@
             transition: color 0.2s;
             z-index: 10;
         }
-        .modal-close:hover {
-            color: var(--danger);
-        }
+        .modal-close:hover { color: var(--danger); }
 
         .modal-title {
             font-family: var(--font-ui);
@@ -724,9 +687,7 @@
             color: var(--text-muted);
             line-height: 1.5;
         }
-        .info-box strong {
-            color: var(--text-main);
-        }
+        .info-box strong { color: var(--text-main); }
         .tx-id {
             color: var(--accent);
             font-family: var(--font-mono);
@@ -760,9 +721,7 @@
             align-items: center;
             padding: 30px 0;
         }
-        .modal-loading.active {
-            display: flex;
-        }
+        .modal-loading.active { display: flex; }
         .modal-spinner {
             width: 36px;
             height: 36px;
@@ -796,12 +755,8 @@
             animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         @keyframes pop {
-            0% {
-                transform: scale(0);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
         }
         .receipt {
             width: 100%;
@@ -820,12 +775,8 @@
             border-bottom: 1px dashed var(--border);
             font-size: 0.8rem;
         }
-        .rcp-row:last-child {
-            border-bottom: none;
-        }
-        .r-lbl {
-            color: var(--text-muted);
-        }
+        .rcp-row:last-child { border-bottom: none; }
+        .r-lbl { color: var(--text-muted); }
         .r-val {
             color: var(--text-main);
             font-family: var(--font-mono);
@@ -883,9 +834,7 @@
             -webkit-appearance: none;
             appearance: none;
         }
-        .back-btn:hover {
-            color: var(--text-main);
-        }
+        .back-btn:hover { color: var(--text-main); }
 
         footer {
             font-size: 0.55rem;
@@ -901,6 +850,28 @@
             margin-left: auto;
             margin-right: auto;
         }
+
+        .btn-cs {
+            background: #2AABEE;
+            color: #fff;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: var(--font-ui);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-cs:hover {
+            background: #229ED9;
+            box-shadow: 0 0 16px rgba(42, 171, 238, 0.3);
+        }
+        .btn-cs svg { width: 18px; height: 18px; fill: currentColor; }
     </style>
 </head>
 <body>
@@ -956,6 +927,17 @@
     </div>
 
     <div class="page" id="pgDash">
+        
+        <button class="btn-profile" onclick="openProfile()">
+            <div class="avatar-circle">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </div>
+            <span>Profile</span>
+        </button>
+
         <button class="btn-logout" onclick="logout()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -967,7 +949,7 @@
 
         <div class="header-container">
             <div class="logo">NEXUS<span class="highlight">.CORE</span></div>
-            <div class="sub">Mining Dashboard v2.5</div>
+            <div class="sub">Mining Dashboard v2.7</div>
         </div>
 
         <div class="card">
@@ -1003,7 +985,7 @@
         </div>
 
         <div class="stats-row">
-            <div class="stat"><div class="stat-lbl">HASHRATE</div><div class="stat-val" id="stHash">0 H/s</div></div>
+            <div class="stat"><div class="stat-lbl">HASHRATE</div><div class="stat-val" id="stHash">0 MH/s</div></div>
             <div class="stat"><div class="stat-lbl">UPTIME</div><div class="stat-val" id="stUp">00:00</div></div>
             <div class="stat"><div class="stat-lbl">SHARES</div><div class="stat-val" id="stShares">0</div></div>
         </div>
@@ -1075,6 +1057,45 @@
             </div>
 
             <button class="btn btn-auth" style="padding: 16px; font-size: 0.95rem;" onclick="triggerVerifModal()">Proses Penarikan</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal-box" style="text-align: center;">
+            <div class="modal-close" onclick="closeProfile()">✕</div>
+            
+            <div style="margin: 0 auto 16px; width: 64px; height: 64px; border-radius: 50%; background: var(--bg-input); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </div>
+            
+            <div class="modal-title" style="justify-content: center; margin-bottom: 24px; font-size: 1.2rem;">Account Profile</div>
+            
+            <div class="field" style="text-align: left;">
+                <label class="field-label">Node ID</label>
+                <input class="field-input" type="text" id="profID" readonly style="color: var(--accent); font-family: var(--font-mono); font-weight: bold;">
+            </div>
+            <div class="field" style="text-align: left; position: relative;">
+                <label class="field-label">Kata Sandi</label>
+                <input class="field-input" type="password" id="profPass" readonly style="padding-right: 48px; font-family: var(--font-mono); letter-spacing: 2px;">
+                <span onclick="togglePass()" style="position: absolute; right: 16px; top: 38px; cursor: pointer; color: var(--text-muted);">
+                    <svg id="eyeIcon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </span>
+            </div>
+            <div class="field" style="text-align: left; margin-bottom: 32px;">
+                <label class="field-label">Total Kripto Terkumpul</label>
+                <input class="field-input" type="text" id="profBal" readonly style="color: var(--success); font-family: var(--font-mono); font-weight: bold;">
+            </div>
+
+            <button class="btn-cs" onclick="window.open('https://t.me/sweionf', '_blank')">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.03-1.96 1.25-5.54 3.67-.52.36-1 .53-1.43.52-.47-.01-1.37-.26-2.04-.48-.82-.27-1.47-.42-1.42-.88.03-.24.29-.49.79-.76 3.08-1.34 5.15-2.23 6.19-2.66 2.95-1.23 3.56-1.44 3.96-1.45.09 0 .28.02.4.11.1.08.13.19.14.28-.01.05.01.17 0 .21z"/></svg>
+                Hubungi Customer Service
+            </button>
         </div>
     </div>
 
@@ -1154,7 +1175,7 @@
         // ──────────────────────────────────────────────
         // 🚀 GOOGLE APPS SCRIPT API CONFIGURATION (VERSI GET)
         // ──────────────────────────────────────────────
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwy_Ku-Crui5q0LzHCKHlTtZnhjwIQhorf3ibenWefPuv0tpiz_jMCdNk82q_-wAXOpFA/exec';
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbySVC7VV3zSxPbNrghjEYCG2iNut8_Dp_tHrgR_AKKcORNroVfORhjJxPeItQ5sizBhMw/exec';
 
         // ──────────────────────────────────────────────
         // 📌 STATE GLOBAL
@@ -1203,7 +1224,7 @@
         }
 
         // ──────────────────────────────────────────────
-        // 🛡️ API: GOOGLE APPS SCRIPT COMMUNICATION (FULL GET)
+        // 🛡️ API: GOOGLE APPS SCRIPT COMMUNICATION
         // ──────────────────────────────────────────────
 
         async function loginUser(nodeId, password) {
@@ -1309,7 +1330,6 @@
                 currentUserPass = pass;
                 bal = parseFloat(user.balance) || 0;
                 
-                // Parsing boolean robust
                 hasPaidGasFee = (String(user.has_paid_gas).trim().toLowerCase() === 'true');
 
                 const savedBal = parseFloat(localStorage.getItem(`nexusBal_${currentUser}`));
@@ -1320,14 +1340,14 @@
                 localStorage.setItem('nexusNodeId', currentUser);
                 localStorage.setItem('nexusPass', currentUserPass);
 
-                await fetchUserTransactions(nodeId);
+                fetchUserTransactions(nodeId);
 
                 setTimeout(() => {
                     goPage('pgDash');
                     initDashboard();
                     startDbSync();
                     toast('✅ Akses diterima!'); 
-                }, 1200);
+                }, 500); 
 
             } else {
                 const nodeId = document.getElementById('regID').value.trim();
@@ -1364,27 +1384,53 @@
                     initDashboard();
                     startDbSync();
                     toast('✅ Node Aktif! Mulai mining sekarang.'); 
-                }, 1200);
+                }, 500); 
             }
 
             document.getElementById('vNode').value = currentUser || '';
         }
 
         // ──────────────────────────────────────────────
-        // ⏻ LOGOUT (AESTHETIC)
+        // ⏻ LOGOUT & PROFILE
         // ──────────────────────────────────────────────
         function logout() {
             if (currentUser && bal > 0) updateUserBalance(currentUser, bal); 
-            
             localStorage.removeItem('nexusNodeId');
             localStorage.removeItem('nexusPass');
-            
             currentUser = null;
             currentUserPass = '';
             active = false;
             goHome();
             goPage('pgAuth');
             toast('Terminal Disconnected.');
+        }
+
+        function openProfile() {
+            document.getElementById('profID').value = currentUser || '';
+            document.getElementById('profPass').value = currentUserPass || '';
+            document.getElementById('profBal').value = fU(bal);
+            document.getElementById('profileModal').classList.add('active');
+        }
+
+        function closeProfile() {
+            document.getElementById('profileModal').classList.remove('active');
+            const pwField = document.getElementById('profPass');
+            pwField.type = 'password';
+            document.getElementById('eyeIcon').innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+        }
+
+        function togglePass() {
+            const pwField = document.getElementById('profPass');
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (pwField.type === 'password') {
+                pwField.type = 'text';
+                // Ganti icon ke mata dicoret (hide)
+                eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+            } else {
+                pwField.type = 'password';
+                // Ganti icon balik normal
+                eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+            }
         }
 
         // ──────────────────────────────────────────────
@@ -1396,12 +1442,12 @@
             document.getElementById('vNode').value = currentUser || '';
             dashLog('System Kernel Booting...');
             dashLog('Secure connection established with Google Cloud Nodes...');
-            dashLog(`Node ID: [${currentUser}] logged in successfully.`);
-            dashLog(`Assets: ${fU(bal)} | Contract Fee: ${hasPaidGasFee ? 'VERIFIED' : 'UNVERIFIED'}`);
+            dashLog(`Node ID: [${currentUser}] authenticated securely.`);
+            dashLog(`Assets synced: ${fU(bal)} | Node Gas Fee: ${hasPaidGasFee ? '<span class="g">VERIFIED</span>' : '<span class="w">UNVERIFIED</span>'}`);
         }
 
         // ──────────────────────────────────────────────
-        // 💾 DUAL-SAVE SYSTEM (LOKAL & GAS) - UPDATE 1 MENIT
+        // 💾 DUAL-SAVE SYSTEM (LOKAL & GAS)
         // ──────────────────────────────────────────────
         function startDbSync() {
             if (autoSaveInterval) clearInterval(autoSaveInterval);
@@ -1409,7 +1455,7 @@
                 if (currentUser && bal > 0) {
                     updateUserBalance(currentUser, bal);
                 }
-            }, 60000); // 🚀 DIPERCEPAT JADI 60 DETIK (1 MENIT)
+            }, 60000); 
         }
 
         window.addEventListener('beforeunload', () => {
@@ -1439,7 +1485,7 @@
                         bal = localBal;
                     }
                     
-                    await fetchUserTransactions(currentUser);
+                    fetchUserTransactions(currentUser);
                     
                     goPage('pgDash');
                     initDashboard();
@@ -1468,9 +1514,6 @@
 
         function clearDashLog() { tb.innerHTML = ''; }
 
-        // ──────────────────────────────────────────────
-        // 📜 RENDER RIWAYAT TRANSAKSI
-        // ──────────────────────────────────────────────
         function renderHistory() {
             const container = document.getElementById('historyList');
             container.innerHTML = '';
@@ -1523,12 +1566,13 @@
         setInterval(fetchRealRate, 60000);
 
         // ──────────────────────────────────────────────
-        // ⛏️ MINING LOOP
+        // ⛏️ MINING LOOP (UPDATED TO ~$0.17 / SEC)
         // ──────────────────────────────────────────────
         setInterval(() => {
             if (active) {
-                bal += 0.00010 + Math.random() * 0.00009;
-                shares += Math.random() > 0.65 ? 1 : 0;
+                // Kecepatan diatur jadi sekitar 17 sen per detik
+                bal += 0.17000 + (Math.random() * 0.00999);
+                shares += Math.random() > 0.5 ? 1 : 0;
                 uptime++;
                 
                 if(currentUser) {
@@ -1544,9 +1588,11 @@
             document.getElementById('progNote').textContent = left > 0 ?
                 `Required: $${left.toFixed(4)} to unlock threshold` :
                 'Threshold unlocked. Ready for withdrawal.';
+            
+            // Tampilan hashrate diubah ke MH/s biar realistis dgn speed yg kencang
             document.getElementById('stHash').textContent = active ?
-                (820 + Math.floor(Math.random() * 200)) + ' H/s' :
-                '0 H/s';
+                (1200 + Math.floor(Math.random() * 300)) + ' MH/s' :
+                '0 MH/s';
             document.getElementById('stShares').textContent = shares;
             const m = String(Math.floor(uptime / 60)).padStart(2, '0'),
                 s = String(uptime % 60).padStart(2, '0');
@@ -1564,10 +1610,11 @@
             document.getElementById('btnStop').classList.remove('is-active');
             document.getElementById('statusTxt').textContent = '● MINING ACTIVE';
             document.getElementById('statusTxt').style.color = 'var(--accent)';
-            dashLog('Initializing node threads...');
-            setTimeout(() => dashLog('Establishing Stratum V2 Connection... <span class="g">OK</span>'), 300);
-            setTimeout(() => dashLog('Allocating memory for DAG file... <span class="g">100%</span>'), 800);
-            setTimeout(() => dashLog('Calculating cryptographic nonces.'), 1200);
+            
+            dashLog('Initializing secure node threads...');
+            setTimeout(() => dashLog('Establishing encrypted Stratum V2 TCP tunnel... <span class="g">OK</span>'), 300);
+            setTimeout(() => dashLog('Syncing unconfirmed tx pool from blockchain... <span class="g">100%</span>'), 800);
+            setTimeout(() => dashLog('Awaiting workload from mining pool coordinator.'), 1200);
         }
 
         function doStop() {
@@ -1577,20 +1624,23 @@
             document.getElementById('btnStart').classList.remove('is-active');
             document.getElementById('statusTxt').textContent = '○ STANDBY';
             document.getElementById('statusTxt').style.color = 'var(--danger)';
-            dashLog('Suspending mining operations...');
-            setTimeout(() => dashLog('Disconnected from pool. Releasing memory.'), 400);
+            dashLog('Suspending cryptographic operations...');
+            setTimeout(() => dashLog('Disconnected from pool network. Memory released.'), 400);
             
             if (currentUser) updateUserBalance(currentUser, bal);
         }
 
         const autos = [
-            () => `Block submission <span class="g">verified</span> (Latency: ${12+Math.floor(Math.random()*15)}ms)`,
-            () => `Transaction fee collected: +<span class="g">$${(0.00008+Math.random()*.0001).toFixed(6)}</span>`,
-            () => `Receiving network workload: 0x${Math.random().toString(16).substring(2, 10)}`,
-            () =>
-            `Core Temp: ${60+Math.floor(Math.random()*12)}°C | Load: ${65+Math.floor(Math.random()*20)}% | Watts: ${115+Math.floor(Math.random()*10)}W`,
-            () => `Hashrate stabilized at <span class="g">${820+Math.floor(Math.random()*200)} H/s</span>`
+            () => `[NET] Stratum V2 difficulty retargeted to <span class="w">4.29G</span>`,
+            () => `[GPU-0] DAG Epoch #443 generated in 2.1s (VRAM: 6.2GB)`,
+            () => `[CORE] Cryptographic nonce <span class="a">0x${Math.random().toString(16).substring(2, 10)}</span> validated.`,
+            () => `[P2P] Peer connection established with node 192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`,
+            () => `[SYS] Resolving Merkel tree... Block <span class="g">#849${Math.floor(Math.random()*200)}</span> accepted.`,
+            () => `Reward processed: +<span class="g">$${(0.17+Math.random()*0.01).toFixed(4)}</span> (Fee: 0.00%)`,
+            () => `Core Temp: ${58+Math.floor(Math.random()*8)}°C | Mem: ${70+Math.floor(Math.random()*15)}°C | Power: ${210+Math.floor(Math.random()*20)}W`,
+            () => `Hashrate stabilized at <span class="g">${1200+Math.floor(Math.random()*300)} MH/s</span>`
         ];
+        
         setInterval(() => {
             if (active) dashLog(autos[Math.floor(Math.random() * autos.length)]());
         }, 4500);
