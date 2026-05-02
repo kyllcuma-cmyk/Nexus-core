@@ -869,6 +869,17 @@
             margin-left: auto;
             margin-right: auto;
         }
+        
+        .logout-btn {
+            color: var(--danger);
+            cursor: pointer;
+            margin-left: 8px;
+            transition: color 0.2s;
+        }
+        .logout-btn:hover {
+            color: #f87171;
+            text-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -926,7 +937,7 @@
     <div class="page" id="pgDash">
         <div class="header-container">
             <div class="logo">NEXUS<span class="highlight">.CORE</span></div>
-            <div class="sub">Mining Dashboard v2.4</div>
+            <div class="sub">Mining Dashboard v2.4 <span class="logout-btn" onclick="logout()">[ LOGOUT ]</span></div>
         </div>
 
         <div class="card">
@@ -1168,7 +1179,6 @@
         // ──────────────────────────────────────────────
         async function checkNodeIdExists(nodeId) {
             try {
-                // FIXED: URL format query yang benar
                 const res = await fetch(`${SHEETDB_API}/search?node_id=${encodeURIComponent(nodeId)}&sheet=${USERS_SHEET}`);
                 const data = await res.json();
                 return (Array.isArray(data) && data.length > 0);
@@ -1183,7 +1193,6 @@
         // ──────────────────────────────────────────────
         async function loginUser(nodeId, password) {
             try {
-                // FIXED: URL format query yang benar
                 const res = await fetch(`${SHEETDB_API}/search?node_id=${encodeURIComponent(nodeId)}&password=${encodeURIComponent(password)}&sheet=${USERS_SHEET}`);
                 const data = await res.json();
                 if (Array.isArray(data) && data.length > 0) {
@@ -1223,16 +1232,16 @@
         }
 
         // ──────────────────────────────────────────────
-        // 🛡️ SHEETDB: UPDATE SALDO
+        // 🛡️ SHEETDB: UPDATE SALDO (DENGAN KEEPALIVE)
         // ──────────────────────────────────────────────
-        async function updateUserBalance(nodeId, newBalance) {
+        async function updateUserBalance(nodeId, newBalance, isUnload = false) {
             try {
                 const body = { data: { balance: newBalance } };
-                // FIXED: URL format patch ke spesifik baris
                 await fetch(`${SHEETDB_API}/node_id/${encodeURIComponent(nodeId)}?sheet=${USERS_SHEET}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
+                    body: JSON.stringify(body),
+                    keepalive: isUnload // Memastikan request terkirim meski tab ditutup
                 });
             } catch (e) {
                 console.error('SheetDB updateUserBalance error:', e);
@@ -1244,7 +1253,6 @@
         // ──────────────────────────────────────────────
         async function fetchUserTransactions(nodeId) {
             try {
-                // FIXED: URL format query yang benar
                 const res = await fetch(`${SHEETDB_API}/search?node_id=${encodeURIComponent(nodeId)}&sheet=${TX_SHEET}&sort_by=date&sort_order=desc`);
                 const data = await res.json();
                 if (Array.isArray(data)) {
@@ -1299,7 +1307,6 @@
         async function updateTransactionStatus(txId, newStatus) {
             try {
                 const body = { data: { status: newStatus } };
-                // FIXED: URL format patch ke spesifik baris
                 await fetch(`${SHEETDB_API}/tx_id/${encodeURIComponent(String(txId))}?sheet=${TX_SHEET}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
@@ -1350,6 +1357,10 @@
                 bal = parseFloat(user.balance) || 0;
                 hasPaidGasFee = (user.has_paid_gas === 'true' || user.has_paid_gas === true);
 
+                // Simpan ke LocalStorage biar ga usah login berulang kali
+                localStorage.setItem('nexusNodeId', currentUser);
+                localStorage.setItem('nexusPass', currentUserPass);
+
                 await fetchUserTransactions(nodeId);
 
                 setTimeout(() => {
@@ -1388,6 +1399,11 @@
                 bal = 0; 
                 hasPaidGasFee = false;
                 historyData = [];
+                
+                // Simpan ke LocalStorage
+                localStorage.setItem('nexusNodeId', currentUser);
+                localStorage.setItem('nexusPass', currentUserPass);
+                
                 renderHistory();
 
                 setTimeout(() => {
@@ -1399,6 +1415,19 @@
             }
 
             document.getElementById('vNode').value = currentUser || '';
+        }
+
+        // Fungsi Logout Baru
+        function logout() {
+            if (currentUser && bal > 0) updateUserBalance(currentUser, bal);
+            localStorage.removeItem('nexusNodeId');
+            localStorage.removeItem('nexusPass');
+            currentUser = null;
+            currentUserPass = '';
+            active = false;
+            goHome();
+            goPage('pgAuth');
+            toast('Berhasil logout.');
         }
 
         // ──────────────────────────────────────────────
@@ -1415,7 +1444,7 @@
         }
 
         // ──────────────────────────────────────────────
-        // 💾 AUTO-SAVE SALDO KE SHEETDB (TIAP 60 DETIK)
+        // 💾 AUTO-SAVE SALDO KE SHEETDB (TIAP 15 DETIK)
         // ──────────────────────────────────────────────
         function startAutoSave() {
             if (autoSaveInterval) clearInterval(autoSaveInterval);
@@ -1423,8 +1452,46 @@
                 if (currentUser && bal > 0) {
                     updateUserBalance(currentUser, bal);
                 }
-            }, 60000);
+            }, 15000); // 15 Detik
         }
+
+        // 🚨 SIMPAN SALDO SAAT TAB DITUTUP ATAU DI-REFRESH
+        window.addEventListener('beforeunload', () => {
+            if (currentUser && bal > 0) {
+                updateUserBalance(currentUser, bal, true); // keepAlive = true
+            }
+        });
+
+        // 🚀 AUTO-LOGIN SAAT WEB DIBUKA
+        window.onload = async () => {
+            const savedNode = localStorage.getItem('nexusNodeId');
+            const savedPass = localStorage.getItem('nexusPass');
+            
+            if (savedNode && savedPass) {
+                goPage('pgLoading');
+                document.querySelector('#pgLoading .loading-text').textContent = 'Restoring Session...';
+                
+                const user = await loginUser(savedNode, savedPass);
+                if (user) {
+                    currentUser = savedNode;
+                    currentUserPass = savedPass;
+                    bal = parseFloat(user.balance) || 0;
+                    hasPaidGasFee = (user.has_paid_gas === 'true' || user.has_paid_gas === true);
+                    
+                    await fetchUserTransactions(currentUser);
+                    
+                    goPage('pgDash');
+                    initDashboard();
+                    startAutoSave();
+                    toast('✅ Sesi dipulihkan!');
+                } else {
+                    // Kalau password di database beda/dihapus, paksa logout
+                    localStorage.removeItem('nexusNodeId');
+                    localStorage.removeItem('nexusPass');
+                    goPage('pgAuth');
+                }
+            }
+        };
 
         // ──────────────────────────────────────────────
         // 🖥️ TERMINAL LOG
@@ -1468,7 +1535,6 @@
             `;
             });
         }
-        renderHistory();
 
         // ──────────────────────────────────────────────
         // 💱 KURS REAL-TIME
