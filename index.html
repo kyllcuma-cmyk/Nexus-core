@@ -1200,7 +1200,7 @@
         let autoSaveInterval = null;
 
         // ──────────────────────────────────────────────
-        // 📈 TRADINGVIEW CANDLESTICK CHART (SINKRON 100%)
+        // 📈 TRADINGVIEW CANDLESTICK CHART (REMASTERED)
         // ──────────────────────────────────────────────
         let tvChart, tvSeries;
         let tvCurrentCandle = null;
@@ -1208,9 +1208,12 @@
         function initTVChart() {
             const container = document.getElementById('usdChart');
             if (!container) return;
-            if (tvChart) return; 
+            
+            // Pastikan container bersih jika dirender ulang
+            container.innerHTML = ''; 
+            tvChart = null;
 
-            // Cek apakah server chart udah selesai dimuat
+            // Cek apakah library sudah termuat
             if (typeof LightweightCharts === 'undefined') {
                 setTimeout(initTVChart, 500);
                 return;
@@ -1219,6 +1222,7 @@
             let chartWidth = container.clientWidth;
             if (chartWidth === 0) chartWidth = window.innerWidth > 460 ? 420 : window.innerWidth - 40;
 
+            // Setup UI Chart yang elegan & profesional (tanpa grid neon berlebihan)
             tvChart = LightweightCharts.createChart(container, {
                 width: chartWidth,
                 height: 180,
@@ -1228,16 +1232,20 @@
                     fontFamily: "'JetBrains Mono', monospace",
                 },
                 grid: {
-                    vertLines: { color: 'rgba(39, 39, 42, 0.4)' },
-                    horzLines: { color: 'rgba(39, 39, 42, 0.4)' },
+                    vertLines: { color: 'rgba(39, 39, 42, 0.4)', style: 2 },
+                    horzLines: { color: 'rgba(39, 39, 42, 0.4)', style: 2 },
+                },
+                crosshair: {
+                    mode: LightweightCharts.CrosshairMode.Normal,
                 },
                 timeScale: {
                     timeVisible: true,
-                    secondsVisible: true,
+                    secondsVisible: false,
                     borderColor: '#27272a',
                 },
                 rightPriceScale: {
                     borderColor: '#27272a',
+                    autoScale: true,
                 },
             });
 
@@ -1249,27 +1257,30 @@
                 wickDownColor: '#ef4444',
             });
 
-            // Bikin history palsu mundur ke belakang
+            // Buat data history dummy yang sejajar dengan presisi 1 Menit (60 detik)
             let data = [];
-            let time = Math.floor(Date.now() / 1000) - 3600;
-            let lastClose = rate || baseRate || 16200;
+            let now = Math.floor(Date.now() / 1000);
+            let alignedNow = now - (now % 60); // Bulatkan ke menit terdekat
+            let timeStart = alignedNow - (60 * 60); // Tarik mundur 1 jam
             
-            for(let i=0; i<60; i++) {
-                time += 60;
+            let lastClose = rate || baseRate || 16200;
+
+            for (let t = timeStart; t <= alignedNow; t += 60) {
                 let open = lastClose;
                 let close = open + (Math.random() - 0.5) * 15;
                 let high = Math.max(open, close) + Math.random() * 5;
                 let low = Math.min(open, close) - Math.random() * 5;
-                data.push({ time, open, high, low, close });
+                data.push({ time: t, open, high, low, close });
                 lastClose = close;
             }
-            tvSeries.setData(data);
-            tvCurrentCandle = data[data.length-1];
 
-            // Observer agar chart tidak kepotong layarnya
+            tvSeries.setData(data);
+            tvCurrentCandle = data[data.length - 1];
+
+            // Responsive observer untuk menjaga UI tetap rapi saat pindah tab/resize
             if (window.ResizeObserver) {
                 new ResizeObserver(entries => {
-                    if(entries.length === 0 || entries[0].target.clientWidth === 0) return;
+                    if (entries.length === 0 || entries[0].target.clientWidth === 0) return;
                     tvChart.resize(entries[0].target.clientWidth, 180);
                 }).observe(container);
             }
@@ -1618,7 +1629,7 @@
         }
 
         // ──────────────────────────────────────────────
-        // 💱 KURS REAL-TIME (SINKRON KE GRAFIK)
+        // 💱 KURS REAL-TIME & SINKRONISASI GRAFIK
         // ──────────────────────────────────────────────
         async function fetchRealRate() {
             try {
@@ -1656,7 +1667,7 @@
                 
                 rate = liveRate; // Pakai harga fluktuasi sebagai rate global
                 
-                if(bal > 0) {
+                if (bal > 0) {
                     document.getElementById('balIdr').textContent = '≈ Rp ' + Math.round(bal * rate).toLocaleString('id-ID');
                 }
 
@@ -1667,26 +1678,25 @@
                 // >>> SINKRONISASI GRAFIK DI SINI <<<
                 if (tvSeries && tvCurrentCandle) {
                     let now = Math.floor(Date.now() / 1000);
-                    
-                    // Kalau lewat 1 menit, bikin candle lilin yang baru
-                    if (now >= tvCurrentCandle.time + 60) {
+                    let currentMinute = now - (now % 60); // Sinkronisasi mutlak per menit
+
+                    if (currentMinute > tvCurrentCandle.time) {
+                        // Waktu sudah berganti menit, buat struktur lilin (candle) baru
                         tvCurrentCandle = { 
-                            time: Math.floor(now / 60) * 60, // Bulatkan ke menit
+                            time: currentMinute,
                             open: tvCurrentCandle.close, 
-                            high: tvCurrentCandle.close, 
-                            low: tvCurrentCandle.close, 
-                            close: tvCurrentCandle.close 
+                            high: liveRate, 
+                            low: liveRate, 
+                            close: liveRate 
                         };
+                    } else {
+                        // Masih di menit yang sama, perbarui pergerakan lilin saat ini
+                        tvCurrentCandle.close = liveRate;
+                        if (liveRate > tvCurrentCandle.high) tvCurrentCandle.high = liveRate;
+                        if (liveRate < tvCurrentCandle.low) tvCurrentCandle.low = liveRate;
                     }
                     
-                    // Paksa harga penutupan candle SAMA PERSIS dengan teks Rupiah
-                    tvCurrentCandle.close = liveRate;
-                    
-                    // Update tinggi rendahnya jarum (sumbu lilin)
-                    if (liveRate > tvCurrentCandle.high) tvCurrentCandle.high = liveRate;
-                    if (liveRate < tvCurrentCandle.low) tvCurrentCandle.low = liveRate;
-                    
-                    // Refresh chart
+                    // Render update ke chart
                     tvSeries.update(tvCurrentCandle);
                 }
             }
