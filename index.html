@@ -6,7 +6,7 @@
     <title>⛏ NEXUS.CORE - Crypto Node Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
     
-    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     
     <style>
         :root {
@@ -1180,7 +1180,6 @@
         // ──────────────────────────────────────────────
         // 🚀 GOOGLE APPS SCRIPT API CONFIGURATION 
         // ──────────────────────────────────────────────
-        // LINK API BARU SESUAI PERMINTAAN
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzhbzNOlmEAOUkAfQSZ1U9eYTaChfqSpfChn8g58RkchRtF3-GEH0Mc6-i7U8_0QMQiLw/exec';
 
         // ──────────────────────────────────────────────
@@ -1193,7 +1192,7 @@
         let wallet = '';
         const MIN = 10;
         let rate = 0;
-        let lastRate = 0;
+        let baseRate = 0;
         let historyData = [];
         let currentUser = null;
         let currentUserPass = ''; 
@@ -1208,10 +1207,19 @@
 
         function initTVChart() {
             const container = document.getElementById('usdChart');
-            if (!container || tvChart) return;
+            if (!container) return;
+            if (tvChart) return; 
+
+            if (typeof LightweightCharts === 'undefined') {
+                setTimeout(initTVChart, 500);
+                return;
+            }
+
+            let chartWidth = container.clientWidth;
+            if (chartWidth === 0) chartWidth = window.innerWidth > 460 ? 420 : window.innerWidth - 40;
 
             tvChart = LightweightCharts.createChart(container, {
-                width: container.clientWidth,
+                width: chartWidth,
                 height: 180,
                 layout: {
                     background: { type: 'solid', color: 'transparent' },
@@ -1242,7 +1250,7 @@
 
             let data = [];
             let time = Math.floor(Date.now() / 1000) - 3600;
-            let lastClose = rate || 16200;
+            let lastClose = baseRate || 16200;
             
             for(let i=0; i<60; i++) {
                 time += 60;
@@ -1278,10 +1286,12 @@
                 tvSeries.update(tvCurrentCandle);
             }, 1500);
 
-            // Responsive sizing
-            window.addEventListener('resize', () => {
-                tvChart.resize(container.clientWidth, 180);
-            });
+            if (window.ResizeObserver) {
+                new ResizeObserver(entries => {
+                    if(entries.length === 0 || entries[0].target.clientWidth === 0) return;
+                    tvChart.resize(entries[0].target.clientWidth, 180);
+                }).observe(container);
+            }
         }
 
         // ──────────────────────────────────────────────
@@ -1316,15 +1326,12 @@
         // ──────────────────────────────────────────────
         // 🛡️ API: GOOGLE APPS SCRIPT COMMUNICATION
         // ──────────────────────────────────────────────
-
         async function loginUser(nodeId, password) {
             try {
                 const url = `${GAS_URL}?action=login&node_id=${encodeURIComponent(nodeId)}&password=${encodeURIComponent(password)}`;
                 const res = await fetch(url);
                 const data = await res.json();
-                if (Array.isArray(data) && data.length > 0) {
-                    return data[0];
-                }
+                if (Array.isArray(data) && data.length > 0) return data[0];
                 return null;
             } catch (e) {
                 console.error('GAS login error:', e);
@@ -1533,12 +1540,11 @@
             dashLog(`Node ID: [${currentUser}] authenticated securely.`);
             dashLog(`Assets synced: ${fU(bal)} | Node Gas Fee: ${hasPaidGasFee ? '<span class="g">VERIFIED</span>' : '<span class="w">UNVERIFIED</span>'}`);
             
-            // PANGGIL CHART DISINI
-            setTimeout(initTVChart, 100); 
+            setTimeout(initTVChart, 300); 
         }
 
         // ──────────────────────────────────────────────
-        // 💾 DUAL-SAVE SYSTEM (LOKAL & GAS)
+        // 💾 DUAL-SAVE SYSTEM
         // ──────────────────────────────────────────────
         function startDbSync() {
             if (autoSaveInterval) clearInterval(autoSaveInterval);
@@ -1631,33 +1637,56 @@
         }
 
         // ──────────────────────────────────────────────
-        // 💱 KURS REAL-TIME
+        // 💱 KURS REAL-TIME (LIVE FLUCTUATION)
         // ──────────────────────────────────────────────
         async function fetchRealRate() {
             try {
-                const res = await fetch('https://open.er-api.com/v6/latest/USD');
+                const res = await fetch('https://open.er-api.com/v6/latest/USD?_=' + new Date().getTime());
                 const data = await res.json();
                 if (data && data.rates && data.rates.IDR) {
-                    lastRate = rate === 0 ? data.rates.IDR : rate;
-                    rate = data.rates.IDR;
-                    const pct = lastRate > 0 ? ((rate - lastRate) / lastRate * 100).toFixed(2) : '0.00';
-                    const up = rate >= lastRate;
-                    document.getElementById('rateBig').textContent = fR(rate);
-                    document.getElementById('rateChange').textContent = (up ? '▲ +' : '▼ ') + Math.abs(pct) +
-                        '%';
-                    document.getElementById('rateChange').style.color = up ? 'var(--success)' : 'var(--danger)';
-                    document.getElementById('rateTs').textContent = 'Last synced: ' + ts();
+                    baseRate = data.rates.IDR;
+                    if (rate === 0) rate = baseRate;
+                    document.getElementById('rateTs').textContent = 'Live market stream connected...';
                     calcNom();
                 }
             } catch (e) {
                 document.getElementById('rateTs').textContent = 'API connection error... retrying';
             }
         }
+        
         fetchRealRate();
-        setInterval(fetchRealRate, 60000);
+        setInterval(fetchRealRate, 3600000); // Sinkronisasi API asli per 1 Jam
+
+        setInterval(() => {
+            if (baseRate > 0) {
+                // Micro Fluctuation Rp 5 - Rp 25 tiap detik
+                let tick = (Math.random() - 0.5) * 35;
+                let liveRate = baseRate + tick;
+                
+                document.getElementById('rateBig').textContent = 'Rp ' + liveRate.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                
+                let pct = ((liveRate - baseRate) / baseRate * 100).toFixed(3);
+                let isUp = liveRate >= baseRate;
+                
+                let changeEl = document.getElementById('rateChange');
+                changeEl.textContent = (isUp ? '▲ +' : '▼ ') + Math.abs(pct) + '%';
+                changeEl.style.color = isUp ? 'var(--success)' : 'var(--danger)';
+                
+                rate = liveRate; // Sync global rate
+                
+                if(bal > 0) {
+                    document.getElementById('balIdr').textContent = '≈ Rp ' + Math.round(bal * rate).toLocaleString('id-ID');
+                }
+
+                // Jika sedang di halaman Withdraw, update estimasi IDR secara live juga
+                if (document.getElementById('pgWd').classList.contains('active')) {
+                    calcNom();
+                }
+            }
+        }, 1200);
 
         // ──────────────────────────────────────────────
-        // ⛏️ MINING LOOP (UPDATED TO ~0.00079 - 0.00092 / SEC)
+        // ⛏️ MINING LOOP
         // ──────────────────────────────────────────────
         setInterval(() => {
             if (active) {
