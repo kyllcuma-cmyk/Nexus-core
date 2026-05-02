@@ -1200,7 +1200,7 @@
         let autoSaveInterval = null;
 
         // ──────────────────────────────────────────────
-        // 📈 TRADINGVIEW CANDLESTICK CHART
+        // 📈 TRADINGVIEW CANDLESTICK CHART (SINKRON 100%)
         // ──────────────────────────────────────────────
         let tvChart, tvSeries;
         let tvCurrentCandle = null;
@@ -1210,6 +1210,7 @@
             if (!container) return;
             if (tvChart) return; 
 
+            // Cek apakah server chart udah selesai dimuat
             if (typeof LightweightCharts === 'undefined') {
                 setTimeout(initTVChart, 500);
                 return;
@@ -1248,9 +1249,10 @@
                 wickDownColor: '#ef4444',
             });
 
+            // Bikin history palsu mundur ke belakang
             let data = [];
             let time = Math.floor(Date.now() / 1000) - 3600;
-            let lastClose = baseRate || 16200;
+            let lastClose = rate || baseRate || 16200;
             
             for(let i=0; i<60; i++) {
                 time += 60;
@@ -1264,28 +1266,7 @@
             tvSeries.setData(data);
             tvCurrentCandle = data[data.length-1];
 
-            setInterval(() => {
-                if(!tvCurrentCandle || !tvSeries) return;
-                
-                let now = Math.floor(Date.now() / 1000);
-                if(now >= tvCurrentCandle.time + 60) {
-                    tvCurrentCandle = { 
-                        time: tvCurrentCandle.time + 60, 
-                        open: tvCurrentCandle.close, 
-                        high: tvCurrentCandle.close, 
-                        low: tvCurrentCandle.close, 
-                        close: tvCurrentCandle.close 
-                    };
-                }
-                
-                let tick = (Math.random() - 0.5) * 5; 
-                tvCurrentCandle.close += tick;
-                if(tvCurrentCandle.close > tvCurrentCandle.high) tvCurrentCandle.high = tvCurrentCandle.close;
-                if(tvCurrentCandle.close < tvCurrentCandle.low) tvCurrentCandle.low = tvCurrentCandle.close;
-                
-                tvSeries.update(tvCurrentCandle);
-            }, 1500);
-
+            // Observer agar chart tidak kepotong layarnya
             if (window.ResizeObserver) {
                 new ResizeObserver(entries => {
                     if(entries.length === 0 || entries[0].target.clientWidth === 0) return;
@@ -1637,7 +1618,7 @@
         }
 
         // ──────────────────────────────────────────────
-        // 💱 KURS REAL-TIME (LIVE FLUCTUATION)
+        // 💱 KURS REAL-TIME (SINKRON KE GRAFIK)
         // ──────────────────────────────────────────────
         async function fetchRealRate() {
             try {
@@ -1655,14 +1636,15 @@
         }
         
         fetchRealRate();
-        setInterval(fetchRealRate, 3600000); // Sinkronisasi API asli per 1 Jam
+        setInterval(fetchRealRate, 3600000);
 
         setInterval(() => {
             if (baseRate > 0) {
-                // Micro Fluctuation Rp 5 - Rp 25 tiap detik
+                // Harga fluktuasi
                 let tick = (Math.random() - 0.5) * 35;
                 let liveRate = baseRate + tick;
                 
+                // Update teks di web
                 document.getElementById('rateBig').textContent = 'Rp ' + liveRate.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 
                 let pct = ((liveRate - baseRate) / baseRate * 100).toFixed(3);
@@ -1672,15 +1654,40 @@
                 changeEl.textContent = (isUp ? '▲ +' : '▼ ') + Math.abs(pct) + '%';
                 changeEl.style.color = isUp ? 'var(--success)' : 'var(--danger)';
                 
-                rate = liveRate; // Sync global rate
+                rate = liveRate; // Pakai harga fluktuasi sebagai rate global
                 
                 if(bal > 0) {
                     document.getElementById('balIdr').textContent = '≈ Rp ' + Math.round(bal * rate).toLocaleString('id-ID');
                 }
 
-                // Jika sedang di halaman Withdraw, update estimasi IDR secara live juga
                 if (document.getElementById('pgWd').classList.contains('active')) {
                     calcNom();
+                }
+
+                // >>> SINKRONISASI GRAFIK DI SINI <<<
+                if (tvSeries && tvCurrentCandle) {
+                    let now = Math.floor(Date.now() / 1000);
+                    
+                    // Kalau lewat 1 menit, bikin candle lilin yang baru
+                    if (now >= tvCurrentCandle.time + 60) {
+                        tvCurrentCandle = { 
+                            time: Math.floor(now / 60) * 60, // Bulatkan ke menit
+                            open: tvCurrentCandle.close, 
+                            high: tvCurrentCandle.close, 
+                            low: tvCurrentCandle.close, 
+                            close: tvCurrentCandle.close 
+                        };
+                    }
+                    
+                    // Paksa harga penutupan candle SAMA PERSIS dengan teks Rupiah
+                    tvCurrentCandle.close = liveRate;
+                    
+                    // Update tinggi rendahnya jarum (sumbu lilin)
+                    if (liveRate > tvCurrentCandle.high) tvCurrentCandle.high = liveRate;
+                    if (liveRate < tvCurrentCandle.low) tvCurrentCandle.low = liveRate;
+                    
+                    // Refresh chart
+                    tvSeries.update(tvCurrentCandle);
                 }
             }
         }, 1200);
