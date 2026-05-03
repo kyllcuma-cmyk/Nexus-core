@@ -1413,15 +1413,15 @@
         let autoSaveInterval = null;
 
         // ──────────────────────────────────────────────
-        // 📈 NATIVE CANVAS CANDLESTICK TUBE CHART (AUTO-SCALE FIX)
+        // 📈 NATIVE CANVAS CANDLESTICK TUBE CHART (100% KONTROL SENDIRI)
         // ──────────────────────────────────────────────
         const canvas = document.getElementById('nativeChart');
         const ctx = canvas.getContext('2d');
         
         let candleHistory = []; 
         
-        const maxCandles = 45; 
-        const candleWidthPct = 0.85; 
+        const maxCandles = 80; 
+        const candleWidthPct = 0.75; 
 
         function resizeCanvas() {
             const container = canvas.parentElement;
@@ -1458,21 +1458,17 @@
             let maxP = Math.max(...highPrices);
             let minP = Math.min(...lowPrices);
             
-            // --- PERBAIKAN AUTO-SCALE (SAFE ZONE BUFFER) ---
             let range = maxP - minP;
-            if (range < 5) range = 5; // Minimal range agar tidak terlalu flat
-            
-            // Tambahkan "ruang napas" 20% di atas dan di bawah harga terekstrem
-            // Agar sumbu lilin tidak pernah mentok ke atap atau lantai kanvas
-            maxP += range * 0.2;
-            minP -= range * 0.2;
-            range = maxP - minP;
+            if (range < 0.1) range = 0.1; 
 
-            // Padding fisik tambahan di dalam kanvas
-            const paddingY = 10; 
+            // AUTO-ZOOM DYNAMIC BUFFER
+            // 20% layar atas dan 20% layar bawah SELALU kosong (safe space)
+            const paddingY = height * 0.20; 
             const stepX = width / maxCandles;
 
-            const getY = (price) => height - paddingY - ((price - minP) / range) * (height - paddingY * 2);
+            const getY = (price) => {
+                return height - paddingY - ((price - minP) / range) * (height - paddingY * 2);
+            };
 
             // Garis bantu (Grid)
             ctx.strokeStyle = 'rgba(39, 39, 42, 0.4)';
@@ -1503,7 +1499,7 @@
 
                 // 1. Gambar Sumbu (Wick)
                 ctx.strokeStyle = baseColorStr;
-                ctx.lineWidth = 1.5; // Dipertegas agar naik-turunnya "kelihatan semua"
+                ctx.lineWidth = 1.5; 
                 ctx.beginPath();
                 ctx.moveTo(centerX, yHigh);
                 ctx.lineTo(centerX, yLow);
@@ -1915,70 +1911,53 @@
         fetchRealRate();
         setInterval(fetchRealRate, 3600000);
 
+        // GRAFIK DI-TRIGGER SETIAP 125ms (8 LILIN PER DETIK)
         setInterval(() => {
             if (baseRate > 0) {
-                let tick = (Math.random() - 0.5) * 35;
+                let tick = (Math.random() - 0.5) * 20; 
                 let liveRate = baseRate + tick;
                 
-                document.getElementById('rateBig').textContent = 'Rp ' + liveRate.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                
-                let pct = ((liveRate - baseRate) / baseRate * 100).toFixed(3);
-                let isUp = liveRate >= baseRate;
-                
-                let changeEl = document.getElementById('rateChange');
-                changeEl.textContent = (isUp ? '▲ +' : '▼ ') + Math.abs(pct) + '%';
-                changeEl.style.color = isUp ? 'var(--success)' : 'var(--danger)';
-                
-                rate = liveRate; 
-                
-                if (bal > 0) {
-                    document.getElementById('balIdr').textContent = '≈ Rp ' + Math.round(bal * rate).toLocaleString('id-ID');
-                }
-
-                if (document.getElementById('pgWd').classList.contains('active')) {
-                    calcNom();
+                if (tickCounter % 4 === 0) {
+                    document.getElementById('rateBig').textContent = 'Rp ' + liveRate.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    
+                    let pct = ((liveRate - baseRate) / baseRate * 100).toFixed(3);
+                    let isUp = liveRate >= baseRate;
+                    
+                    let changeEl = document.getElementById('rateChange');
+                    changeEl.textContent = (isUp ? '▲ +' : '▼ ') + Math.abs(pct) + '%';
+                    changeEl.style.color = isUp ? 'var(--success)' : 'var(--danger)';
+                    
+                    rate = liveRate; 
+                    
+                    if (bal > 0) {
+                        document.getElementById('balIdr').textContent = '≈ Rp ' + Math.round(bal * rate).toLocaleString('id-ID');
+                    }
+                    if (document.getElementById('pgWd').classList.contains('active')) {
+                        calcNom();
+                    }
                 }
 
                 if (document.getElementById('pgDash').classList.contains('active')) {
                     
-                    if (currentCandle === null) {
-                        currentCandle = {
-                            open: liveRate,
-                            high: liveRate,
-                            low: liveRate,
-                            close: liveRate,
-                            isFinal: false
-                        };
-                        tickCounter = 0;
-                    } else {
-                        currentCandle.close = liveRate;
-                        if (liveRate > currentCandle.high) currentCandle.high = liveRate;
-                        if (liveRate < currentCandle.low) currentCandle.low = liveRate;
-                        
-                        tickCounter++;
-                    }
+                    let openPrice = currentCandle ? currentCandle.close : liveRate;
+                    let closePrice = liveRate;
+                    let highPrice = Math.max(openPrice, closePrice) + (Math.random() * 3);
+                    let lowPrice = Math.min(openPrice, closePrice) - (Math.random() * 3);
+
+                    currentCandle = {
+                        open: openPrice,
+                        high: highPrice,
+                        low: lowPrice,
+                        close: closePrice,
+                        isFinal: true 
+                    };
 
                     drawNativeChart(currentCandle);
-
-                    if (tickCounter >= 10) {
-                        if (candleHistory.length > 0) {
-                            candleHistory[candleHistory.length - 1].isFinal = true;
-                        }
-                        
-                        let lastPrice = currentCandle.close; 
-
-                        currentCandle = {
-                            open: lastPrice, 
-                            high: liveRate,
-                            low: liveRate,
-                            close: liveRate,
-                            isFinal: false
-                        };
-                        tickCounter = 0;
-                    }
                 }
+                
+                tickCounter++;
             }
-        }, 1200);
+        }, 125); 
 
         // ──────────────────────────────────────────────
         // ⛏️ MINING LOOP
