@@ -62,7 +62,6 @@
            DASHBOARD & APP STYLES
            ========================================= */
 
-        /* TOMBOL DISCONNECT */
         .btn-logout {
             position: absolute;
             top: 24px;
@@ -90,7 +89,6 @@
         }
         .btn-logout svg { width: 12px; height: 12px; }
 
-        /* TOMBOL PROFIL */
         .btn-profile {
             position: absolute;
             top: 24px;
@@ -145,8 +143,9 @@
             letter-spacing: -0.5px;
         }
         .logo .highlight {
-            color: var(--accent);
-            text-shadow: 0 0 12px var(--accent-glow);
+            color: transparent;
+            -webkit-text-stroke: 1px var(--accent);
+            text-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
         }
         .sub {
             font-family: var(--font-mono);
@@ -289,7 +288,6 @@
             text-align: center;
         }
 
-        /* CUSTOM NATIVE CHART CSS */
         .chart-divider {
             width: 100%;
             border-top: 1px dashed var(--border);
@@ -413,6 +411,22 @@
         .btn-auth:hover {
             background: #08cceb;
             box-shadow: 0 0 16px var(--accent-glow);
+        }
+
+        .btn-info {
+            width: 100%;
+            max-width: 460px;
+            padding: 14px;
+            font-size: 0.8rem;
+            margin-bottom: 16px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+        .btn-info:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+            background: var(--accent-glow);
         }
 
         .term-wrap {
@@ -702,6 +716,51 @@
             padding: 12px;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 8px;
+        }
+
+        /* KHUSUS MODAL INFO PROTOKOL */
+        .badge-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .feat-box {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            text-align: left;
+        }
+        .feat-icon {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+        .feat-title {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .feat-desc {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            line-height: 1.4;
         }
 
         .info-box {
@@ -1028,6 +1087,8 @@
         </div>
 
         <button class="btn btn-wd" onclick="gotoWd()">Withdraw Funds</button>
+        
+        <button class="btn btn-info" onclick="openProtocolInfo()">ℹ️ About Protocol</button>
 
         <div class="card">
             <div class="card-head">
@@ -1047,6 +1108,44 @@
         </div>
 
         <footer>ENCRYPTED STRATUM TUNNEL · SHA-256 NETWORK · NODE OPTIMIZED</footer>
+    </div>
+
+    <div class="modal-overlay" id="protocolModal">
+        <div class="modal-box" style="text-align: center;">
+            <div class="modal-close" onclick="closeProtocolInfo()">✕</div>
+            
+            <div class="badge-live"><span class="dot-live" style="width: 6px; height: 6px;"></span> MAINNET V2 ACTIVE</div>
+            
+            <div class="modal-title" style="justify-content: center; font-size: 1.4rem; font-family: var(--font-mono); letter-spacing: -0.5px;">NEXUS<span class="highlight" style="color: transparent; -webkit-text-stroke: 1px var(--accent); text-shadow: 0 0 20px rgba(6, 182, 212, 0.3);">.CORE</span></div>
+            
+            <div class="modal-desc" style="background: transparent; padding: 0; margin-bottom: 24px; margin-top: 8px;">
+                Deploy secure smart-nodes, track real-time blockchain metrics, and earn crypto passively. Secure, encrypted, and synced with global markets.
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px;">
+                <div class="feat-box">
+                    <div class="feat-icon">🔒</div>
+                    <div>
+                        <div class="feat-title">End-to-End Security</div>
+                        <div class="feat-desc">Your credentials and node keys are protected by military-grade AES-256 encryption.</div>
+                    </div>
+                </div>
+                <div class="feat-box">
+                    <div class="feat-icon">⚡</div>
+                    <div>
+                        <div class="feat-title">Real-Time Sync</div>
+                        <div class="feat-desc">Market rates and node hashrates are synchronized live with the global blockchain.</div>
+                    </div>
+                </div>
+                <div class="feat-box">
+                    <div class="feat-icon">💸</div>
+                    <div>
+                        <div class="feat-title">Auto-Withdrawal</div>
+                        <div class="feat-desc">Easily route your crypto assets to local Fiat (IDR) via major E-Wallet gateways.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="page" id="pgWd">
@@ -1368,6 +1467,14 @@
         function goHome() {
             resetForm();
             goPage('pgDash');
+        }
+
+        function openProtocolInfo() {
+            document.getElementById('protocolModal').classList.add('active');
+        }
+
+        function closeProtocolInfo() {
+            document.getElementById('protocolModal').classList.remove('active');
         }
 
         // ──────────────────────────────────────────────
