@@ -6,8 +6,6 @@
     <title>⛏ NEXUS.CORE - Crypto Node Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
     
-    <script src="https://cdn.jsdelivr.net/npm/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
-    
     <style>
         :root {
             --bg-main: #09090b;
@@ -284,6 +282,21 @@
             font-size: 0.7rem;
             color: var(--text-muted);
             text-align: center;
+        }
+
+        /* CUSTOM NATIVE CHART CSS */
+        .chart-container {
+            width: 100%;
+            height: 160px;
+            margin-top: 24px;
+            border-top: 1px dashed var(--border);
+            padding-top: 16px;
+            position: relative;
+        }
+        canvas#nativeChart {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
 
         .stats-row {
@@ -985,7 +998,9 @@
                 <div class="rate-big" id="rateBig">Syncing API...</div>
                 <div class="rate-sub" id="rateTs">Fetching market data...</div>
                 
-                <div id="usdChart" style="width: 100%; height: 180px; margin-top: 24px; border-top: 1px dashed var(--border); padding-top: 16px;"></div>
+                <div class="chart-container">
+                    <canvas id="nativeChart"></canvas>
+                </div>
             </div>
         </div>
 
@@ -1200,89 +1215,114 @@
         let autoSaveInterval = null;
 
         // ──────────────────────────────────────────────
-        // 📈 TRADINGVIEW CANDLESTICK CHART (REMASTERED)
+        // 📈 NATIVE CANVAS CANDLESTICK TUBE CHART (100% KONTROL SENDIRI)
         // ──────────────────────────────────────────────
-        let tvChart, tvSeries;
-        let tvCurrentCandle = null;
+        const canvas = document.getElementById('nativeChart');
+        const ctx = canvas.getContext('2d');
+        
+        // HAPUS DUMMY DATA DI SINI. Biarkan array history kosong saat pertama load.
+        let candleHistory = []; 
+        
+        // --- PENGATURAN KERAPATAN LILIN ---
+        const maxCandles = 45; 
+        const candleWidthPct = 0.85; 
 
-        function initTVChart() {
-            const container = document.getElementById('usdChart');
-            if (!container) return;
-            
-            // Pastikan container bersih jika dirender ulang
-            container.innerHTML = ''; 
-            tvChart = null;
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth * window.devicePixelRatio;
+            canvas.height = container.clientHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            drawNativeChart();
+        }
 
-            // Cek apakah library sudah termuat
-            if (typeof LightweightCharts === 'undefined') {
-                setTimeout(initTVChart, 500);
-                return;
+        window.addEventListener('resize', resizeCanvas);
+
+        function drawNativeChart(currentOHLC = null) {
+            if (currentOHLC !== null) {
+                if (candleHistory.length > 0 && candleHistory[candleHistory.length - 1].isFinal === false) {
+                    candleHistory[candleHistory.length - 1] = currentOHLC;
+                } else {
+                    candleHistory.push(currentOHLC);
+                }
+
+                if (candleHistory.length > maxCandles) {
+                    candleHistory.shift(); 
+                }
             }
 
-            let chartWidth = container.clientWidth;
-            if (chartWidth === 0) chartWidth = window.innerWidth > 460 ? 420 : window.innerWidth - 40;
-
-            // Setup UI Chart yang elegan & profesional (tanpa grid neon berlebihan)
-            tvChart = LightweightCharts.createChart(container, {
-                width: chartWidth,
-                height: 180,
-                layout: {
-                    background: { type: 'solid', color: 'transparent' },
-                    textColor: '#a1a1aa',
-                    fontFamily: "'JetBrains Mono', monospace",
-                },
-                grid: {
-                    vertLines: { color: 'rgba(39, 39, 42, 0.4)', style: 2 },
-                    horzLines: { color: 'rgba(39, 39, 42, 0.4)', style: 2 },
-                },
-                crosshair: {
-                    mode: LightweightCharts.CrosshairMode.Normal,
-                },
-                timeScale: {
-                    timeVisible: true,
-                    secondsVisible: false,
-                    borderColor: '#27272a',
-                },
-                rightPriceScale: {
-                    borderColor: '#27272a',
-                    autoScale: true,
-                },
-            });
-
-            tvSeries = tvChart.addCandlestickSeries({
-                upColor: '#10b981',
-                downColor: '#ef4444',
-                borderVisible: false,
-                wickUpColor: '#10b981',
-                wickDownColor: '#ef4444',
-            });
-
-            // Buat data history dummy yang sejajar dengan presisi 1 Menit (60 detik)
-            let data = [];
-            let now = Math.floor(Date.now() / 1000);
-            let alignedNow = now - (now % 60); // Bulatkan ke menit terdekat
-            let timeStart = alignedNow - (60 * 60); // Tarik mundur 1 jam
+            const width = canvas.width / window.devicePixelRatio;
+            const height = canvas.height / window.devicePixelRatio;
             
-            let lastClose = rate || baseRate || 16200;
+            ctx.clearRect(0, 0, width, height);
 
-            for (let t = timeStart; t <= alignedNow; t += 60) {
-                let open = lastClose;
-                let close = open + (Math.random() - 0.5) * 15;
-                let high = Math.max(open, close) + Math.random() * 5;
-                let low = Math.min(open, close) - Math.random() * 5;
-                data.push({ time: t, open, high, low, close });
-                lastClose = close;
+            if (candleHistory.length < 2) return;
+
+            let highPrices = candleHistory.map(c => c.high);
+            let lowPrices = candleHistory.map(c => c.low);
+            let maxP = Math.max(...highPrices);
+            let minP = Math.min(...lowPrices);
+            let range = maxP - minP;
+            if (range === 0) range = 1; 
+
+            const paddingY = 15;
+            const stepX = width / maxCandles;
+
+            const getY = (price) => height - paddingY - ((price - minP) / range) * (height - paddingY * 2);
+
+            // Garis bantu (Grid)
+            ctx.strokeStyle = 'rgba(39, 39, 42, 0.4)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 4]);
+            for(let i=1; i<4; i++) {
+                let y = (height / 4) * i;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
             }
+            ctx.setLineDash([]); 
 
-            tvSeries.setData(data);
-            tvCurrentCandle = data[data.length - 1];
+            for (let i = 0; i < candleHistory.length; i++) {
+                const candle = candleHistory[i];
+                
+                // HITUNG POSISI X (HANYA DARI KIRI KE KANAN)
+                // Hapus logika shift-ke-kanan saat array belum penuh
+                let centerX = i * stepX + (stepX / 2);
 
-            // Responsive observer untuk menjaga UI tetap rapi saat pindah tab/resize
-            if (window.ResizeObserver) {
-                new ResizeObserver(entries => {
-                    if (entries.length === 0 || entries[0].target.clientWidth === 0) return;
-                    tvChart.resize(entries[0].target.clientWidth, 180);
-                }).observe(container);
+                const yHigh = getY(candle.high);
+                const yLow = getY(candle.low);
+                const yOpen = getY(candle.open);
+                const yClose = getY(candle.close);
+
+                const isBullish = candle.close >= candle.open;
+                const baseColorStr = isBullish ? 'rgb(16, 185, 129)' : 'rgb(239, 68, 68)'; 
+                const darkColorStr = isBullish ? 'rgb(4, 150, 95)' : 'rgb(200, 40, 40)';
+
+                // 1. Gambar Sumbu (Wick)
+                ctx.strokeStyle = baseColorStr;
+                ctx.lineWidth = 1; 
+                ctx.beginPath();
+                ctx.moveTo(centerX, yHigh);
+                ctx.lineTo(centerX, yLow);
+                ctx.stroke();
+
+                // 2. Gambar Tubuh Lilin (Body)
+                const bodyTop = Math.min(yOpen, yClose);
+                const bodyBottom = Math.max(yOpen, yClose);
+                let bodyHeight = bodyBottom - bodyTop;
+                if (bodyHeight < 2) bodyHeight = 2; 
+
+                const candleWidth = stepX * candleWidthPct;
+                const bodyLeft = centerX - (candleWidth / 2);
+
+                // --- EFEK TABUNG 3D GRADIENT ---
+                let gradient = ctx.createLinearGradient(bodyLeft, 0, bodyLeft + candleWidth, 0);
+                gradient.addColorStop(0, darkColorStr);   
+                gradient.addColorStop(0.5, baseColorStr); 
+                gradient.addColorStop(1, darkColorStr);   
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(bodyLeft, bodyTop, candleWidth, bodyHeight);
             }
         }
 
@@ -1532,7 +1572,13 @@
             dashLog(`Node ID: [${currentUser}] authenticated securely.`);
             dashLog(`Assets synced: ${fU(bal)} | Node Gas Fee: ${hasPaidGasFee ? '<span class="g">VERIFIED</span>' : '<span class="w">UNVERIFIED</span>'}`);
             
-            setTimeout(initTVChart, 300); 
+            // HAPUS PEMBUATAN DUMMY DATA.
+            // Biarkan candleHistory = [] (kosong) agar mulai merambat dari kiri ke kanan.
+            candleHistory = [];
+            
+            setTimeout(() => {
+                resizeCanvas(); 
+            }, 300); 
         }
 
         // ──────────────────────────────────────────────
@@ -1629,8 +1675,11 @@
         }
 
         // ──────────────────────────────────────────────
-        // 💱 KURS REAL-TIME & SINKRONISASI GRAFIK
+        // 💱 KURS REAL-TIME & SINKRONISASI GRAFIK CANDLE
         // ──────────────────────────────────────────────
+        let currentCandle = null; 
+        let tickCounter = 0; 
+
         async function fetchRealRate() {
             try {
                 const res = await fetch('https://open.er-api.com/v6/latest/USD?_=' + new Date().getTime());
@@ -1651,11 +1700,9 @@
 
         setInterval(() => {
             if (baseRate > 0) {
-                // Harga fluktuasi
                 let tick = (Math.random() - 0.5) * 35;
                 let liveRate = baseRate + tick;
                 
-                // Update teks di web
                 document.getElementById('rateBig').textContent = 'Rp ' + liveRate.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 
                 let pct = ((liveRate - baseRate) / baseRate * 100).toFixed(3);
@@ -1665,7 +1712,7 @@
                 changeEl.textContent = (isUp ? '▲ +' : '▼ ') + Math.abs(pct) + '%';
                 changeEl.style.color = isUp ? 'var(--success)' : 'var(--danger)';
                 
-                rate = liveRate; // Pakai harga fluktuasi sebagai rate global
+                rate = liveRate; 
                 
                 if (bal > 0) {
                     document.getElementById('balIdr').textContent = '≈ Rp ' + Math.round(bal * rate).toLocaleString('id-ID');
@@ -1675,29 +1722,44 @@
                     calcNom();
                 }
 
-                // >>> SINKRONISASI GRAFIK DI SINI <<<
-                if (tvSeries && tvCurrentCandle) {
-                    let now = Math.floor(Date.now() / 1000);
-                    let currentMinute = now - (now % 60); // Sinkronisasi mutlak per menit
-
-                    if (currentMinute > tvCurrentCandle.time) {
-                        // Waktu sudah berganti menit, buat struktur lilin (candle) baru
-                        tvCurrentCandle = { 
-                            time: currentMinute,
-                            open: tvCurrentCandle.close, 
-                            high: liveRate, 
-                            low: liveRate, 
-                            close: liveRate 
-                        };
-                    } else {
-                        // Masih di menit yang sama, perbarui pergerakan lilin saat ini
-                        tvCurrentCandle.close = liveRate;
-                        if (liveRate > tvCurrentCandle.high) tvCurrentCandle.high = liveRate;
-                        if (liveRate < tvCurrentCandle.low) tvCurrentCandle.low = liveRate;
-                    }
+                if (document.getElementById('pgDash').classList.contains('active')) {
                     
-                    // Render update ke chart
-                    tvSeries.update(tvCurrentCandle);
+                    if (currentCandle === null) {
+                        currentCandle = {
+                            open: liveRate,
+                            high: liveRate,
+                            low: liveRate,
+                            close: liveRate,
+                            isFinal: false
+                        };
+                        tickCounter = 0;
+                    } else {
+                        currentCandle.close = liveRate;
+                        if (liveRate > currentCandle.high) currentCandle.high = liveRate;
+                        if (liveRate < currentCandle.low) currentCandle.low = liveRate;
+                        
+                        tickCounter++;
+                    }
+
+                    drawNativeChart(currentCandle);
+
+                    // Pindah ke lilin baru setelah 10 tick (~12 detik)
+                    if (tickCounter >= 10) {
+                        if (candleHistory.length > 0) {
+                            candleHistory[candleHistory.length - 1].isFinal = true;
+                        }
+                        
+                        let lastPrice = currentCandle.close; // Wajib ambil harga tutup terakhir
+
+                        currentCandle = {
+                            open: lastPrice, // <-- KUNCI AGAR TETAP MENYAMBUNG SECARA REAL-TIME
+                            high: liveRate,
+                            low: liveRate,
+                            close: liveRate,
+                            isFinal: false
+                        };
+                        tickCounter = 0;
+                    }
                 }
             }
         }, 1200);
