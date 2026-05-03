@@ -446,8 +446,10 @@
         }
         .chart-container {
             width: 100%;
-            height: 180px; /* Ditinggikan agar lilin tidak mentok batas bawah */
+            height: 180px; 
             position: relative;
+            background: rgba(0,0,0,0.1);
+            border-radius: 8px;
         }
         canvas#nativeChart {
             width: 100%;
@@ -1411,7 +1413,7 @@
         let autoSaveInterval = null;
 
         // ──────────────────────────────────────────────
-        // 📈 NATIVE CANVAS CANDLESTICK TUBE CHART (100% KONTROL SENDIRI)
+        // 📈 NATIVE CANVAS CANDLESTICK TUBE CHART (AUTO-SCALE FIX)
         // ──────────────────────────────────────────────
         const canvas = document.getElementById('nativeChart');
         const ctx = canvas.getContext('2d');
@@ -1455,10 +1457,19 @@
             let lowPrices = candleHistory.map(c => c.low);
             let maxP = Math.max(...highPrices);
             let minP = Math.min(...lowPrices);
+            
+            // --- PERBAIKAN AUTO-SCALE (SAFE ZONE BUFFER) ---
             let range = maxP - minP;
-            if (range === 0) range = 1; 
+            if (range < 5) range = 5; // Minimal range agar tidak terlalu flat
+            
+            // Tambahkan "ruang napas" 20% di atas dan di bawah harga terekstrem
+            // Agar sumbu lilin tidak pernah mentok ke atap atau lantai kanvas
+            maxP += range * 0.2;
+            minP -= range * 0.2;
+            range = maxP - minP;
 
-            const paddingY = 20; // Ruang aman di atas dan bawah
+            // Padding fisik tambahan di dalam kanvas
+            const paddingY = 10; 
             const stepX = width / maxCandles;
 
             const getY = (price) => height - paddingY - ((price - minP) / range) * (height - paddingY * 2);
@@ -1492,7 +1503,7 @@
 
                 // 1. Gambar Sumbu (Wick)
                 ctx.strokeStyle = baseColorStr;
-                ctx.lineWidth = 1; 
+                ctx.lineWidth = 1.5; // Dipertegas agar naik-turunnya "kelihatan semua"
                 ctx.beginPath();
                 ctx.moveTo(centerX, yHigh);
                 ctx.lineTo(centerX, yLow);
