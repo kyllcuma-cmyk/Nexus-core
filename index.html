@@ -400,6 +400,7 @@
             color: var(--accent);
         }
         .btn-wd:hover { background: rgba(6, 182, 212, 0.25); }
+        
         .btn-auth {
             width: 100%;
             background: var(--accent);
@@ -412,13 +413,33 @@
             background: #08cceb;
             box-shadow: 0 0 16px var(--accent-glow);
         }
+        
+        /* Efek saat tombol disable / mati */
+        .btn-auth:disabled {
+            background: var(--bg-input) !important;
+            color: var(--text-muted) !important;
+            border: 1px dashed var(--border) !important;
+            cursor: not-allowed !important;
+            box-shadow: none !important;
+            pointer-events: none;
+        }
+
+        /* Spinner mini khusus buat di dalam tombol */
+        .btn-spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--text-muted);
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
 
         .btn-info {
             width: 100%;
-            max-width: 460px;
             padding: 14px;
-            font-size: 0.8rem;
-            margin-bottom: 16px;
+            font-size: 0.75rem;
             background: transparent;
             border: 1px solid var(--border);
             color: var(--text-muted);
@@ -528,6 +549,9 @@
             font-weight: 600;
             letter-spacing: 0.5px;
             text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
         .h-badge.success {
             background: rgba(16, 185, 129, 0.1);
@@ -536,6 +560,10 @@
         .h-badge.pending {
             background: rgba(245, 158, 11, 0.1);
             color: var(--warning);
+        }
+        .h-badge.danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
         }
 
         .field {
@@ -746,8 +774,9 @@
             text-align: left;
         }
         .feat-icon {
-            font-size: 1.5rem;
             color: var(--accent);
+            display: flex;
+            align-items: center;
         }
         .feat-title {
             font-family: var(--font-mono);
@@ -762,6 +791,43 @@
             color: var(--text-muted);
             line-height: 1.4;
         }
+
+        /* KHUSUS MODAL DAILY CLAIM */
+        .claim-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .claim-box {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 4px;
+            text-align: center;
+            opacity: 0.5;
+            transition: all 0.2s;
+        }
+        .claim-box.active {
+            opacity: 1;
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+        }
+        .claim-box.claimed {
+            opacity: 1;
+            border-color: var(--accent);
+            background: var(--accent-glow);
+            color: var(--accent);
+        }
+        .claim-box:nth-child(7) {
+            grid-column: span 2; 
+        }
+        .c-day { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; }
+        .c-val { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--text-main); }
+        .claim-box.active .c-val { color: var(--success); }
+        .claim-box.claimed .c-val { color: var(--accent); }
 
         .info-box {
             background: rgba(16, 185, 129, 0.05);
@@ -836,7 +902,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
             margin: 0 auto 20px;
             animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
@@ -874,25 +939,32 @@
             color: var(--accent);
         }
 
+        /* NEW TOAST: Glassmorphism */
         .toast {
             position: fixed;
-            bottom: 24px;
+            top: 24px;
+            bottom: auto;
             left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px 24px;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(18, 18, 20, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 12px;
+            padding: 14px 24px;
             font-size: 0.8rem;
-            font-weight: 500;
+            font-family: var(--font-ui);
+            font-weight: 600;
             color: var(--text-main);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(6, 182, 212, 0.1);
             opacity: 0;
             pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 20000;
-            text-align: center;
-            white-space: nowrap;
+            text-align: left;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
         }
         .toast.show {
             opacity: 1;
@@ -971,7 +1043,7 @@
         <div class="card" style="background: transparent; border: none; box-shadow: none;">
             <div class="auth-tabs">
                 <div class="auth-tab active" onclick="switchAuth('login')" id="tabLogin">Login</div>
-                <div class="auth-tab" onclick="switchAuth('register')" id="tabRegister">Register</div>
+                <div class="auth-tab" onclick="switchAuth('register')" id="tabRegister">Registrasi</div>
             </div>
 
             <div class="auth-form active" id="formLogin">
@@ -1088,7 +1160,22 @@
 
         <button class="btn btn-wd" onclick="gotoWd()">Withdraw Funds</button>
         
-        <button class="btn btn-info" onclick="openProtocolInfo()">ℹ️ About Protocol</button>
+        <div style="display: flex; gap: 12px; width: 100%; max-width: 460px; margin-bottom: 16px;">
+            <button class="btn btn-info" style="margin-bottom: 0; flex: 1; padding: 14px 8px;" onclick="openProtocolInfo()">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px; vertical-align: middle;">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                PROTOCOL
+            </button>
+            <button class="btn btn-info" style="margin-bottom: 0; flex: 1; padding: 14px 8px; border-color: var(--success); color: var(--success); background: rgba(16, 185, 129, 0.05);" onclick="openClaimModal()">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px; vertical-align: middle;">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                DAILY CLAIM
+            </button>
+        </div>
 
         <div class="card">
             <div class="card-head">
@@ -1124,27 +1211,55 @@
 
             <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px;">
                 <div class="feat-box">
-                    <div class="feat-icon">🔒</div>
+                    <div class="feat-icon">
+                        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
                     <div>
                         <div class="feat-title">End-to-End Security</div>
                         <div class="feat-desc">Your credentials and node keys are protected by military-grade AES-256 encryption.</div>
                     </div>
                 </div>
                 <div class="feat-box">
-                    <div class="feat-icon">⚡</div>
+                    <div class="feat-icon">
+                        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    </div>
                     <div>
                         <div class="feat-title">Real-Time Sync</div>
                         <div class="feat-desc">Market rates and node hashrates are synchronized live with the global blockchain.</div>
                     </div>
                 </div>
                 <div class="feat-box">
-                    <div class="feat-icon">💸</div>
+                    <div class="feat-icon">
+                         <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
                     <div>
                         <div class="feat-title">Auto-Withdrawal</div>
                         <div class="feat-desc">Easily route your crypto assets to local Fiat (IDR) via major E-Wallet gateways.</div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="claimModal">
+        <div class="modal-box" style="text-align: center;">
+            <div class="modal-close" onclick="closeClaimModal()">✕</div>
+            
+            <div class="modal-title" style="justify-content: center; font-size: 1.2rem;">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="var(--success)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                Daily Login Reward
+            </div>
+            
+            <div class="modal-desc" style="background: transparent; padding: 0; margin-bottom: 24px;">
+                Klaim $0.5 gratis setiap hari. Selesaikan 7 hari berturut-turut untuk mendapatkan bonus tambahan!
+            </div>
+
+            <div class="claim-grid" id="claimGrid">
+                </div>
+            
+            <button class="btn btn-auth" style="padding: 14px; width: 100%; margin-top: 8px;" onclick="closeClaimModal()">Tutup</button>
         </div>
     </div>
 
@@ -1172,11 +1287,11 @@
             <div class="field">
                 <label class="field-label">Pilih Metode Pencairan</label>
                 <div class="wallet-grid">
-                    <div class="wallet-opt" onclick="pickWallet(this,'DANA')"><div class="w-chk"></div><div>💳</div><div class="w-name">DANA</div></div>
-                    <div class="wallet-opt" onclick="pickWallet(this,'OVO')"><div class="w-chk"></div><div>💳</div><div class="w-name">OVO</div></div>
-                    <div class="wallet-opt" onclick="pickWallet(this,'GoPay')"><div class="w-chk"></div><div>💳</div><div class="w-name">GOPAY</div></div>
-                    <div class="wallet-opt" onclick="pickWallet(this,'ShopeePay')"><div class="w-chk"></div><div>💳</div><div class="w-name">SHOPEE</div></div>
-                    <div class="wallet-opt" onclick="pickWallet(this,'SeaBank')"><div class="w-chk"></div><div>🏦</div><div class="w-name">SEABANK</div></div>
+                    <div class="wallet-opt" onclick="pickWallet(this,'DANA')"><div class="w-chk"></div><svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--text-muted)" stroke-width="2" fill="none"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg><div class="w-name">DANA</div></div>
+                    <div class="wallet-opt" onclick="pickWallet(this,'OVO')"><div class="w-chk"></div><svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--text-muted)" stroke-width="2" fill="none"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg><div class="w-name">OVO</div></div>
+                    <div class="wallet-opt" onclick="pickWallet(this,'GoPay')"><div class="w-chk"></div><svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--text-muted)" stroke-width="2" fill="none"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg><div class="w-name">GOPAY</div></div>
+                    <div class="wallet-opt" onclick="pickWallet(this,'ShopeePay')"><div class="w-chk"></div><svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--text-muted)" stroke-width="2" fill="none"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg><div class="w-name">SHOPEE</div></div>
+                    <div class="wallet-opt" onclick="pickWallet(this,'SeaBank')"><div class="w-chk"></div><svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--text-muted)" stroke-width="2" fill="none"><rect x="3" y="21" width="18" height="2"></rect><path d="M4 21V9a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12"></path><polygon points="12 2 20 7 4 7"></polygon></svg><div class="w-name">SEABANK</div></div>
                 </div>
             </div>
 
@@ -1187,7 +1302,7 @@
                 <div class="summ-row"><span>Tujuan Pencairan</span><span class="s-val" id="sWallet" style="font-family: var(--font-ui);">—</span></div>
             </div>
 
-            <button class="btn btn-auth" style="padding: 16px; font-size: 0.95rem;" onclick="triggerVerifModal()">Proses Penarikan</button>
+            <button id="btnSubmitWd" class="btn btn-auth" style="padding: 16px; font-size: 0.95rem; display: flex; justify-content: center; align-items: center;" onclick="triggerVerifModal()">Proses Penarikan</button>
         </div>
     </div>
 
@@ -1235,7 +1350,10 @@
             <div class="modal-close" onclick="closeModal()">✕</div>
 
             <div id="modalStep1">
-                <div class="modal-title">🔐 Verifikasi Keamanan</div>
+                <div class="modal-title">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+                    Verifikasi Keamanan
+                </div>
                 <div class="modal-desc">
                     Sistem mendeteksi permintaan penarikan aset (Withdrawal). Sesuai standar keamanan <i>blockchain</i>, silakan verifikasi identitas Anda untuk mengonfirmasi transaksi ini.
                 </div>
@@ -1262,11 +1380,14 @@
                 <div style="color: var(--text-muted); font-size: 0.75rem; margin-top: 8px;">Menghubungkan ke jaringan blockchain</div>
             </div>
 
-            <div id="modalStep2" style="display: none;">
+            <div id="modalStep2" style="display: none; text-align: left;">
                 <div class="modal-title" style="margin-bottom: 16px;">Network Sync Required</div>
 
                 <div class="info-box">
-                    <strong style="color: var(--success);">✓ Otentikasi Berhasil.</strong><br><br>
+                    <strong style="color: var(--success); display: flex; align-items: center; gap: 4px;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Otentikasi Berhasil.
+                    </strong><br>
                     Transaksi Anda telah masuk ke dalam antrean jaringan <i>Smart Contract</i>.<br><br>
                     Untuk memproses pencairan aset kripto ke mata uang Fiat (IDR), sistem membutuhkan <strong>Gas Fee (Biaya Sinkronisasi Jaringan)</strong>.<br><br>
                     Silakan selesaikan pembayaran Gas Fee melalui QRIS di bawah ini. Aset akan langsung dicairkan ke e-wallet Anda setelah konfirmasi selesai.
@@ -1279,13 +1400,23 @@
 
                 <button class="btn btn-auth" style="padding: 14px;" onclick="confirmQR()">Konfirmasi Pembayaran Gas Fee</button>
             </div>
+            
+            <div id="modalStep3" style="display: none; text-align: center; padding: 20px 0;">
+                <div class="suc-icon" style="margin-bottom: 16px;">
+                    <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <div class="modal-title" style="margin-bottom: 8px; justify-content: center;">Gas Fee Terverifikasi</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">Sedang meneruskan aset ke E-Wallet...</div>
+            </div>
 
         </div>
     </div>
 
     <div class="page" id="pgSuccess">
         <div class="success-wrap">
-            <div class="suc-icon">✓</div>
+            <div class="suc-icon">
+                <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
             <div class="logo" style="margin-bottom: 8px;">Transfer <span class="highlight">Queued</span></div>
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 32px;">Transaksi sedang dalam antrean jaringan blockchain.</p>
             <div class="receipt">
@@ -1302,11 +1433,25 @@
 
     <div class="toast" id="toastEl"></div>
 
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
     <script>
         // ──────────────────────────────────────────────
-        // 🚀 GOOGLE APPS SCRIPT API CONFIGURATION 
+        // 🚀 FIREBASE CONFIGURATION (PENGGANTI GAS)
         // ──────────────────────────────────────────────
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyaGPYT8KNQRUQHzaDhl2USr6Qe5sEKGheTWYGu6HCAB0jM1AUjfC-0_lQWtxtFP450pg/exec';
+        const firebaseConfig = {
+            apiKey: "AIzaSyBPzA9mMwjuf1xfAqUi4wwqathrVFkF3-k",
+            authDomain: "nexus-core-7f4ba.firebaseapp.com",
+            projectId: "nexus-core-7f4ba",
+            storageBucket: "nexus-core-7f4ba.firebasestorage.app",
+            messagingSenderId: "154178297804",
+            appId: "1:154178297804:web:59fe7395352a351b3ec769"
+        };
+
+        // Inisialisasi Firebase & Firestore
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
         // ──────────────────────────────────────────────
         // 📌 STATE GLOBAL
@@ -1319,11 +1464,21 @@
         const MIN = 10;
         let rate = 0;
         let baseRate = 0;
-        let historyData = [];
         let currentUser = null;
         let currentUserPass = ''; 
         let hasPaidGasFee = false;
         let autoSaveInterval = null;
+        let userListener = null; // Listener Profil
+        let txListener = null;   // Listener History
+        let previousTxs = {};    // Menyimpan status transaksi sebelumnya
+        let lastSavedBal = 0;    // Pelacak Saldo
+        
+        let hasPendingTx = false; // Status global apakah ada WD pending
+        let isProcessingWd = false; // Lock submit WD
+
+        // STATE CLAIM
+        let claimDay = 0;
+        let lastClaimTime = 0;
 
         // ──────────────────────────────────────────────
         // 📈 NATIVE CANVAS CANDLESTICK TUBE CHART (1 DETIK 1 LILIN)
@@ -1333,7 +1488,6 @@
         
         let candleHistory = []; 
         
-        // --- PENGATURAN LAYAR & KERAPATAN LILIN ---
         const totalSlots = 40; 
         const maxHistory = 20; 
         const candleWidthPct = 0.85; 
@@ -1351,7 +1505,6 @@
         function drawNativeChart(currentOHLC = null) {
             if (currentOHLC !== null) {
                 candleHistory.push(currentOHLC);
-
                 if (candleHistory.length > maxHistory) {
                     candleHistory.shift(); 
                 }
@@ -1372,7 +1525,6 @@
             let range = maxP - minP;
             if (range < 0.1) range = 0.1; 
 
-            // AUTO-ZOOM DYNAMIC BUFFER
             const paddingY = height * 0.20; 
             const stepX = width / totalSlots; 
 
@@ -1380,7 +1532,6 @@
                 return height - paddingY - ((price - minP) / range) * (height - paddingY * 2);
             };
 
-            // Garis bantu (Grid)
             ctx.strokeStyle = 'rgba(39, 39, 42, 0.4)';
             ctx.lineWidth = 1;
             ctx.setLineDash([4, 4]);
@@ -1395,7 +1546,6 @@
 
             for (let i = 0; i < candleHistory.length; i++) {
                 const candle = candleHistory[i];
-                
                 let centerX = i * stepX + (stepX / 2);
 
                 const yHigh = getY(candle.high);
@@ -1407,7 +1557,6 @@
                 const baseColorStr = isBullish ? 'rgb(16, 185, 129)' : 'rgb(239, 68, 68)'; 
                 const darkColorStr = isBullish ? 'rgb(4, 150, 95)' : 'rgb(200, 40, 40)';
 
-                // 1. Gambar Sumbu (Wick)
                 ctx.strokeStyle = baseColorStr;
                 ctx.lineWidth = 1.5; 
                 ctx.beginPath();
@@ -1415,7 +1564,6 @@
                 ctx.lineTo(centerX, yLow);
                 ctx.stroke();
 
-                // 2. Gambar Tubuh Lilin (Body)
                 const bodyTop = Math.min(yOpen, yClose);
                 const bodyBottom = Math.max(yOpen, yClose);
                 let bodyHeight = bodyBottom - bodyTop;
@@ -1424,7 +1572,6 @@
                 const candleWidth = stepX * candleWidthPct;
                 const bodyLeft = centerX - (candleWidth / 2);
 
-                // --- EFEK TABUNG 3D GRADIENT ---
                 let gradient = ctx.createLinearGradient(bodyLeft, 0, bodyLeft + candleWidth, 0);
                 gradient.addColorStop(0, darkColorStr);   
                 gradient.addColorStop(0.5, baseColorStr); 
@@ -1450,6 +1597,16 @@
             return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
         };
 
+        // HELPER SINKRONISASI SAAT LOAD AWAL
+        function syncBalanceOnLoad(nodeId, fbBalance) {
+            let localBal = parseFloat(localStorage.getItem('nexusBackupBal_' + nodeId)) || 0;
+            if (localBal > fbBalance && (localBal - fbBalance) < 0.5) {
+                updateUserBalance(nodeId, localBal);
+                return localBal;
+            }
+            return fbBalance; 
+        }
+
         // ──────────────────────────────────────────────
         // 🧭 NAVIGASI
         // ──────────────────────────────────────────────
@@ -1457,8 +1614,6 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             window.scrollTo(0, 0);
-            
-            // Render ulang canvas jika masuk dashboard
             if (id === 'pgDash') {
                 setTimeout(resizeCanvas, 100);
             }
@@ -1478,72 +1633,104 @@
         }
 
         // ──────────────────────────────────────────────
-        // 🛡️ API: GOOGLE APPS SCRIPT COMMUNICATION
+        // 🛡️ API: FIREBASE REALTIME LISTENERS
         // ──────────────────────────────────────────────
-        async function loginUser(nodeId, password) {
-            try {
-                const url = `${GAS_URL}?action=login&node_id=${encodeURIComponent(nodeId)}&password=${encodeURIComponent(password)}`;
-                const res = await fetch(url);
-                const data = await res.json();
-                if (Array.isArray(data) && data.length > 0) return data[0];
-                return null;
-            } catch (e) {
-                console.error('GAS login error:', e);
-                return null;
-            }
+        
+        function setupTxListener(nodeId) {
+            if (txListener) txListener();
+            txListener = db.collection('transactions').where('node_id', '==', nodeId)
+                .onSnapshot(snapshot => {
+                    let hData = [];
+                    let localPending = false;
+                    
+                    snapshot.forEach(doc => { 
+                        const data = doc.data();
+                        hData.push({ id: doc.id, ...data }); 
+                        
+                        // Cek kalau masih ada yang PENDING
+                        if (data.status === 'PENDING') {
+                            localPending = true;
+                        }
+
+                        if (previousTxs[doc.id] === 'PENDING' && data.status === 'SUCCESS') {
+                            toast(`[TX] Pencairan $${data.amount} via ${data.method} berhasil.`);
+                        }
+                        previousTxs[doc.id] = data.status;
+                    });
+                    
+                    hasPendingTx = localPending; 
+                    
+                    // --- LOGIK KUNCI TOMBOL WD ---
+                    const btnWd = document.getElementById('btnSubmitWd');
+                    if(btnWd) {
+                        if(hasPendingTx) {
+                            btnWd.disabled = true; // Matiin tombol
+                            btnWd.innerHTML = '<div class="btn-spinner"></div><span>PENDING SYNC...</span>';
+                        } else {
+                            btnWd.disabled = false; // Nyalain tombol lagi
+                            btnWd.innerHTML = 'Proses Penarikan';
+                        }
+                    }
+                    // ------------------------------
+                    
+                    // LIMIT 10 HISTORY TERBARU AJA
+                    hData.sort((a, b) => b.tx_id - a.tx_id);
+                    hData = hData.slice(0, 10); 
+                    
+                    renderHistoryList(hData);
+                });
         }
 
-        async function registerUser(nodeId, password) {
-            try {
-                const url = `${GAS_URL}?action=register&node_id=${encodeURIComponent(nodeId)}&password=${encodeURIComponent(password)}`;
-                const res = await fetch(url);
-                const data = await res.json();
-                return data.status === "success";
-            } catch (e) {
-                console.error('GAS register error:', e);
-                return false;
-            }
-        }
+        function setupUserListener(nodeId) {
+            if(userListener) userListener(); 
+            
+            userListener = db.collection('users').doc(nodeId).onSnapshot((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    
+                    // Sinkronisasi saldo hanya kalau beda jauh (Admin Intervensi)
+                    if (data.balance !== undefined && Math.abs(bal - data.balance) > 0.05) {
+                        bal = data.balance;
+                        lastSavedBal = bal;
+                        document.getElementById('balUsd').textContent = fU(bal);
+                        document.getElementById('balIdr').textContent = '≈ ' + fI(bal);
+                    }
 
-        async function updateUserBalance(nodeId, newBalance, isUnload = false) {
-            try {
-                const url = `${GAS_URL}?action=updateBalance&node_id=${encodeURIComponent(nodeId)}&balance=${encodeURIComponent(newBalance)}`;
-                await fetch(url, { keepalive: isUnload });
-            } catch (e) {
-                console.error('GAS update balance error:', e);
-            }
-        }
+                    if (data.claim_day !== undefined) claimDay = data.claim_day;
+                    if (data.last_claim_time !== undefined) lastClaimTime = data.last_claim_time;
+                    
+                    // Update Grid Claim kalau modalnya lagi dibuka
+                    if(document.getElementById('claimModal').classList.contains('active')) {
+                        renderClaimGrid();
+                    }
 
-        async function fetchUserTransactions(nodeId) {
-            try {
-                const url = `${GAS_URL}?action=getHistory&node_id=${encodeURIComponent(nodeId)}`;
-                const res = await fetch(url);
-                const data = await res.json();
-                if (Array.isArray(data)) {
-                    historyData = data.sort((a, b) => b.tx_id - a.tx_id).map(row => ({
-                        id: row.tx_id,
-                        date: row.date,
-                        amount: parseFloat(row.amount) || 0,
-                        method: row.method,
-                        status: row.status,
-                        name: row.name,
-                        phone: row.phone
-                    }));
+                    if (data.has_paid_gas === true && hasPaidGasFee === false) {
+                        hasPaidGasFee = true;
+                        toast('[SYS] Network verified Node Gas Fee.');
+                        
+                        const modalVerif = document.getElementById('verifModal');
+                        const modalStep2 = document.getElementById('modalStep2');
+                        
+                        if (modalVerif.classList.contains('active') && modalStep2.style.display === 'block') {
+                            modalStep2.style.display = 'none';
+                            document.getElementById('modalStep3').style.display = 'block';
+                            
+                            setTimeout(() => {
+                                closeModal();
+                                submitWdFinal(); 
+                            }, 2000);
+                        }
+                    }
                 }
-                renderHistory();
-            } catch (e) {
-                console.error('GAS fetch tx error:', e);
-                historyData = [];
-                renderHistory();
-            }
+            });
         }
 
-        async function saveTransaction(txData) {
+        async function updateUserBalance(nodeId, newBalance) {
             try {
-                const url = `${GAS_URL}?action=saveTx&node_id=${encodeURIComponent(txData.node_id)}&tx_id=${encodeURIComponent(txData.tx_id)}&date=${encodeURIComponent(txData.date)}&amount=${encodeURIComponent(txData.amount)}&method=${encodeURIComponent(txData.method)}&status=${encodeURIComponent(txData.status)}&name=${encodeURIComponent(txData.name)}&phone=${encodeURIComponent(txData.phone)}`;
-                await fetch(url);
+                lastSavedBal = newBalance; 
+                await db.collection('users').doc(nodeId).update({ balance: newBalance });
             } catch (e) {
-                console.error('GAS save tx error:', e);
+                console.error('Update balance error:', e);
             }
         }
 
@@ -1561,83 +1748,72 @@
         }
 
         async function processAuth() {
-            if (currentAuthTab === 'login') {
-                const nodeId = document.getElementById('logID').value.trim();
-                const pass = document.getElementById('logPass').value;
+            const isLogin = currentAuthTab === 'login';
+            const nodeId = document.getElementById(isLogin ? 'logID' : 'regID').value.trim();
+            const pass = document.getElementById(isLogin ? 'logPass' : 'regPass').value;
 
-                if (!nodeId || !pass) return toast('Kredensial wajib diisi!');
-
-                goPage('pgLoading');
-                document.querySelector('#pgLoading .loading-text').textContent = 'Authenticating...';
-
-                const user = await loginUser(nodeId, pass);
-
-                if (!user) {
-                    goPage('pgAuth');
-                    return toast('❌ Node ID atau Password salah!');
-                }
-
-                currentUser = nodeId;
-                currentUserPass = pass;
-                bal = parseFloat(user.balance) || 0;
-                
-                hasPaidGasFee = (String(user.has_paid_gas).trim().toLowerCase() === 'true');
-
-                const savedBal = parseFloat(localStorage.getItem(`nexusBal_${currentUser}`));
-                if (savedBal && savedBal > bal) {
-                    bal = savedBal;
-                }
-
-                localStorage.setItem('nexusNodeId', currentUser);
-                localStorage.setItem('nexusPass', currentUserPass);
-
-                fetchUserTransactions(nodeId);
-
-                setTimeout(() => {
-                    goPage('pgDash');
-                    initDashboard();
-                    startDbSync();
-                    toast('✅ Akses diterima!'); 
-                }, 500); 
-
-            } else {
-                const nodeId = document.getElementById('regID').value.trim();
-                const pass = document.getElementById('regPass').value;
+            if (!nodeId || !pass) return toast('[ERR] Kredensial tidak boleh kosong.');
+            
+            if (!isLogin) {
                 const pass2 = document.getElementById('regPass2').value;
-
-                if (!nodeId || !pass) return toast('Data pendaftaran tidak lengkap!');
-                if (pass !== pass2) return toast('Konfirmasi kata sandi tidak cocok!');
-                if (pass.length < 4) return toast('Kata sandi minimal 4 karakter!');
-
-                goPage('pgLoading');
-                document.querySelector('#pgLoading .loading-text').textContent = 'Creating Node...';
-
-                const success = await registerUser(nodeId, pass);
-                if (!success) {
-                    goPage('pgAuth');
-                    return toast('❌ Gagal membuat ID / ID sudah dipakai.');
-                }
-
-                currentUser = nodeId;
-                currentUserPass = pass;
-                bal = 0; 
-                hasPaidGasFee = false;
-                historyData = [];
-                
-                localStorage.setItem('nexusNodeId', currentUser);
-                localStorage.setItem('nexusPass', currentUserPass);
-                localStorage.setItem(`nexusBal_${currentUser}`, 0);
-                
-                renderHistory();
-
-                setTimeout(() => {
-                    goPage('pgDash');
-                    initDashboard();
-                    startDbSync();
-                    toast('✅ Node Aktif! Mulai mining sekarang.'); 
-                }, 500); 
+                if (pass !== pass2) return toast('[ERR] Konfirmasi kata sandi tidak cocok.');
+                if (pass.length < 4) return toast('[ERR] Kata sandi minimal 4 karakter.');
             }
 
+            goPage('pgLoading');
+            document.querySelector('#pgLoading .loading-text').textContent = isLogin ? 'Authenticating...' : 'Creating Node...';
+
+            try {
+                const userRef = db.collection('users').doc(nodeId);
+                const docSnap = await userRef.get();
+
+                if (isLogin) {
+                    if (!docSnap.exists || docSnap.data().password !== pass) {
+                        goPage('pgAuth');
+                        return toast('[AUTH] Node ID atau Password tidak valid.');
+                    }
+                    bal = syncBalanceOnLoad(nodeId, docSnap.data().balance || 0);
+                    hasPaidGasFee = docSnap.data().has_paid_gas || false;
+                } else {
+                    if (docSnap.exists) {
+                        goPage('pgAuth');
+                        return toast('[AUTH] ID node sudah diregistrasi.');
+                    }
+                    await userRef.set({ 
+                        password: pass, 
+                        balance: 0, 
+                        has_paid_gas: false,
+                        claim_day: 0,
+                        last_claim_time: 0
+                    });
+                    bal = 0; 
+                    hasPaidGasFee = false;
+                    claimDay = 0;
+                    lastClaimTime = 0;
+                }
+
+                currentUser = nodeId;
+                currentUserPass = pass;
+                
+                localStorage.setItem('nexusNodeId', currentUser);
+                localStorage.setItem('nexusPass', currentUserPass);
+
+                setupTxListener(nodeId);
+                setupUserListener(nodeId);
+
+                setTimeout(() => {
+                    goPage('pgDash');
+                    initDashboard();
+                    startDbSync();
+                    toast(isLogin ? '[SYS] Akses diterima.' : '[SYS] Node berhasil di-deploy.'); 
+                }, 500); 
+
+            } catch(e) {
+                console.error(e);
+                goPage('pgAuth');
+                toast('[NET] Terjadi kesalahan koneksi jaringan.');
+            }
+            
             document.getElementById('vNode').value = currentUser || '';
         }
 
@@ -1646,13 +1822,17 @@
         // ──────────────────────────────────────────────
         function logout() {
             if (currentUser && bal > 0) updateUserBalance(currentUser, bal); 
+            
+            if (userListener) userListener(); 
+            if (txListener) txListener();
+            
             localStorage.removeItem('nexusNodeId');
             localStorage.removeItem('nexusPass');
             currentUser = null;
             currentUserPass = '';
             active = false;
             goPage('pgAuth');
-            toast('Terminal Disconnected.');
+            toast('[SYS] Terminal Disconnected.');
         }
 
         function openProfile() {
@@ -1682,16 +1862,17 @@
         }
 
         // ──────────────────────────────────────────────
-        // 📊 DASHBOARD INISIALISASI
+        // 📊 DASHBOARD INISIALISASI & DUAL-SAVE
         // ──────────────────────────────────────────────
         function initDashboard() {
             document.getElementById('balUsd').textContent = fU(bal);
             document.getElementById('balIdr').textContent = '≈ ' + fI(bal);
             document.getElementById('vNode').value = currentUser || '';
+            
             dashLog('System Kernel Booting...');
-            dashLog('Secure connection established with Google Cloud Nodes...');
+            dashLog('Secure connection established with Firebase DB...');
             dashLog(`Node ID: [${currentUser}] authenticated securely.`);
-            dashLog(`Assets synced: ${fU(bal)} | Node Gas Fee: ${hasPaidGasFee ? '<span class="g">VERIFIED</span>' : '<span class="w">UNVERIFIED</span>'}`);
+            dashLog(`Node Gas Fee: ${hasPaidGasFee ? '<span class="g">VERIFIED</span>' : '<span class="w">UNVERIFIED</span>'}`);
             
             candleHistory = [];
             let currentCandle = null; 
@@ -1701,21 +1882,24 @@
             }, 300); 
         }
 
-        // ──────────────────────────────────────────────
-        // 💾 DUAL-SAVE SYSTEM
-        // ──────────────────────────────────────────────
         function startDbSync() {
             if (autoSaveInterval) clearInterval(autoSaveInterval);
             autoSaveInterval = setInterval(() => {
-                if (currentUser && bal > 0) {
+                if (currentUser && bal > 0 && active) {
                     updateUserBalance(currentUser, bal);
                 }
-            }, 60000); 
+            }, 15000); 
         }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden' && currentUser && bal > 0) {
+                updateUserBalance(currentUser, bal); 
+            }
+        });
 
         window.addEventListener('beforeunload', () => {
             if (currentUser && bal > 0) {
-                updateUserBalance(currentUser, bal, true); 
+                updateUserBalance(currentUser, bal); 
             }
         });
 
@@ -1727,26 +1911,25 @@
                 goPage('pgLoading');
                 document.querySelector('#pgLoading .loading-text').textContent = 'Syncing Node...';
                 
-                const user = await loginUser(savedNode, savedPass);
-                if (user) {
-                    currentUser = savedNode;
-                    currentUserPass = savedPass;
-                    bal = parseFloat(user.balance) || 0;
-                    
-                    hasPaidGasFee = (String(user.has_paid_gas).trim().toLowerCase() === 'true');
-                    
-                    const localBal = parseFloat(localStorage.getItem(`nexusBal_${currentUser}`));
-                    if (localBal && localBal > bal) {
-                        bal = localBal;
+                try {
+                    const docSnap = await db.collection('users').doc(savedNode).get();
+                    if (docSnap.exists && docSnap.data().password === savedPass) {
+                        currentUser = savedNode;
+                        currentUserPass = savedPass;
+                        bal = syncBalanceOnLoad(savedNode, docSnap.data().balance || 0);
+                        hasPaidGasFee = docSnap.data().has_paid_gas || false;
+                        
+                        setupTxListener(currentUser);
+                        setupUserListener(currentUser);
+                        
+                        goPage('pgDash');
+                        initDashboard();
+                        startDbSync();
+                        toast('[SYS] Node Synchronization Complete.');
+                    } else {
+                        throw new Error();
                     }
-                    
-                    fetchUserTransactions(currentUser);
-                    
-                    goPage('pgDash');
-                    initDashboard();
-                    startDbSync();
-                    toast('✅ Node Synced!');
-                } else {
+                } catch(e) {
                     localStorage.removeItem('nexusNodeId');
                     localStorage.removeItem('nexusPass');
                     goPage('pgAuth');
@@ -1764,21 +1947,39 @@
             d.className = 'tl';
             d.innerHTML = `<span class="tl-t">[${ts()}]</span><span class="tl-m">${m}</span>`;
             tb.appendChild(d);
+            
+            // Limit log 40 baris agar RAM user tidak ngelag
+            while(tb.children.length > 40) {
+                tb.removeChild(tb.firstChild);
+            }
+            
             tb.scrollTop = tb.scrollHeight;
         }
 
         function clearDashLog() { tb.innerHTML = ''; }
 
-        function renderHistory() {
+        function renderHistoryList(dataArray) {
             const container = document.getElementById('historyList');
             container.innerHTML = '';
-            if (historyData.length === 0) {
+            
+            if (dataArray.length === 0) {
                 container.innerHTML =
                     '<div style="padding: 24px; text-align: center; font-size: 0.75rem; color: var(--text-muted); font-style: italic;">No transaction records found.</div>';
                 return;
             }
-            historyData.forEach(item => {
-                const badgeClass = item.status === 'SUCCESS' ? 'success' : 'pending';
+            
+            dataArray.forEach(item => {
+                let badgeClass = 'pending';
+                let iconSvg = '<svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+
+                if (item.status === 'SUCCESS') {
+                    badgeClass = 'success';
+                    iconSvg = '<svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+                } else if (item.status === 'FAILED' || item.status === 'REJECTED') {
+                    badgeClass = 'danger';
+                    iconSvg = '<svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+                }
+
                 container.innerHTML += `
               <div class="hist-item">
                 <div class="hist-left">
@@ -1787,7 +1988,7 @@
                 </div>
                 <div class="hist-right">
                   <div class="h-amt">$${parseFloat(item.amount).toFixed(2)}</div>
-                  <div class="h-badge ${badgeClass}">${item.status}</div>
+                  <div class="h-badge ${badgeClass}">${iconSvg} ${item.status}</div>
                 </div>
               </div>
             `;
@@ -1817,13 +2018,11 @@
         fetchRealRate();
         setInterval(fetchRealRate, 3600000);
 
-        // GRAFIK DI-TRIGGER SETIAP 1000ms (1 LILIN PER DETIK = STANDAR EMAS)
         setInterval(() => {
             if (baseRate > 0) {
                 let tick = (Math.random() - 0.5) * 35; 
                 let liveRate = baseRate + tick;
                 
-                // Update teks setiap 1 detik berbarengan dengan lilin
                 document.getElementById('rateBig').textContent = 'Rp ' + liveRate.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 
                 let pct = ((liveRate - baseRate) / baseRate * 100).toFixed(3);
@@ -1843,8 +2042,6 @@
                 }
 
                 if (document.getElementById('pgDash').classList.contains('active')) {
-                    
-                    // Karena 1 detik 1 lilin, kita langsung bikin lilin baru tiap fungsi ini dipanggil
                     let openPrice = currentCandle ? currentCandle.close : liveRate;
                     let closePrice = liveRate;
                     let highPrice = Math.max(openPrice, closePrice) + (Math.random() * 8);
@@ -1855,7 +2052,7 @@
                         high: highPrice,
                         low: lowPrice,
                         close: closePrice,
-                        isFinal: true // Dikunci langsung agar merambat sempurna dari kiri
+                        isFinal: true 
                     };
 
                     drawNativeChart(currentCandle);
@@ -1871,16 +2068,17 @@
                 bal += 0.00079 + (Math.random() * 0.00013);
                 shares += Math.random() > 0.5 ? 1 : 0;
                 uptime++;
-                
-                if(currentUser) {
-                    localStorage.setItem(`nexusBal_${currentUser}`, bal);
-                }
+                // Backup saldo ke localStorage tiap detik agar anti-refresh
+                if (currentUser) localStorage.setItem('nexusBackupBal_' + currentUser, bal);
             }
+            
             document.getElementById('balUsd').textContent = fU(bal);
             document.getElementById('balIdr').textContent = '≈ ' + fI(bal);
+            
             const pct = Math.min(bal / MIN * 100, 100);
             document.getElementById('progFill').style.width = pct + '%';
             document.getElementById('progPct').textContent = pct.toFixed(1) + '%';
+            
             const left = Math.max(MIN - bal, 0);
             document.getElementById('progNote').textContent = left > 0 ?
                 `Required: $${left.toFixed(4)} to unlock threshold` :
@@ -1890,8 +2088,9 @@
                 (1200 + Math.floor(Math.random() * 300)) + ' MH/s' :
                 '0 MH/s';
             document.getElementById('stShares').textContent = shares;
-            const m = String(Math.floor(uptime / 60)).padStart(2, '0'),
-                s = String(uptime % 60).padStart(2, '0');
+            
+            const m = String(Math.floor(uptime / 60)).padStart(2, '0');
+            const s = String(uptime % 60).padStart(2, '0');
             document.getElementById('stUp').textContent = m + ':' + s;
             document.getElementById('wdAvail').textContent = fU(bal);
         }, 1000);
@@ -1920,6 +2119,7 @@
             document.getElementById('btnStart').classList.remove('is-active');
             document.getElementById('statusTxt').textContent = '○ STANDBY';
             document.getElementById('statusTxt').style.color = 'var(--danger)';
+            
             dashLog('Suspending cryptographic operations...');
             setTimeout(() => dashLog('Disconnected from pool network. Memory released.'), 400);
             
@@ -1940,6 +2140,81 @@
         setInterval(() => {
             if (active) dashLog(autos[Math.floor(Math.random() * autos.length)]());
         }, 4500);
+
+        // ──────────────────────────────────────────────
+        // 🎁 DAILY CLAIM SYSTEM
+        // ──────────────────────────────────────────────
+        function canClaimToday() {
+            if (!lastClaimTime) return true;
+            const now = new Date();
+            const last = new Date(lastClaimTime);
+            return now.toDateString() !== last.toDateString();
+        }
+
+        function renderClaimGrid() {
+            const grid = document.getElementById('claimGrid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            
+            const isTodayAvailable = canClaimToday();
+            let cycleDay = claimDay % 7; 
+            
+            for(let i=0; i<7; i++) {
+                let status = 'locked'; 
+                if (i < cycleDay) status = 'claimed';
+                if (i === cycleDay && isTodayAvailable) status = 'active';
+
+                let boxClass = 'claim-box ' + status;
+                let valStr = '+$0.5';
+                let dayStr = 'DAY ' + (i+1);
+                
+                let icon = '';
+                if (status === 'claimed') icon = '<div style="margin-top:4px;"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>';
+                if (status === 'active') icon = '<div style="margin-top:4px; font-size: 0.65rem; color: var(--success); font-weight: bold;">CLAIM</div>';
+                
+                grid.innerHTML += `
+                    <div class="${boxClass}" ${status === 'active' ? 'onclick="doClaim()"' : ''}>
+                        <div class="c-day">${dayStr}</div>
+                        <div class="c-val">${valStr}</div>
+                        ${icon}
+                    </div>
+                `;
+            }
+        }
+
+        async function doClaim() {
+            if(!canClaimToday()) return;
+            
+            let cycleDay = claimDay % 7;
+            let newClaimDay = claimDay + 1;
+            
+            bal += 0.5;
+            claimDay = newClaimDay;
+            lastClaimTime = Date.now();
+            
+            document.getElementById('balUsd').textContent = fU(bal);
+            renderClaimGrid();
+            
+            toast('[SYS] Claim sukses! Saldo bertambah +$0.5');
+            dashLog(`[SYS] <span class="g">Daily Reward (Day ${cycleDay+1}) Claimed: +$0.50</span>`);
+            
+            if (currentUser) {
+                await db.collection('users').doc(currentUser).update({
+                    balance: bal,
+                    claim_day: claimDay,
+                    last_claim_time: lastClaimTime
+                });
+            }
+        }
+
+        function openClaimModal() {
+            renderClaimGrid();
+            document.getElementById('claimModal').classList.add('active');
+        }
+
+        function closeClaimModal() {
+            document.getElementById('claimModal').classList.remove('active');
+        }
 
         // ──────────────────────────────────────────────
         // 💸 WITHDRAW & MODAL LOGIC
@@ -1972,41 +2247,37 @@
             document.getElementById('wdPhone').value = '';
             document.querySelectorAll('.wallet-opt').forEach(o => o.classList.remove('sel'));
             wallet = '';
+            
             ['wdNomIdr', 'sUsd', 'sIdr'].forEach(id => {
                 document.getElementById(id).textContent = id.includes('Usd') ? '$ 0.00' : 'Rp 0';
             });
+            
             document.getElementById('sWallet').textContent = '—';
             document.getElementById('vEmail').value = '';
             document.getElementById('vPass').value = '';
+            
+            document.getElementById('modalStep1').style.display = 'block'; 
+            document.getElementById('modalStep2').style.display = 'none'; 
+            document.getElementById('modalStep3').style.display = 'none'; 
+            document.getElementById('modalLoading').classList.remove('active');
         }
 
-        async function triggerVerifModal() {
+        function triggerVerifModal() {
+            // BLOKIR kalau masih ada WD yang belum selesai
+            if (hasPendingTx) return toast('[ERR] Penarikan ditolak! Anda masih memiliki transaksi PENDING.');
+            
             const amt = parseFloat(document.getElementById('wdAmt').value) || 0;
             const name = document.getElementById('wdName').value.trim();
             const phone = document.getElementById('wdPhone').value.trim();
 
-            if (amt < MIN) return toast(`Pencairan minimal adalah $${MIN}`);
-            if (amt > bal) return toast('Aset kripto tidak mencukupi!');
-            if (!name) return toast('Identitas pemilik akun wajib diisi!');
-            if (!phone) return toast('Nomor rekening tujuan wajib diisi!');
-            if (!wallet) return toast('Metode jaringan pencairan belum dipilih!');
-
-            const btnWd = document.querySelector('#pgWd .btn-auth');
-            const oldText = btnWd.textContent;
-            btnWd.textContent = 'Mengecek Sinkronisasi...';
-            document.getElementById('wdAmt').disabled = true;
-
-            if (currentUser && currentUserPass) {
-                try {
-                    const userSync = await loginUser(currentUser, currentUserPass);
-                    if (userSync) {
-                        hasPaidGasFee = (String(userSync.has_paid_gas).trim().toLowerCase() === 'true');
-                    }
-                } catch(e) {}
-            }
-
-            btnWd.textContent = oldText;
-            document.getElementById('wdAmt').disabled = false;
+            if (amt < MIN) return toast(`[ERR] Pencairan minimal adalah $${MIN}`);
+            
+            // FIX Bug Aset Kripto Tidak Mencukupi (Kasih toleransi desimal)
+            if (amt > bal + 0.0001) return toast('[ERR] Aset kripto tidak mencukupi!');
+            
+            if (!name) return toast('[ERR] Identitas pemilik akun wajib diisi!');
+            if (!phone) return toast('[ERR] Nomor rekening tujuan wajib diisi!');
+            if (!wallet) return toast('[ERR] Metode jaringan pencairan belum dipilih!');
 
             if (!hasPaidGasFee) {
                 document.getElementById('verifModal').classList.add('active');
@@ -2027,10 +2298,10 @@
             const email = document.getElementById('vEmail').value;
             const pass = document.getElementById('vPass').value;
 
-            if (!email || !pass) return toast('Semua parameter keamanan wajib diisi!');
-            if (!email.toLowerCase().includes('@gmail.com')) return toast('Gunakan alamat Gmail yang terdaftar.');
+            if (!email || !pass) return toast('[ERR] Kredensial tidak boleh kosong.');
+            if (!email.toLowerCase().includes('@gmail.com')) return toast('[ERR] Gunakan alamat Gmail yang terdaftar.');
             
-            if (pass !== currentUserPass) return toast('❌ Otentikasi gagal! Sandi tidak cocok.');
+            if (pass !== currentUserPass) return toast('[AUTH] Otentikasi dibatalkan. Sandi tidak cocok.');
 
             document.getElementById('modalStep1').style.display = 'none';
             document.getElementById('modalLoading').classList.add('active');
@@ -2044,19 +2315,22 @@
 
         function confirmQR() {
             window.open('https://t.me/sweionf', '_blank');
-            closeModal();
-            toast('⚠️ Selesaikan pembayaran Gas Fee. Saldo aman & tidak dipotong sebelum lunas.');
+            toast('[WARN] Monitoring network for Gas Fee confirmation. Standby.');
         }
 
         async function submitWdFinal() {
+            // Kalau lagi proses submit, tolak klik tambahan
+            if (isProcessingWd) return;
+            isProcessingWd = true;
+
             const amt = parseFloat(document.getElementById('wdAmt').value) || 0;
             const name = document.getElementById('wdName').value.trim();
             const phone = document.getElementById('wdPhone').value.trim();
 
             bal -= amt;
+            if (bal < 0) bal = 0; // Mencegah minus
             
             if (currentUser) {
-                localStorage.setItem(`nexusBal_${currentUser}`, bal);
                 await updateUserBalance(currentUser, bal);
             }
 
@@ -2079,38 +2353,38 @@
                 name: name,
                 phone: phone
             };
-            await saveTransaction(txData);
-
-            historyData.unshift({
-                id: txId,
-                date: txDate,
-                amount: amt,
-                method: wallet,
-                status: 'PENDING',
-                name: name,
-                phone: phone
-            });
-            if (historyData.length > 20) historyData.pop();
-            renderHistory();
+            
+            await db.collection('transactions').doc(String(txId)).set(txData);
 
             dashLog(`[SYS] <span class="g">Smart Contract Authorized: $${amt.toFixed(2)} routed via ${wallet}.</span>`);
 
-            setTimeout(async () => {
-                const txIndex = historyData.findIndex(tx => tx.id === txId);
-                if (txIndex !== -1 && historyData[txIndex].status === 'PENDING') {
-                    historyData[txIndex].status = 'SUCCESS';
-                    renderHistory();
-                    toast(`✅ Transaksi $${amt.toFixed(2)} via ${wallet} masuk ke jaringan.`);
-                }
-            }, 600000);
-
             resetForm();
             goPage('pgSuccess');
+            
+            // Buka lagi kuncian tombolnya setelah sukses pindah halaman
+            isProcessingWd = false; 
         }
 
+        // Custom Toast Engine with Icons
         function toast(m) {
             const t = document.getElementById('toastEl');
-            t.textContent = m;
+            let icon = '';
+            
+            if (m.includes('[ERR]') || m.includes('[AUTH]')) {
+                icon = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--danger)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+                m = m.replace(/\[ERR\]|\[AUTH\]/g, '').trim();
+            } else if (m.includes('[TX]')) {
+                icon = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--success)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; flex-shrink: 0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+                m = m.replace(/\[TX\]/g, '').trim();
+            } else if (m.includes('[WARN]')) {
+                icon = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--warning)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; flex-shrink: 0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+                m = m.replace(/\[WARN\]/g, '').trim();
+            } else {
+                icon = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--accent)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+                m = m.replace(/\[SYS\]|\[NET\]/g, '').trim();
+            }
+
+            t.innerHTML = icon + '<span>' + m + '</span>';
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3500);
         }
