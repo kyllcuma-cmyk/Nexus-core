@@ -1784,7 +1784,8 @@
                         balance: 0, 
                         has_paid_gas: false,
                         claim_day: 0,
-                        last_claim_time: 0
+                        last_claim_time: 0,
+                        last_active: Date.now()
                     });
                     bal = 0; 
                     hasPaidGasFee = false;
@@ -1885,10 +1886,18 @@
         function startDbSync() {
             if (autoSaveInterval) clearInterval(autoSaveInterval);
             autoSaveInterval = setInterval(() => {
-                if (currentUser && bal > 0 && active) {
-                    updateUserBalance(currentUser, bal);
+                if (currentUser) {
+                    // Sinyal "Detak Jantung" ngasih tau admin kalau user ini Online
+                    db.collection('users').doc(currentUser).update({
+                        last_active: Date.now()
+                    }).catch(e => console.log(e));
+
+                    // Save saldo kalau lagi mining aktif
+                    if (bal > 0 && active) {
+                        updateUserBalance(currentUser, bal);
+                    }
                 }
-            }, 15000); 
+            }, 10000); // Ngirim sinyal tiap 10 detik
         }
 
         document.addEventListener('visibilitychange', () => {
