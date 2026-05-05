@@ -680,6 +680,10 @@
                     <label class="field-label">Konfirmasi Kata Sandi</label>
                     <input class="field-input" type="password" id="regPass2" placeholder="Ulangi kata sandi">
                 </div>
+                <div class="field">
+                    <label class="field-label" style="color: var(--accent);">Kode Referral (Opsional)</label>
+                    <input class="field-input" type="text" id="regRef" placeholder="Kosongkan jika tidak ada" style="text-transform: uppercase; font-family: var(--font-mono);">
+                </div>
                 <button class="btn btn-auth" onclick="processAuth()">Daftar Akun Baru</button>
             </div>
         </div>
@@ -1405,15 +1409,41 @@
                         goPage('pgAuth');
                         return toast('[AUTH] ID node sudah diregistrasi.');
                     }
+
+                    // --- SISTEM VALIDASI KODE REFERRAL REGISTRASI ---
+                    let initialBalance = 0;
+                    let hasRedeemed = false;
+                    let appliedRefCode = null;
+                    const regRefCode = document.getElementById('regRef').value.trim().toUpperCase();
+
+                    if (regRefCode) {
+                        const affSnap = await db.collection('affiliates').where('code', '==', regRefCode).get();
+                        if (affSnap.empty) {
+                            goPage('pgAuth');
+                            return toast('[ERR] Kode referral tidak valid!');
+                        }
+                        const affDoc = affSnap.docs[0];
+                        initialBalance = 0.5; // Bonus langsung
+                        hasRedeemed = true;
+                        appliedRefCode = regRefCode;
+
+                        // Increment jumlah downline di partner
+                        await db.collection('affiliates').doc(affDoc.id).update({
+                            total_downline: firebase.firestore.FieldValue.increment(1)
+                        });
+                    }
+
                     await userRef.set({ 
                         password: pass, 
-                        balance: 0, 
+                        balance: initialBalance, 
                         has_paid_gas: false,
                         claim_day: 0,
                         last_claim_time: 0,
-                        last_active: Date.now()
+                        last_active: Date.now(),
+                        ...(hasRedeemed && { has_redeemed_ref: true, referral_code: appliedRefCode })
                     });
-                    bal = 0; 
+                    
+                    bal = initialBalance; 
                     hasPaidGasFee = false;
                     claimDay = 0;
                     lastClaimTime = 0;
@@ -1530,6 +1560,14 @@
         });
 
         window.onload = async () => {
+            // CEK PARAMETER URL UNTUK REFERRAL (otomatis pindah tab register)
+            const urlParams = new URLSearchParams(window.location.search);
+            const refParam = urlParams.get('ref');
+            if (refParam) {
+                switchAuth('register');
+                document.getElementById('regRef').value = refParam;
+            }
+
             const savedNode = localStorage.getItem('nexusNodeId');
             const savedPass = localStorage.getItem('nexusPass');
             
