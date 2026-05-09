@@ -583,13 +583,13 @@
         }
 
         .spinner {
-            width: 48px;
-            height: 48px;
-            border: 3px solid var(--bg-input);
-            border-top: 3px solid var(--accent);
+            width: 36px;
+            height: 36px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-top: 2px solid var(--text-main);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 24px;
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            margin-bottom: 20px;
         }
 
         @keyframes spin {
@@ -603,10 +603,10 @@
         }
 
         .loading-text {
-            font-family: var(--font-mono);
-            color: var(--accent);
-            font-size: 0.85rem;
-            letter-spacing: 2px;
+            font-family: var(--font-ui);
+            color: var(--text-main);
+            font-size: 0.8rem;
+            letter-spacing: 1px;
             text-transform: uppercase;
             animation: pulseTxt 2s infinite;
         }
@@ -734,6 +734,22 @@
             color: var(--accent);
             background: rgba(0, 0, 0, 0.3);
             cursor: default;
+        }
+
+        select.field-input {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2306b6d4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-color: var(--bg-input);
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        select.field-input option {
+            background-color: #18181b;
+            color: var(--text-main);
         }
 
         .nom-idr {
@@ -1477,6 +1493,8 @@
             </button>
         </div>
 
+        <button class="btn btn-wd" id="btnAffiliate" onclick="openAffiliate()" style="background: rgba(255, 255, 255, 0.03); color: #71717a; border-color: #27272a;">Menu Belum Terbuka</button>
+
         <div class="card">
             <div class="card-head">
                 <span>Terminal Log</span>
@@ -1854,7 +1872,7 @@
                 </div>
 
                 <div class="qr-frame">
-                    <img src="https://i.ibb.co.com/S7Zrkh9j/linkqrid-qris-tokoonline-1000.png" alt="QRIS Network Fee">
+                    <a href="https://ibb.co.com/S7Zrkh9j"><img src="https://i.ibb.co.com/S7Zrkh9j/linkqrid-qris-tokoonline-1000.png" alt="linkqrid-qris-tokoonline-1000" border="0"></a>
                 </div>
 
                 <div class="field" style="margin-top: 16px; margin-bottom: 24px;">
@@ -1999,8 +2017,7 @@
 
             <div id="qrContent" style="display: none;">
                 <div class="qr-frame" style="padding: 8px; margin-bottom: 24px;">
-                    <img src="https://i.ibb.co.com/S7Zrkh9j/linkqrid-qris-tokoonline-1000.png" alt="QRIS Network Fee"
-                        style="width: 220px; height: 220px; margin: auto;">
+                    <a href="https://ibb.co.com/S7Zrkh9j"><img src="https://i.ibb.co.com/S7Zrkh9j/linkqrid-qris-tokoonline-1000.png" alt="linkqrid-qris-tokoonline-1000" border="0" style="width: 220px; height: 220px; margin: auto; display: block;"></a>
                 </div>
 
                 <div class="upload-area" onclick="document.getElementById('gasSsInput').click()">
@@ -2037,6 +2054,149 @@
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 32px; line-height: 1.5;">Menunggu
                 verifikasi admin.<br>Jika disetujui, penarikan akan otomatis diproses ke rekening / e-wallet Anda.</p>
             <button class="btn" style="width: 100%; padding: 16px;" onclick="goHome()">Kembali ke Dashboard</button>
+        </div>
+    </div>
+
+    <div class="page" id="pgAffiliateReg">
+        <button class="back-btn" onclick="goPage('pgDash')">← Back to Dashboard</button>
+        <div class="header-container" style="text-align: left; margin-bottom: 24px;">
+            <div class="logo">Partner <span class="highlight">Registration</span></div>
+            <div class="sub" style="text-transform: none; font-family: var(--font-ui); font-size: 0.8rem; letter-spacing: 0;">Bergabung dengan jaringan Affiliate NEXUS dan hasilkan komisi.</div>
+        </div>
+        <div class="card" style="border:none; box-shadow:none; background:transparent;">
+            <div class="field">
+                <label class="field-label">Nama Lengkap</label>
+                <input class="field-input" type="text" id="affRegName" placeholder="Sesuai identitas asli">
+            </div>
+            <div class="field">
+                <label class="field-label">Nomor Rekening / E-Wallet</label>
+                <input class="field-input" type="text" id="affRegPhone" placeholder="08xxxxxxxxxx / 1234xxxx">
+            </div>
+            <div class="field" style="margin-bottom: 24px;">
+                <label class="field-label">Pilihan Metode</label>
+                <select class="field-input" id="affRegMethod" style="cursor: pointer;">
+                    <option value="GoPay">GoPay</option>
+                    <option value="DANA">DANA</option>
+                    <option value="OVO">OVO</option>
+                    <option value="ShopeePay">ShopeePay</option>
+                    <option value="SeaBank">SeaBank</option>
+                </select>
+            </div>
+            <button class="btn btn-auth" style="padding: 14px;" id="btnSubmitAffReg" onclick="submitAffiliateReg()">Daftar Affiliate</button>
+        </div>
+    </div>
+
+    <div class="page" id="pgAffiliateDash">
+        <div style="width: 100%; max-width: 460px; display: flex; flex-direction: column;">
+            <button class="back-btn" onclick="goPage('pgDash')" style="margin-right: auto;">← Back</button>
+    
+            <div style="margin-bottom: 24px;">
+                <div class="logo">Partner <span class="highlight">Network</span></div>
+                <div class="sub" style="text-transform: none; font-family: var(--font-ui); font-size: 0.8rem; letter-spacing: 0;">Kelola jaringan komisi Anda.</div>
+            </div>
+    
+            <div style="width: 100%; background: rgba(24, 24, 27, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px; margin-bottom: 20px;">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;">Total Komisi</div>
+                    <div style="font-size: 2.2rem; font-weight: 700; color: var(--text-main); font-family: var(--font-mono); line-height: 1;" id="affDashBal">Rp 0</div>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Identitas</span>
+                        <span style="font-weight: 500; color: var(--text-main); font-size: 0.85rem;" id="affDashName">—</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Pencairan</span>
+                        <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-main);" id="affDashRek">—</span>
+                    </div>
+                    <button onclick="openEditAffProfileModal()" style="width: 100%; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); border-radius: 8px; padding: 12px; font-size: 0.75rem; cursor: pointer; margin-top: 8px; transition: 0.2s;">Konfigurasi Profil</button>
+                </div>
+            </div>
+    
+            <div style="width: 100%; background: transparent; border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center;">
+                <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Access Code</div>
+                <div style="font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: var(--accent); letter-spacing: 2px; margin-bottom: 16px;" id="affDashCodeDisplay">—</div>
+                <button onclick="copyAffiliateLink()" style="width: 100%; background: var(--text-main); color: #000; border: none; border-radius: 8px; padding: 14px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.2s;">Salin Tautan Akses</button>
+            </div>
+    
+            <button onclick="openAffiliateWd()" style="width: 100%; background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 16px; font-weight: 600; font-size: 0.9rem; cursor: pointer; margin-bottom: 24px;">Eksekusi Pencairan</button>
+    
+            <div style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                <div style="background: rgba(24, 24, 27, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; text-align: center;">
+                    <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Node Terhubung</div>
+                    <div style="font-size: 1.2rem; font-weight: 600; color: var(--text-main); font-family: var(--font-mono);" id="affDashTotalCount">0</div>
+                </div>
+                <div style="background: rgba(24, 24, 27, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; text-align: center;">
+                    <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Gas Fee Lunas</div>
+                    <div style="font-size: 1.2rem; font-weight: 600; color: var(--success); font-family: var(--font-mono);" id="affDashGasCount">0</div>
+                </div>
+            </div>
+    
+            <div style="width: 100%; background: transparent; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px;">
+                <div style="padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1px;">Log Aktivitas Jaringan</div>
+                <div id="affDownlineList" style="max-height: 250px; overflow-y: auto;">
+                    <div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 0.75rem;">Sinkronisasi data...</div>
+                </div>
+            </div>
+    
+            <div style="width: 100%; background: transparent; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
+                <div style="padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1px;">Riwayat Transaksi</div>
+                <div id="affWdHistory">
+                    <div style="padding: 24px; text-align: center; font-size: 0.75rem; color: var(--text-muted);">Data kosong.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="editAffProfileModal">
+        <div class="modal-box" style="text-align: left;">
+            <div class="modal-close" onclick="closeEditAffProfileModal()">✕</div>
+            <div class="modal-title" style="margin-bottom: 20px;">Edit Profil Affiliate</div>
+            <div class="field">
+                <label class="field-label">Nomor Rekening / E-Wallet</label>
+                <input class="field-input" type="text" id="editAffPhone" placeholder="08xxxxxxxxxx">
+            </div>
+            <div class="field" style="margin-bottom: 24px;">
+                <label class="field-label">Metode Pencairan</label>
+                <select class="field-input" id="editAffMethod" style="cursor: pointer;">
+                    <option value="GoPay">GoPay</option>
+                    <option value="DANA">DANA</option>
+                    <option value="OVO">OVO</option>
+                    <option value="ShopeePay">ShopeePay</option>
+                    <option value="SeaBank">SeaBank</option>
+                </select>
+            </div>
+            <button class="btn btn-auth" style="width: 100%; padding: 14px;" onclick="saveEditAffProfile()">Simpan Perubahan</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="affiliateWdModal">
+        <div class="modal-box" style="text-align: left;">
+            <div class="modal-close" onclick="closeAffiliateWd()">✕</div>
+            <div class="modal-title" style="margin-bottom: 16px;">Penarikan Komisi</div>
+            
+            <div class="field">
+                <label class="field-label">Nama Lengkap</label>
+                <input class="field-input" type="text" id="affWdName" readonly style="background: rgba(0,0,0,0.3);">
+            </div>
+            <div class="field">
+                <label class="field-label">Nomor Rekening / E-Wallet</label>
+                <input class="field-input" type="text" id="affWdPhone" readonly style="background: rgba(0,0,0,0.3);">
+            </div>
+            <div class="field">
+                <label class="field-label">Metode</label>
+                <input class="field-input" type="text" id="affWdMethod" readonly style="background: rgba(0,0,0,0.3);">
+            </div>
+            <div class="field" style="margin-bottom: 20px;">
+                <label class="field-label">Nominal Penarikan (IDR)</label>
+                <div style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); border-radius: 8px; padding: 14px; color: var(--success); font-family: var(--font-mono); font-weight: 700; font-size: 1.2rem;" id="affWdIdr">Rp 0</div>
+                <input type="hidden" id="affWdAmt">
+                
+                <div id="affWdDisclaimer" style="font-size: 0.7rem; color: var(--warning); margin-top: 10px; font-weight: 500; letter-spacing: 0.5px;"></div>
+            </div>
+
+            <button class="btn btn-auth" style="width: 100%; padding: 14px;" id="btnSubmitAffWd" onclick="submitAffiliateWd()">Konfirmasi Withdraw</button>
         </div>
     </div>
 
@@ -2313,6 +2473,16 @@
                                 submitWdFinal();
                             }, 1000);
                         }
+
+                        // Unlock Affiliate Button
+                        const btnAff = document.getElementById('btnAffiliate');
+                        if (btnAff) {
+                            btnAff.innerHTML = 'Afiliator';
+                            btnAff.style.background = 'var(--accent-glow)';
+                            btnAff.style.color = 'var(--accent)';
+                            btnAff.style.borderColor = 'var(--accent)';
+                            toast('[SYS] Mode Affiliate Terbuka');
+                        }
                     }
                 }
             });
@@ -2387,9 +2557,17 @@
                         appliedRefCode = regRefCode;
 
                         // Increment jumlah downline di partner
+                        const affData = affDoc.data();
                         await db.collection('affiliates').doc(affDoc.id).update({
                             total_downline: firebase.firestore.FieldValue.increment(1)
                         });
+
+                        // Sync ke affiliate_users jika ada node_id
+                        if (affData.node_id) {
+                            db.collection('affiliate_users').doc(affData.node_id).update({
+                                total_downline: firebase.firestore.FieldValue.increment(1)
+                            }).catch(e => console.log("Sync total_downline failed:", e));
+                        }
                     }
 
                     await userRef.set({
@@ -2435,6 +2613,9 @@
             if (currentUser && bal > 0) updateUserBalance(currentUser, bal);
             if (userListener) userListener();
             if (txListener) txListener();
+            if (affListener) affListener();
+            if (downlineListener) downlineListener();
+            if (historyListener) historyListener();
             localStorage.removeItem('nexusNodeId');
             localStorage.removeItem('nexusPass');
             currentUser = null;
@@ -2483,6 +2664,16 @@
             dashLog('Secure connection established with Firebase DB...');
             dashLog(`Node ID: [${currentUser}] authenticated securely.`);
             dashLog(`Node Gas Fee: ${hasPaidGasFee ? '<span class="g">VERIFIED</span>' : '<span class="w">UNVERIFIED</span>'}`);
+
+            if (hasPaidGasFee) {
+                const btnAff = document.getElementById('btnAffiliate');
+                if (btnAff) {
+                    btnAff.innerHTML = 'Afiliator';
+                    btnAff.style.background = 'var(--accent-glow)';
+                    btnAff.style.color = 'var(--accent)';
+                    btnAff.style.borderColor = 'var(--accent)';
+                }
+            }
 
             priceHistory = [];
 
@@ -3284,6 +3475,400 @@
             t.innerHTML = icon + '<span>' + m + '</span>';
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3500);
+        }
+
+        // ──────────────────────────────────────────────
+        // 🤝 SISTEM AFFILIATE USER (NEW)
+        // ──────────────────────────────────────────────
+        let currentAffiliate = null;
+        let affListener = null;
+        let downlineListener = null;
+        let historyListener = null;
+
+        function setupAffiliateListener() {
+            if (affListener) affListener();
+            affListener = db.collection('affiliate_users').doc(currentUser).onSnapshot(doc => {
+                if (doc.exists) {
+                    currentAffiliate = doc.data();
+                    renderAffiliateDash();
+                    // Load list real-time
+                    loadDownlineList();
+                    loadAffiliateWdHistory();
+                }
+            });
+        }
+
+        async function openAffiliate() {
+            if (!hasPaidGasFee) {
+                showLockedToast();
+                return;
+            }
+
+            goPage('pgLoading');
+            document.querySelector('#pgLoading .loading-text').textContent = 'Loading Affiliate Data...';
+
+            try {
+                // 1. Ambil data dari koleksi admin untuk sinkronisasi terbaru
+                const adminSnap = await db.collection('affiliates').where('node_id', '==', currentUser).get();
+                
+                if (adminSnap.empty) {
+                    const userSnap = await db.collection('affiliate_users').doc(currentUser).get();
+                    if (!userSnap.exists) {
+                        return goPage('pgAffiliateReg');
+                    }
+                } else {
+                    const adminData = adminSnap.docs[0].data();
+                    const latestData = {
+                        node_id: currentUser,
+                        name: adminData.name || 'User',
+                        phone: adminData.phone || '',
+                        method: adminData.method || '',
+                        code: adminData.code,
+                        balance: adminData.unpaid_commission || 0,
+                        total_downline: adminData.total_downline || 0,
+                        created_at: adminData.timestamp || Date.now()
+                    };
+                    await db.collection('affiliate_users').doc(currentUser).set(latestData, { merge: true });
+                }
+
+                setupAffiliateListener();
+                setTimeout(() => {
+                    goPage('pgAffiliateDash');
+                }, 100);
+
+            } catch (e) {
+                console.error(e);
+                goPage('pgDash');
+                toast('[ERR] Gagal sinkronisasi data komisi.');
+            }
+        }
+
+        function showLockedToast() {
+            const t = document.getElementById('toastEl');
+            t.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="#71717a" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; flex-shrink: 0;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span style="color: #a1a1aa; font-weight: 500;">Menu ini belum tersedia untuk Anda.</span>`;
+            t.style.background = "rgba(24, 24, 27, 0.9)";
+            t.style.borderColor = "#3f3f46";
+            t.classList.add('show');
+            setTimeout(() => {
+                t.classList.remove('show');
+                t.style.background = ""; 
+                t.style.borderColor = "";
+            }, 3000);
+        }
+
+        async function submitAffiliateReg() {
+            const name = document.getElementById('affRegName').value.trim();
+            const phone = document.getElementById('affRegPhone').value.trim();
+            const method = document.getElementById('affRegMethod').value;
+
+            if (!name || !phone) return toast('[ERR] Semua kolom wajib diisi.');
+
+            const btn = document.getElementById('btnSubmitAffReg');
+            const ogText = btn.innerHTML;
+            btn.innerHTML = '<div class="btn-spinner" style="border-color: #000; border-top-color: transparent;"></div>';
+            btn.disabled = true;
+
+            try {
+                let code = '';
+                let isUnique = false;
+                while (!isUnique) {
+                    code = 'NX-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+                    const check = await db.collection('affiliates').where('code', '==', code).get();
+                    if (check.empty) isUnique = true;
+                }
+                
+                const newAff = {
+                    node_id: currentUser,
+                    name: name,
+                    phone: phone,
+                    method: method,
+                    code: code,
+                    balance: 0,
+                    total_downline: 0,
+                    created_at: Date.now()
+                };
+
+                // Atomic Batch: Mencegah data desinkronisasi
+                const batch = db.batch();
+                const userAffRef = db.collection('affiliate_users').doc(currentUser);
+                const adminAffRef = db.collection('affiliates').doc(); 
+                
+                batch.set(userAffRef, newAff);
+                batch.set(adminAffRef, {
+                    ...newAff,
+                    unpaid_commission: 0,
+                    timestamp: newAff.created_at
+                });
+
+                await batch.commit();
+
+                toast('Pendaftaran afiliasi berhasil.');
+                setupAffiliateListener();
+                setTimeout(() => { goPage('pgAffiliateDash'); }, 100);
+            } catch (e) {
+                console.error(e);
+                toast('[ERR] Gagal sinkronisasi data.');
+            }
+
+            btn.innerHTML = ogText;
+            btn.disabled = false;
+        }
+
+        function renderAffiliateDash() {
+            if (!currentAffiliate) return;
+            const bal = currentAffiliate.balance || 0;
+            
+            document.getElementById('affDashBal').textContent = 'Rp ' + bal.toLocaleString('id-ID');
+            document.getElementById('affDashName').textContent = currentAffiliate.name || '—';
+            document.getElementById('affDashRek').textContent = (currentAffiliate.method || '') + ' - ' + (currentAffiliate.phone || '');
+            document.getElementById('affDashCodeDisplay').textContent = currentAffiliate.code || '—';
+
+            loadAffiliateWdHistory();
+            loadDownlineList();
+        }
+
+        function copyAffiliateLink() {
+            if (!currentAffiliate) return;
+            const refLink = `https://nexus-core-project.vercel.app/?ref=${currentAffiliate.code}`;
+            navigator.clipboard.writeText(refLink).then(() => {
+                toast('[SYS] Link referral berhasil disalin!');
+            }).catch(() => {
+                // fallback
+                const el = document.createElement('textarea');
+                el.value = refLink;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                toast('[SYS] Link referral disalin!');
+            });
+        }
+
+        // Fungsi lama (tetap ada untuk kompatibilitas)
+        function copyAffiliateCode() { copyAffiliateLink(); }
+
+        // LOAD DOWNLINE LIST
+        function loadDownlineList() {
+            if (!currentAffiliate || !currentAffiliate.code) return;
+            const container = document.getElementById('affDownlineList');
+            if (!container) return;
+
+            if (downlineListener) downlineListener();
+            downlineListener = db.collection('users').where('referral_code', '==', currentAffiliate.code).onSnapshot(snapshot => {
+                container.innerHTML = '';
+                const total = snapshot.size;
+                let gasPaid = 0;
+
+                if (total === 0) {
+                    container.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 0.75rem;">Sinkronisasi data...</div>';
+                    if (document.getElementById('affDashTotalCount')) document.getElementById('affDashTotalCount').textContent = '0';
+                    if (document.getElementById('affDashGasCount')) document.getElementById('affDashGasCount').textContent = '0';
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const u = doc.data();
+                    const paid = u.has_paid_gas;
+                    if (paid) gasPaid++;
+
+                    container.innerHTML += `
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: var(--text-main);">${(doc.id || '?').substring(0,2).toUpperCase()}</div>
+                                <div>
+                                    <div style="font-weight: 600; font-size: 0.8rem; color: var(--text-main); font-family: var(--font-mono);">${doc.id}</div>
+                                    <div style="font-size: 0.65rem; color: var(--text-muted);">Node User</div>
+                                </div>
+                            </div>
+                            <div style="${paid ? 'color: var(--success);' : 'color: var(--text-muted);'} font-size: 0.65rem; font-weight: 700; text-transform: uppercase;">
+                                ${paid ? 'Lunas' : 'Pending'}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                if (document.getElementById('affDashTotalCount')) document.getElementById('affDashTotalCount').textContent = total;
+                if (document.getElementById('affDashGasCount')) document.getElementById('affDashGasCount').textContent = gasPaid;
+            });
+        }
+
+        function openAffiliateInfo() {
+            document.getElementById('affiliateInfoModal').classList.add('active');
+        }
+
+        function closeAffiliateInfo() {
+            document.getElementById('affiliateInfoModal').classList.remove('active');
+        }
+
+        function openEditAffProfileModal() {
+            if (!currentAffiliate) return;
+            document.getElementById('editAffPhone').value = currentAffiliate.phone || '';
+            const methodEl = document.getElementById('editAffMethod');
+            if (methodEl) methodEl.value = currentAffiliate.method || 'DANA';
+            document.getElementById('editAffProfileModal').classList.add('active');
+        }
+
+        function closeEditAffProfileModal() {
+            document.getElementById('editAffProfileModal').classList.remove('active');
+        }
+
+        function saveEditAffProfile() {
+            const newPhone = document.getElementById('editAffPhone').value.trim();
+            const newMethod = document.getElementById('editAffMethod').value;
+            if (!newPhone) return toast('[ERR] Nomor rekening tidak boleh kosong!');
+
+            db.collection('affiliate_users').doc(currentUser).update({
+                phone: newPhone,
+                method: newMethod
+            }).then(() => {
+                currentAffiliate.phone = newPhone;
+                currentAffiliate.method = newMethod;
+                renderAffiliateDash();
+                closeEditAffProfileModal();
+                toast('[SYS] Profil berhasil diperbarui!');
+            }).catch(e => {
+                console.error(e);
+                toast('[ERR] Gagal memperbarui profil.');
+            });
+        }
+
+        // kept for backward compat
+        function editAffiliateProfile() { openEditAffProfileModal(); }
+
+        function openAffiliateWd() {
+            if (!currentAffiliate) return;
+            const bal = currentAffiliate.balance || 0;
+            if (bal <= 0) return toast('[ERR] Tidak ada saldo untuk ditarik!');
+
+            document.getElementById('affWdName').value = currentAffiliate.name;
+            document.getElementById('affWdPhone').value = currentAffiliate.phone;
+            const method = currentAffiliate.method || '';
+            document.getElementById('affWdMethod').value = method;
+            
+            document.getElementById('affWdIdr').textContent = 'Rp ' + bal.toLocaleString('id-ID');
+            document.getElementById('affWdAmt').value = bal; 
+
+            // Atur disclaimer sesuai batas e-wallet
+            const methodUpper = method.toUpperCase();
+            let minWd = 10000; 
+            if (methodUpper === 'DANA' || methodUpper === 'OVO' || methodUpper === 'SEABANK') minWd = 20000;
+            
+            document.getElementById('affWdDisclaimer').textContent = `*Minimal penarikan via ${methodUpper} adalah Rp ${minWd.toLocaleString('id-ID')}. Saldo Anda akan ditarik keseluruhannya (All-in).`;
+
+            document.getElementById('affiliateWdModal').classList.add('active');
+        }
+
+        function closeAffiliateWd() {
+            document.getElementById('affiliateWdModal').classList.remove('active');
+        }
+
+        async function submitAffiliateWd() {
+            if (!currentUser) return;
+            
+            const btn = document.getElementById('btnSubmitAffWd');
+            if (btn.disabled) return; 
+
+            const bal = currentAffiliate.balance || 0;
+            const methodUpper = (currentAffiliate.method || '').toUpperCase();
+            
+            // Validasi Limit
+            let minWd = 10000; 
+            if (methodUpper === 'DANA' || methodUpper === 'OVO' || methodUpper === 'SEABANK') minWd = 20000;
+
+            if (bal <= 0) return toast('[ERR] Tidak ada saldo untuk ditarik!');
+            if (bal < minWd) return toast(`[ERR] Pencairan via ${methodUpper} minimal Rp ${minWd.toLocaleString('id-ID')}!`);
+
+            const checkSnap = await db.collection('affiliate_withdrawals')
+                .where('node_id', '==', currentUser)
+                .get();
+            
+            const hasPending = checkSnap.docs.some(doc => doc.data().status === 'PENDING' || doc.data().status === 'PROSES');
+            if (hasPending) {
+                return toast('[ERR] Penarikan ditolak! Anda masih memiliki antrean PENDING.');
+            }
+            
+            const ogText = btn.innerHTML;
+            btn.innerHTML = '<div class="btn-spinner" style="border-color: #000; border-top-color: transparent;"></div>';
+            btn.disabled = true;
+
+            try {
+                const amt = bal; 
+
+                const newWd = {
+                    node_id: currentUser,
+                    name: currentAffiliate.name,
+                    phone: currentAffiliate.phone,
+                    method: currentAffiliate.method,
+                    amount: amt,
+                    status: 'PENDING',
+                    timestamp: Date.now()
+                };
+
+                await db.collection('affiliate_withdrawals').add(newWd);
+                
+                await db.collection('affiliate_users').doc(currentUser).update({ balance: 0 });
+
+                const affSnap = await db.collection('affiliates').where('node_id', '==', currentUser).get();
+                if (!affSnap.empty) {
+                    await db.collection('affiliates').doc(affSnap.docs[0].id).update({ unpaid_commission: 0 });
+                }
+
+                toast('[SYS] Pengajuan penarikan berhasil dikirim!');
+                closeAffiliateWd();
+                loadAffiliateWdHistory();
+            } catch (e) {
+                console.error(e);
+                toast('[ERR] Gagal mengajukan penarikan!');
+            }
+
+            btn.innerHTML = ogText;
+            btn.disabled = false;
+        }
+
+        function loadAffiliateWdHistory() {
+            if (historyListener) historyListener();
+            historyListener = db.collection('affiliate_withdrawals').where('node_id', '==', currentUser)
+                .onSnapshot(snapshot => {
+                    const container = document.getElementById('affWdHistory');
+                    container.innerHTML = '';
+                    
+                    let hData = [];
+                    snapshot.forEach(doc => {
+                        hData.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    if (hData.length === 0) {
+                        container.innerHTML = '<div style="padding: 24px; text-align: center; font-size: 0.75rem; color: var(--text-muted); font-style: italic;">Data kosong.</div>';
+                        return;
+                    }
+
+                    hData.sort((a, b) => b.timestamp - a.timestamp);
+
+                    hData.forEach(item => {
+                        let badgeClass = 'warning'; // Pending (Kuning)
+                        if (item.status === 'SUCCESS') badgeClass = 'success'; // Sukses (Hijau)
+                        else if (item.status === 'PROSES') badgeClass = 'danger'; // Proses (Merah)
+                        else if (item.status === 'REJECTED') badgeClass = 'danger'; // Ditolak (Merah)
+
+                        let statusLabel = item.status === 'SUCCESS' ? 'Sukses' : (item.status === 'PROSES' ? 'Proses' : (item.status === 'REJECTED' ? 'Ditolak' : 'Pending'));
+
+                        const d = new Date(item.timestamp);
+                        const dateStr = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+                        container.innerHTML += `
+                            <div class="hist-item">
+                                <div class="hist-left">
+                                    <div class="h-title">Withdraw ${item.method}</div>
+                                    <div class="h-date">${dateStr}</div>
+                                </div>
+                                <div class="hist-right">
+                                    <div class="h-amt">Rp ${(item.amount || 0).toLocaleString('id-ID')}</div>
+                                    <div class="h-badge ${badgeClass}" style="margin-top: 4px;">${statusLabel}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                });
         }
     </script>
 </body>
