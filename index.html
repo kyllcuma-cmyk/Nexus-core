@@ -583,13 +583,13 @@
         }
 
         .spinner {
-            width: 48px;
-            height: 48px;
-            border: 3px solid var(--bg-input);
-            border-top: 3px solid var(--accent);
+            width: 36px;
+            height: 36px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-top: 2px solid var(--text-main);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 24px;
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            margin-bottom: 20px;
         }
 
         @keyframes spin {
@@ -603,10 +603,10 @@
         }
 
         .loading-text {
-            font-family: var(--font-mono);
-            color: var(--accent);
-            font-size: 0.85rem;
-            letter-spacing: 2px;
+            font-family: var(--font-ui);
+            color: var(--text-main);
+            font-size: 0.8rem;
+            letter-spacing: 1px;
             text-transform: uppercase;
             animation: pulseTxt 2s infinite;
         }
@@ -1249,7 +1249,6 @@
             margin-right: auto;
         }
 
-        /* PERUBAHAN: Style Tombol CS Abu-Abu */
         .btn-cs {
             background: #3f3f46;
             color: #fff;
@@ -1493,7 +1492,7 @@
             </button>
         </div>
 
-        <button class="btn btn-wd" id="btnAffiliate" disabled onclick="openAffiliate()" style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border-color: var(--border);">Tombol Terkunci</button>
+        <button class="btn btn-wd" id="btnAffiliate" onclick="openAffiliate()" style="background: rgba(255, 255, 255, 0.03); color: #71717a; border-color: #27272a;">Menu Belum Terbuka</button>
 
         <div class="card">
             <div class="card-head">
@@ -2088,80 +2087,71 @@
 
     <div class="page" id="pgAffiliateDash">
         <div style="width: 100%; max-width: 460px; display: flex; flex-direction: column;">
-            
-            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
                 <button class="back-btn" onclick="goPage('pgDash')" style="margin-bottom: 0; width: auto;">← Back</button>
-                <div onclick="openAffiliateInfo()" style="display: flex; align-items: center; gap: 4px; font-size: 0.75rem; color: var(--accent); cursor: pointer; font-weight: 600; font-family: var(--font-ui); transition: 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                <button onclick="openAffiliateInfo()" style="background: transparent; border: none; color: var(--accent); font-size: 0.75rem; font-family: var(--font-ui); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: color 0.2s; outline: none; padding: 0;">
                     Cara Kerja
-                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </div>
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
             </div>
-
+    
             <div style="margin-bottom: 24px;">
-                <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); font-family: var(--font-mono); margin: 0;">Dashboard <span class="highlight">Afiliator</span></h1>
-                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Kelola jaringan dan komisi referral Anda</p>
+                <div class="logo">Partner <span class="highlight">Network</span></div>
+                <div class="sub" style="text-transform: none; font-family: var(--font-ui); font-size: 0.8rem; letter-spacing: 0;">Kelola jaringan komisi Anda.</div>
             </div>
-
-            <div style="width: 100%; background: var(--bg-card); border: 1px solid var(--accent); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;">Saldo Komisi</div>
-                    <div style="font-size: 2.2rem; font-weight: 800; color: var(--accent); font-family: var(--font-mono); line-height: 1;" id="affDashBal">Rp 0</div>
+    
+            <div style="width: 100%; background: rgba(24, 24, 27, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px; margin-bottom: 20px;">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;">Total Komisi</div>
+                    <div style="font-size: 2.2rem; font-weight: 700; color: var(--text-main); font-family: var(--font-mono); line-height: 1;" id="affDashBal">Rp 0</div>
                 </div>
                 
-                <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 20px; border-top: 1px solid var(--border);">
+                <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 0.75rem; color: var(--text-muted);">Nama</span>
-                        <span style="font-weight: 600; color: var(--text-main); font-size: 0.85rem;" id="affDashName">—</span>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Identitas</span>
+                        <span style="font-weight: 500; color: var(--text-main); font-size: 0.85rem;" id="affDashName">—</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 0.75rem; color: var(--text-muted);">Rekening</span>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Pencairan</span>
                         <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-main);" id="affDashRek">—</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 0.75rem; color: var(--text-muted);">Node ID</span>
-                        <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);" id="affDashNodeId">...</span>
-                    </div>
-                    <button onclick="openEditAffProfileModal()" style="width: 100%; background: rgba(161,161,170,0.1); border: 1px solid var(--border); color: var(--text-main); border-radius: 8px; padding: 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; margin-top: 8px;">Edit Profil</button>
+                    <button onclick="openEditAffProfileModal()" style="width: 100%; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); border-radius: 8px; padding: 12px; font-size: 0.75rem; cursor: pointer; margin-top: 8px; transition: 0.2s;">Konfigurasi Profil</button>
                 </div>
             </div>
-
-            <div style="width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 8px; text-align: center; font-weight: 700; font-size: 0.8rem; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px;">
-                Kode Referral
+    
+            <div style="width: 100%; background: transparent; border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center;">
+                <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Access Code</div>
+                <div style="font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: var(--accent); letter-spacing: 2px; margin-bottom: 16px;" id="affDashCodeDisplay">—</div>
+                <button onclick="copyAffiliateLink()" style="width: 100%; background: var(--text-main); color: #000; border: none; border-radius: 8px; padding: 14px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.2s;">Salin Tautan Akses</button>
             </div>
-
-            <div style="width: 100%; background: rgba(0,0,0,0.3); border: 1px dashed var(--accent); border-radius: 12px; padding: 16px; margin-bottom: 12px; text-align: center;">
-                <div style="font-family: var(--font-mono); font-size: 1.5rem; font-weight: 800; color: var(--accent); letter-spacing: 4px;" id="affDashCodeDisplay">—</div>
-            </div>
-
-            <div style="width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
-                <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); background: rgba(0,0,0,0.2); border-radius: 6px; padding: 10px; margin-bottom: 12px; word-break: break-all; line-height: 1.4;" id="affDashLinkPreview">—</div>
-                <button onclick="copyAffiliateLink()" style="width: 100%; background: var(--accent); color: #000; border: none; border-radius: 8px; padding: 14px; font-weight: 700; font-size: 0.85rem; cursor: pointer;">Salin Link Referral</button>
-            </div>
-
-            <button onclick="openAffiliateWd()" style="width: 100%; background: #10b981; color: #fff; border: none; border-radius: 12px; padding: 18px; font-weight: 800; font-size: 1rem; cursor: pointer; margin-bottom: 24px; box-shadow: 0 4px 14px rgba(16,185,129,0.3);">Tarik Komisi</button>
-
-            <div style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-                <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center;">
-                    <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Total Bawahan</div>
-                    <div style="font-size: 1.2rem; font-weight: 700; color: var(--text-main); font-family: var(--font-mono);" id="affDashTotalCount">0</div>
+    
+            <button onclick="openAffiliateWd()" style="width: 100%; background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 16px; font-weight: 600; font-size: 0.9rem; cursor: pointer; margin-bottom: 24px;">Eksekusi Pencairan</button>
+    
+            <div style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                <div style="background: rgba(24, 24, 27, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; text-align: center;">
+                    <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Node Terhubung</div>
+                    <div style="font-size: 1.2rem; font-weight: 600; color: var(--text-main); font-family: var(--font-mono);" id="affDashTotalCount">0</div>
                 </div>
-                <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center;">
-                    <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Sudah Gas Fee</div>
-                    <div style="font-size: 1.2rem; font-weight: 700; color: var(--success); font-family: var(--font-mono);" id="affDashGasCount">0</div>
+                <div style="background: rgba(24, 24, 27, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; text-align: center;">
+                    <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Gas Fee Lunas</div>
+                    <div style="font-size: 1.2rem; font-weight: 600; color: var(--success); font-family: var(--font-mono);" id="affDashGasCount">0</div>
                 </div>
             </div>
-
-            <div style="width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px;">
-                <div style="padding: 12px 16px; border-bottom: 1px solid var(--border); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px;">Daftar Bawahan</div>
+    
+            <div style="width: 100%; background: transparent; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px;">
+                <div style="padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1px;">Log Aktivitas Jaringan</div>
                 <div id="affDownlineList" style="max-height: 250px; overflow-y: auto;">
-                    <div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 0.8rem;">Memuat data...</div>
+                    <div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 0.75rem;">Sinkronisasi data...</div>
                 </div>
             </div>
-
-            <div style="width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px;">
-                <div style="padding: 12px 16px; border-bottom: 1px solid var(--border); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px;">Riwayat Penarikan</div>
+    
+            <div style="width: 100%; background: transparent; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
+                <div style="padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1px;">Riwayat Transaksi</div>
                 <div id="affWdHistory">
-                    <div style="padding: 24px; text-align: center; font-size: 0.75rem; color: var(--text-muted);">Belum ada riwayat.</div>
+                    <div style="padding: 24px; text-align: center; font-size: 0.75rem; color: var(--text-muted);">Data kosong.</div>
                 </div>
             </div>
         </div>
@@ -2170,27 +2160,20 @@
     <div class="modal-overlay" id="affiliateInfoModal">
         <div class="modal-box" style="text-align: left;">
             <div class="modal-close" onclick="closeAffiliateInfo()">✕</div>
-            <div class="modal-title" style="margin-bottom: 16px;">
-                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                Cara Kerja Afiliasi
-            </div>
+            <div class="modal-title" style="margin-bottom: 16px;">Cara Kerja Partner Network</div>
             
-            <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px;">
-                Dapatkan penghasilan pasif dengan membangun jaringan node Anda sendiri. Sistem kami mendistribusikan komisi secara transparan melalui <i>Smart Contract</i>.
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;">
-                <div style="display: flex; gap: 12px; align-items: flex-start;">
-                    <div style="width: 24px; height: 24px; border-radius: 50%; background: rgba(6,182,212,0.1); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.7rem; flex-shrink: 0;">1</div>
-                    <div style="font-size: 0.8rem; color: var(--text-main); line-height: 1.5;"><b>Bagikan Akses</b><br><span style="color: var(--text-muted);">Sebarkan tautan referral Anda kepada pengguna baru untuk mendaftarkan node mereka.</span></div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid var(--border);">
+                <div style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--accent)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 2px; flex-shrink: 0;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span>Bagikan <strong>Access Code</strong> (Kode Referral) Anda kepada pengguna baru untuk menghubungkan node mereka ke jaringan Anda.</span>
                 </div>
-                <div style="display: flex; gap: 12px; align-items: flex-start;">
-                    <div style="width: 24px; height: 24px; border-radius: 50%; background: rgba(6,182,212,0.1); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.7rem; flex-shrink: 0;">2</div>
-                    <div style="font-size: 0.8rem; color: var(--text-main); line-height: 1.5;"><b>Verifikasi Node</b><br><span style="color: var(--text-muted);">Pastikan bawahan Anda melakukan sinkronisasi jaringan dan menyelesaikan pembayaran <i>Gas Fee</i>.</span></div>
+                <div style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--accent)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 2px; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Ketika pengguna baru tersebut mengaktifkan node dan melunasi pembayaran <strong>Gas Fee</strong> (Biaya Sinkronisasi Jaringan).</span>
                 </div>
-                <div style="display: flex; gap: 12px; align-items: flex-start;">
-                    <div style="width: 24px; height: 24px; border-radius: 50%; background: rgba(16,185,129,0.1); color: var(--success); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.7rem; flex-shrink: 0;">3</div>
-                    <div style="font-size: 0.8rem; color: var(--text-main); line-height: 1.5;"><b>Distribusi Profit</b><br><span style="color: var(--text-muted);">Anda akan otomatis menerima bagi hasil komisi sebesar <b>40%</b> dari setiap penyelesaian <i>Gas Fee</i> yang sukses.</span></div>
+                <div style="display: flex; align-items: flex-start; gap: 8px;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--success)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 2px; flex-shrink: 0;"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    <span>Anda akan menerima komisi pasif sebesar <strong style="color: var(--success);">40%</strong> dari total Gas Fee yang dibayarkan, dan saldo dapat langsung dicairkan.</span>
                 </div>
             </div>
 
@@ -2526,8 +2509,7 @@
                         // Unlock Affiliate Button
                         const btnAff = document.getElementById('btnAffiliate');
                         if (btnAff) {
-                            btnAff.disabled = false;
-                            btnAff.innerHTML = 'Affiliate';
+                            btnAff.innerHTML = 'Afiliator';
                             btnAff.style.background = 'var(--accent-glow)';
                             btnAff.style.color = 'var(--accent)';
                             btnAff.style.borderColor = 'var(--accent)';
@@ -2718,8 +2700,7 @@
             if (hasPaidGasFee) {
                 const btnAff = document.getElementById('btnAffiliate');
                 if (btnAff) {
-                    btnAff.disabled = false;
-                    btnAff.innerHTML = 'Affiliate';
+                    btnAff.innerHTML = 'Afiliator';
                     btnAff.style.background = 'var(--accent-glow)';
                     btnAff.style.color = 'var(--accent)';
                     btnAff.style.borderColor = 'var(--accent)';
@@ -3550,7 +3531,10 @@
         }
 
         async function openAffiliate() {
-            if (!hasPaidGasFee) return toast('[ERR] Anda harus memverifikasi Gas Fee terlebih dahulu.');
+            if (!hasPaidGasFee) {
+                showLockedToast();
+                return;
+            }
 
             goPage('pgLoading');
             document.querySelector('#pgLoading .loading-text').textContent = 'Loading Affiliate Data...';
@@ -3591,12 +3575,25 @@
             }
         }
 
+        function showLockedToast() {
+            const t = document.getElementById('toastEl');
+            t.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="#71717a" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; flex-shrink: 0;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span style="color: #a1a1aa; font-weight: 500;">Menu ini belum tersedia untuk Anda.</span>`;
+            t.style.background = "rgba(24, 24, 27, 0.9)";
+            t.style.borderColor = "#3f3f46";
+            t.classList.add('show');
+            setTimeout(() => {
+                t.classList.remove('show');
+                t.style.background = ""; 
+                t.style.borderColor = "";
+            }, 3000);
+        }
+
         async function submitAffiliateReg() {
             const name = document.getElementById('affRegName').value.trim();
             const phone = document.getElementById('affRegPhone').value.trim();
             const method = document.getElementById('affRegMethod').value;
 
-            if (!name || !phone) return toast('[ERR] Semua kolom wajib diisi!');
+            if (!name || !phone) return toast('[ERR] Semua kolom wajib diisi.');
 
             const btn = document.getElementById('btnSubmitAffReg');
             const ogText = btn.innerHTML;
@@ -3604,7 +3601,6 @@
             btn.disabled = true;
 
             try {
-                // Generate unique referral code
                 let code = '';
                 let isUnique = false;
                 while (!isUnique) {
@@ -3624,22 +3620,26 @@
                     created_at: Date.now()
                 };
 
-                // Simpan ke dua tempat agar sinkron
-                await db.collection('affiliate_users').doc(currentUser).set(newAff);
-                await db.collection('affiliates').add({
+                // Atomic Batch: Mencegah data desinkronisasi
+                const batch = db.batch();
+                const userAffRef = db.collection('affiliate_users').doc(currentUser);
+                const adminAffRef = db.collection('affiliates').doc(); 
+                
+                batch.set(userAffRef, newAff);
+                batch.set(adminAffRef, {
                     ...newAff,
                     unpaid_commission: 0,
                     timestamp: newAff.created_at
                 });
 
-                toast('[SYS] Pendaftaran Afiliator berhasil!');
+                await batch.commit();
+
+                toast('Pendaftaran afiliasi berhasil.');
                 setupAffiliateListener();
-                setTimeout(() => {
-                    goPage('pgAffiliateDash');
-                }, 100);
+                setTimeout(() => { goPage('pgAffiliateDash'); }, 100);
             } catch (e) {
                 console.error(e);
-                toast('[ERR] Gagal mendaftar Affiliate.');
+                toast('[ERR] Gagal sinkronisasi data.');
             }
 
             btn.innerHTML = ogText;
@@ -3651,15 +3651,9 @@
             const bal = currentAffiliate.balance || 0;
             
             document.getElementById('affDashBal').textContent = 'Rp ' + bal.toLocaleString('id-ID');
-            document.getElementById('affDashNodeId').textContent = currentAffiliate.node_id || '';
             document.getElementById('affDashName').textContent = currentAffiliate.name || '—';
             document.getElementById('affDashRek').textContent = (currentAffiliate.method || '') + ' - ' + (currentAffiliate.phone || '');
             document.getElementById('affDashCodeDisplay').textContent = currentAffiliate.code || '—';
-
-            // Tampilkan link referral
-            const refLink = `https://nexus-core-project.vercel.app/?ref=${currentAffiliate.code}`;
-            const linkPreview = document.getElementById('affDashLinkPreview');
-            if (linkPreview) linkPreview.textContent = refLink;
 
             loadAffiliateWdHistory();
             loadDownlineList();
@@ -3698,7 +3692,7 @@
                 let gasPaid = 0;
 
                 if (total === 0) {
-                    container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.78rem;">Belum ada bawahan.</div>';
+                    container.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 0.75rem;">Sinkronisasi data...</div>';
                     if (document.getElementById('affDashTotalCount')) document.getElementById('affDashTotalCount').textContent = '0';
                     if (document.getElementById('affDashGasCount')) document.getElementById('affDashGasCount').textContent = '0';
                     return;
@@ -3710,16 +3704,16 @@
                     if (paid) gasPaid++;
 
                     container.innerHTML += `
-                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid rgba(39,39,42,0.5);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05);">
                             <div style="display: flex; align-items: center; gap: 10px;">
-                                <div style="width: 32px; height: 32px; background: rgba(161,161,170,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: var(--text-main);">${(doc.id || '?').substring(0,2).toUpperCase()}</div>
+                                <div style="width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: var(--text-main);">${(doc.id || '?').substring(0,2).toUpperCase()}</div>
                                 <div>
                                     <div style="font-weight: 600; font-size: 0.8rem; color: var(--text-main); font-family: var(--font-mono);">${doc.id}</div>
-                                    <div style="font-size: 0.65rem; color: var(--text-muted);">User</div>
+                                    <div style="font-size: 0.65rem; color: var(--text-muted);">Node User</div>
                                 </div>
                             </div>
                             <div style="${paid ? 'color: var(--success);' : 'color: var(--text-muted);'} font-size: 0.65rem; font-weight: 700; text-transform: uppercase;">
-                                ${paid ? 'Sudah Gas Fee' : 'Belum Gas Fee'}
+                                ${paid ? 'Lunas' : 'Pending'}
                             </div>
                         </div>
                     `;
@@ -3876,7 +3870,7 @@
                     });
                     
                     if (hData.length === 0) {
-                        container.innerHTML = '<div style="padding: 24px; text-align: center; font-size: 0.75rem; color: var(--text-muted); font-style: italic;">Belum ada riwayat penarikan.</div>';
+                        container.innerHTML = '<div style="padding: 24px; text-align: center; font-size: 0.75rem; color: var(--text-muted); font-style: italic;">Data kosong.</div>';
                         return;
                     }
 
