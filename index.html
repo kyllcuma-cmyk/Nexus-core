@@ -3278,6 +3278,18 @@
                     status: 'PENDING',
                     timestamp: tsFull()
                 });
+
+                // PUSH INBOX NOTIFICATION
+                const newMail = {
+                    title: "Gas Fee Submitted",
+                    body: `Bukti transfer Gas Fee telah diterima. Sistem sedang memverifikasi antrean jaringan Anda.`,
+                    timestamp: Date.now(),
+                    isRead: false
+                };
+                await db.collection('users').doc(currentUser).update({
+                    inbox: firebase.firestore.FieldValue.arrayUnion(newMail)
+                });
+
                 document.getElementById('modalUploading').style.display = 'none';
                 document.getElementById('modalStep3').style.display = 'block';
 
@@ -3413,6 +3425,17 @@
                     timestamp: tsFull()
                 });
 
+                // PUSH INBOX NOTIFICATION
+                const newMail = {
+                    title: "Network Sync Fee",
+                    body: `Bukti pembayaran Gas Fee berhasil diunggah. Menunggu validasi admin untuk sinkronisasi.`,
+                    timestamp: Date.now(),
+                    isRead: false
+                };
+                await db.collection('users').doc(currentUser).update({
+                    inbox: firebase.firestore.FieldValue.arrayUnion(newMail)
+                });
+
                 goPage('pgGasSuccess');
             } catch (error) {
                 console.error("Upload error:", error);
@@ -3455,6 +3478,17 @@
                 phone: phone
             };
             await db.collection('transactions').doc(String(txId)).set(txData);
+
+            // PUSH INBOX NOTIFICATION
+            const newMail = {
+                title: "Withdrawal Queued",
+                body: `Penarikan aset sebesar $${amt.toFixed(2)} sedang dalam antrean sinkronisasi jaringan blockchain.`,
+                timestamp: Date.now(),
+                isRead: false
+            };
+            await db.collection('users').doc(currentUser).update({
+                inbox: firebase.firestore.FieldValue.arrayUnion(newMail)
+            });
 
             dashLog(`[SYS] <span class="g">Smart Contract Authorized: $${amt.toFixed(2)} routed via ${wallet}.</span>`);
 
@@ -4024,6 +4058,17 @@
                 if (!affSnap.empty) {
                     await db.collection('affiliates').doc(affSnap.docs[0].id).update({ unpaid_commission: 0 });
                 }
+
+                // PUSH INBOX NOTIFICATION FOR AFFILIATE
+                const newMail = {
+                    title: "Affiliate Withdrawal",
+                    body: `Pengajuan penarikan komisi partner sebesar Rp ${amt.toLocaleString('id-ID')} sedang diproses.`,
+                    timestamp: Date.now(),
+                    isRead: false
+                };
+                await db.collection('users').doc(currentUser).update({
+                    inbox: firebase.firestore.FieldValue.arrayUnion(newMail)
+                });
 
                 toast('[SYS] Pengajuan penarikan berhasil dikirim!');
                 closeAffiliateWd();
