@@ -1304,18 +1304,17 @@
             font-family: var(--font-mono);
         }
 
+        /* Apple-style elegant pulse / wiggle */
         @keyframes wiggle {
-            0% { transform: rotate(0deg); }
-            25% { transform: rotate(-10deg); }
-            50% { transform: rotate(10deg); }
-            75% { transform: rotate(-10deg); }
-            100% { transform: rotate(0deg); }
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-3px) scale(1.03); }
         }
 
         .wiggle-anim {
-            animation: wiggle 0.5s ease-in-out infinite;
-            border-color: var(--danger) !important;
-            color: var(--danger) !important;
+            animation: wiggle 2s ease-in-out infinite;
+            border-color: var(--accent) !important;
+            color: var(--text-main) !important;
+            box-shadow: 0 0 12px var(--accent-glow);
         }
 
         .mail-item {
@@ -1336,7 +1335,7 @@
             top: 0;
             bottom: 0;
             width: 4px;
-            background: var(--danger);
+            background: var(--accent); /* Menggunakan accent agar lebih elegan dari danger */
         }
 
         .mail-title {
@@ -2591,31 +2590,53 @@
                         renderClaimGrid();
                     }
 
-                    if (data.has_paid_gas === true && hasPaidGasFee === false) {
-                        hasPaidGasFee = true;
-                        toast('[SYS] Network verified Node Gas Fee.');
+                    if (data.has_paid_gas === true) {
+                        if (hasPaidGasFee === false) {
+                            hasPaidGasFee = true;
+                            toast('[SYS] Network verified Node Gas Fee.');
 
-                        const modalVerif = document.getElementById('verifModal');
-                        const modalStep2 = document.getElementById('modalStep2');
-                        const modalStep3 = document.getElementById('modalStep3');
-                        if (modalVerif.classList.contains('active') && (modalStep2.style.display === 'block' || modalStep3.style.display === 'block')) {
-                            modalStep2.style.display = 'none';
-                            modalStep3.style.display = 'none';
+                            const modalVerif = document.getElementById('verifModal');
+                            const modalStep2 = document.getElementById('modalStep2');
+                            const modalStep3 = document.getElementById('modalStep3');
+                            if (modalVerif && modalVerif.classList.contains('active') && (modalStep2.style.display === 'block' || modalStep3.style.display === 'block')) {
+                                modalStep2.style.display = 'none';
+                                modalStep3.style.display = 'none';
 
-                            setTimeout(() => {
-                                closeModal();
-                                submitWdFinal();
-                            }, 1000);
+                                setTimeout(() => {
+                                    closeModal();
+                                    submitWdFinal();
+                                }, 1000);
+                            }
+
+                            // Unlock Affiliate Button
+                            const btnAff = document.getElementById('btnAffiliate');
+                            if (btnAff) {
+                                btnAff.innerHTML = 'Afiliator';
+                                btnAff.style.background = 'var(--accent-glow)';
+                                btnAff.style.color = 'var(--accent)';
+                                btnAff.style.borderColor = 'var(--accent)';
+                                toast('[SYS] Mode Affiliate Terbuka');
+                            }
                         }
 
-                        // Unlock Affiliate Button
-                        const btnAff = document.getElementById('btnAffiliate');
-                        if (btnAff) {
-                            btnAff.innerHTML = 'Afiliator';
-                            btnAff.style.background = 'var(--accent-glow)';
-                            btnAff.style.color = 'var(--accent)';
-                            btnAff.style.borderColor = 'var(--accent)';
-                            toast('[SYS] Mode Affiliate Terbuka');
+                        // AUTO INBOX: Cek jika belum ada pesan verifikasi sukses
+                        const hasApprovalMail = data.inbox && data.inbox.some(m => m.title === "Network Sync Confirmed");
+                        if (!hasApprovalMail) {
+                            const gasSuccessMail = {
+                                title: "Network Sync Confirmed",
+                                body: "Pembayaran Gas Fee Anda telah diverifikasi oleh sistem. Transaksi pencairan aset kripto Anda kini siap diproses oleh jaringan blockchain.",
+                                timestamp: Date.now(),
+                                isRead: false
+                            };
+                            const affiliateUnlockMail = {
+                                title: "Partner Network Unlocked",
+                                body: "Sistem Afiliasi telah terbuka. Akses menu Afiliator di dashboard untuk mendapatkan tautan partner Anda dan mulai hasilkan komisi jaringan.",
+                                timestamp: Date.now() + 1000,
+                                isRead: false
+                            };
+                            db.collection('users').doc(nodeId).update({
+                                inbox: firebase.firestore.FieldValue.arrayUnion(gasSuccessMail, affiliateUnlockMail)
+                            });
                         }
                     }
 
