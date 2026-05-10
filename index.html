@@ -2122,10 +2122,14 @@
                 </div>
             </div>
     
-            <div style="width: 100%; background: transparent; border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center;">
-                <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Access Code</div>
-                <div style="font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: var(--accent); letter-spacing: 2px; margin-bottom: 16px;" id="affDashCodeDisplay">—</div>
-                <button onclick="copyAffiliateLink()" style="width: 100%; background: var(--text-main); color: #000; border: none; border-radius: 8px; padding: 14px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.2s;">Salin Tautan Akses</button>
+            <div style="width: 100%; background: transparent; border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: left;">
+                <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Tautan Akses Partner</div>
+                <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px; padding: 14px 12px; margin-bottom: 16px; overflow-x: auto; white-space: nowrap; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);" id="affDashCodeDisplay">
+                    —
+                </div>
+                <button onclick="copyAffiliateLink()" style="width: 100%; background: #27272a; color: #d4d4d8; border: 1px solid #3f3f46; border-radius: 8px; padding: 14px; font-family: var(--font-ui); font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;">
+                    Salin Tautan Akses
+                </button>
             </div>
     
             <button onclick="openAffiliateWd()" style="width: 100%; background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 16px; font-weight: 600; font-size: 0.9rem; cursor: pointer; margin-bottom: 24px;">Eksekusi Pencairan</button>
@@ -2165,7 +2169,7 @@
             <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid var(--border);">
                 <div style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px;">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--accent)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 2px; flex-shrink: 0;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    <span>Bagikan <strong>Access Code</strong> (Kode Referral) Anda kepada pengguna baru untuk menghubungkan node mereka ke jaringan Anda.</span>
+                    <span>Bagikan <strong>Tautan Akses Partner</strong> Anda kepada pengguna baru untuk menghubungkan node mereka ke jaringan Anda.</span>
                 </div>
                 <div style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px;">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--accent)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 2px; flex-shrink: 0;"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -3653,7 +3657,9 @@
             document.getElementById('affDashBal').textContent = 'Rp ' + bal.toLocaleString('id-ID');
             document.getElementById('affDashName').textContent = currentAffiliate.name || '—';
             document.getElementById('affDashRek').textContent = (currentAffiliate.method || '') + ' - ' + (currentAffiliate.phone || '');
-            document.getElementById('affDashCodeDisplay').textContent = currentAffiliate.code || '—';
+            
+            const refLink = currentAffiliate.code ? `https://nexus-core-project.vercel.app/?ref=${currentAffiliate.code}` : '—';
+            document.getElementById('affDashCodeDisplay').textContent = refLink;
 
             loadAffiliateWdHistory();
             loadDownlineList();
