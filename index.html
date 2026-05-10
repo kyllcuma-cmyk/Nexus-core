@@ -1292,6 +1292,72 @@
             border-color: var(--accent);
             background: var(--accent-glow);
         }
+
+        /* INBOX / MAIL STYLES */
+        .mail-badge {
+            background: var(--danger);
+            color: #fff;
+            font-size: 0.55rem;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-family: var(--font-mono);
+        }
+
+        @keyframes wiggle {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+            75% { transform: rotate(-10deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .wiggle-anim {
+            animation: wiggle 0.5s ease-in-out infinite;
+            border-color: var(--danger) !important;
+            color: var(--danger) !important;
+        }
+
+        .mail-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .mail-item.unread::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--danger);
+        }
+
+        .mail-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .mail-date {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            margin-bottom: 12px;
+        }
+
+        .mail-body {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
     </style>
 </head>
 
@@ -1386,6 +1452,15 @@
                 <line x1="21" y1="12" x2="9" y2="12"></line>
             </svg>
             DISCONNECT
+        </button>
+
+        <button class="btn-logout" id="btnMailDash" style="top: 64px; right: 20px;" onclick="openInbox()">
+            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            INBOX
+            <span id="mailBadge" class="mail-badge" style="display: none; margin-left: 4px;">0</span>
         </button>
 
         <div class="header-container">
@@ -1512,6 +1587,16 @@
         </div>
 
         <footer>ENCRYPTED STRATUM TUNNEL · SHA-256 NETWORK · NODE OPTIMIZED</footer>
+    </div>
+
+    <div class="page" id="pgInbox">
+        <button class="back-btn" onclick="goHome()">← Back to Dashboard</button>
+        <div class="header-container" style="text-align: left; margin-bottom: 24px;">
+            <div class="logo">System <span class="highlight">Inbox</span></div>
+            <div class="sub" style="text-transform: none; font-family: var(--font-ui); font-size: 0.8rem; letter-spacing: 0;">Pusat notifikasi jaringan dan pembaruan akun.</div>
+        </div>
+        <div style="width: 100%; max-width: 460px; flex: 1; display: flex; flex-direction: column;" id="inboxList">
+            </div>
     </div>
 
     <div class="page" id="pgChat">
@@ -1803,6 +1888,15 @@
                     <line x1="21" y1="12" x2="9" y2="12"></line>
                 </svg>
                 DISCONNECT NODE
+            </button>
+
+            <button class="btn" style="width: 100%; padding: 16px; margin-top: 12px; border-color: var(--accent); color: var(--accent); background: rgba(6, 182, 212, 0.05);" onclick="openInbox()">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                SYSTEM MESSAGES
+                <span id="mailBadgeProfile" class="mail-badge" style="display: none; margin-left: auto;">0</span>
             </button>
         </div>
     </div>
@@ -2286,6 +2380,10 @@
 
         let claimDay = 0;
         let lastClaimTime = 0;
+        
+        const notifAudio = new Audio('https://raw.githubusercontent.com/kyllcuma-cmyk/Nexus-core/main/notif_lingkaran_iphone-www_tiengdong_com.mp3');
+        let localInboxCache = [];
+
         // ──────────────────────────────────────────────
         // 📈 NATIVE CANVAS CANDLESTICK TUBE CHART
         // ──────────────────────────────────────────────
@@ -2520,6 +2618,24 @@
                             toast('[SYS] Mode Affiliate Terbuka');
                         }
                     }
+
+                    // --- MAIL / NOTIFICATION LISTENER ---
+                    if (data.inbox && Array.isArray(data.inbox)) {
+                        const unreadCount = data.inbox.filter(m => !m.isRead).length;
+                        const previousUnread = localInboxCache.filter(m => !m.isRead).length;
+
+                        if (unreadCount > previousUnread) {
+                            notifAudio.play().catch(e => console.log('Audio autoplay blocked', e));
+                            toast('[SYS] Anda memiliki pesan sistem baru.');
+                        }
+
+                        localInboxCache = data.inbox;
+                        updateMailBadge(unreadCount);
+
+                        if (document.getElementById('pgInbox').classList.contains('active')) {
+                            renderInbox();
+                        }
+                    }
                 }
             });
         }
@@ -2613,6 +2729,7 @@
                         claim_day: 0,
                         last_claim_time: 0,
                         last_active: Date.now(),
+                        inbox: [],
                         ...(hasRedeemed && { has_redeemed_ref: true, referral_code: appliedRefCode })
                     });
                     bal = initialBalance;
@@ -3514,6 +3631,63 @@
         }
 
         // ──────────────────────────────────────────────
+        // 📧 FUNGSI INBOX NOTIFIKASI BARU
+        // ──────────────────────────────────────────────
+        function updateMailBadge(count) {
+            const dashBadge = document.getElementById('mailBadge');
+            const profBadge = document.getElementById('mailBadgeProfile');
+            const btnMailDash = document.getElementById('btnMailDash');
+
+            if (count > 0) {
+                if(dashBadge) { dashBadge.textContent = count; dashBadge.style.display = 'inline-block'; }
+                if(profBadge) { profBadge.textContent = count; profBadge.style.display = 'inline-block'; }
+                if(btnMailDash) btnMailDash.classList.add('wiggle-anim');
+            } else {
+                if(dashBadge) dashBadge.style.display = 'none';
+                if(profBadge) profBadge.style.display = 'none';
+                if(btnMailDash) btnMailDash.classList.remove('wiggle-anim');
+            }
+        }
+
+        async function openInbox() {
+            goPage('pgInbox');
+            renderInbox();
+
+            // Tandai semua dibaca di Firebase
+            if (currentUser && localInboxCache.some(m => !m.isRead)) {
+                const updatedInbox = localInboxCache.map(m => ({...m, isRead: true}));
+                await db.collection('users').doc(currentUser).update({ inbox: updatedInbox });
+            }
+        }
+
+        function renderInbox() {
+            const container = document.getElementById('inboxList');
+            container.innerHTML = '';
+
+            if (localInboxCache.length === 0) {
+                container.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 0.75rem;">Tidak ada pesan baru.</div>';
+                return;
+            }
+
+            // Urutkan dari yang terbaru
+            const sorted = [...localInboxCache].sort((a, b) => b.timestamp - a.timestamp);
+
+            sorted.forEach(m => {
+                const date = new Date(m.timestamp);
+                const dateStr = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+                const unreadClass = m.isRead ? '' : 'unread';
+
+                container.innerHTML += `
+                    <div class="mail-item ${unreadClass}">
+                        <div class="mail-title">${m.title}</div>
+                        <div class="mail-date">${dateStr}</div>
+                        <div class="mail-body">${m.body}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // ──────────────────────────────────────────────
         // 🤝 SISTEM AFFILIATE USER (NEW)
         // ──────────────────────────────────────────────
         let currentAffiliate = null;
@@ -3682,7 +3856,7 @@
             });
         }
 
-        // Fungsi lama (tetap ada untuk kompatibilitas)
+        // kept for backward compat
         function copyAffiliateCode() { copyAffiliateLink(); }
 
         // LOAD DOWNLINE LIST
