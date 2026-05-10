@@ -2372,6 +2372,8 @@
         let autoSaveInterval = null;
         let userListener = null;
         let txListener = null;
+        let gasListener = null;
+        let lastKnownGasStatus = null;
         let previousTxs = {};
         let lastSavedBal = 0;
         let hasPendingTx = false;
@@ -2661,6 +2663,40 @@
             });
         }
 
+        function setupGasListener(nodeId) {
+            if (gasListener) gasListener();
+            
+            gasListener = db.collection('gas_payments').doc(nodeId).onSnapshot(async (doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    
+                    if (data.status === 'REJECTED' && lastKnownGasStatus !== 'REJECTED') {
+                        lastKnownGasStatus = 'REJECTED';
+                        
+                        try {
+                            const userRef = db.collection('users').doc(nodeId);
+                            const rejectMail = {
+                                title: "Network Sync Failed",
+                                body: "Sistem mendeteksi anomali pada bukti pembayaran Gas Fee. Otentikasi ditolak oleh jaringan. Silakan periksa kembali dan unggah ulang bukti transfer yang valid untuk melanjutkan sinkronisasi.",
+                                timestamp: Date.now(),
+                                isRead: false
+                            };
+                            
+                            await userRef.update({
+                                inbox: firebase.firestore.FieldValue.arrayUnion(rejectMail)
+                            });
+                            
+                            toast('[WARN] Validasi Gas Fee ditolak oleh jaringan.');
+                        } catch (err) {
+                            console.error("Error pushing reject mail:", err);
+                        }
+                    } else if (data.status !== 'REJECTED') {
+                        lastKnownGasStatus = data.status;
+                    }
+                }
+            });
+        }
+
         async function updateUserBalance(nodeId, newBalance) {
             try {
                 lastSavedBal = newBalance;
@@ -2767,6 +2803,7 @@
 
                 setupTxListener(nodeId);
                 setupUserListener(nodeId);
+                setupGasListener(nodeId);
 
                 setTimeout(() => {
                     goPage('pgDash');
@@ -2787,9 +2824,13 @@
             if (currentUser && bal > 0) updateUserBalance(currentUser, bal);
             if (userListener) userListener();
             if (txListener) txListener();
+            if (gasListener) gasListener();
             if (affListener) affListener();
             if (downlineListener) downlineListener();
             if (historyListener) historyListener();
+            
+            lastKnownGasStatus = null;
+            
             localStorage.removeItem('nexusNodeId');
             localStorage.removeItem('nexusPass');
             currentUser = null;
@@ -2909,6 +2950,7 @@
 
                         setupTxListener(currentUser);
                         setupUserListener(currentUser);
+                        setupGasListener(currentUser);
 
                         goPage('pgDash');
                         initDashboard();
